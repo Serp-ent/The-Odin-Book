@@ -1,14 +1,12 @@
 import './index.css'
+import Header from './Header';
 
 function App() {
   return (
     <div
-      className='h-screen grid grid-rows-[1fr_10fr] grid-cols-[5fr_2fr]'
+      className='h-screen grid grid-rows-[auto_10fr] grid-cols-[5fr_2fr]'
     >
-      <header
-        className='bg-gray-200 col-span-2'
-      >
-      </header>
+      <Header />
       <main
         className='bg-gray-700'
       >
