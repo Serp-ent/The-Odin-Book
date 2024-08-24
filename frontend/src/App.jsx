@@ -1,5 +1,6 @@
 import './index.css'
 import Header from './Header';
+import Aside from './Aside';
 
 function App() {
   return (
@@ -11,10 +12,8 @@ function App() {
         className='bg-gray-700'
       >
       </main>
-      <aside
-        className='bg-slate-400'
-      >
-      </aside>
+
+      <Aside />
     </div>
   );
 }
