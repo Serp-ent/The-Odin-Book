@@ -30,17 +30,17 @@ export default function Register() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='flex justify-center items-start mt-[20vh]'
+      className='bg-gray-700 text-white pt-20 flex justify-center items-start'
     >
       <form
         onSubmit={handleSubmit}
-        className='border p-4 flex flex-col gap-2 rounded shadow'
+        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-800'
         method="POST"
       >
         <div className="flex flex-col">
           <label>First Name</label>
           <input
-            className="border"
+            className="border bg-gray-800 p-1 rounded"
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
@@ -49,7 +49,7 @@ export default function Register() {
         <div className="flex flex-col">
           <label>Last Name</label>
           <input
-            className="border"
+            className="border bg-gray-800 p-1 rounded"
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
@@ -58,7 +58,7 @@ export default function Register() {
         <div className="flex flex-col">
           <label>Username</label>
           <input
-            className="border"
+            className="border bg-gray-800 p-1 rounded"
             name="username"
             value={formData.username}
             onChange={handleChange}
@@ -67,7 +67,7 @@ export default function Register() {
         <div className="flex flex-col">
           <label>Email</label>
           <input
-            className="border"
+            className="border bg-gray-800 p-1 rounded"
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -76,7 +76,7 @@ export default function Register() {
         <div className="flex flex-col">
           <label>Password</label>
           <input
-            className='border'
+            className="border bg-gray-800 p-1 rounded"
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -85,7 +85,7 @@ export default function Register() {
         <div className="flex flex-col">
           <label>Confirm Password</label>
           <input
-            className='border'
+            className="border bg-gray-800 p-1 rounded"
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}

@@ -30,17 +30,17 @@ export default function Login() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='flex justify-center items-start mt-[20vh]'
+      className='bg-gray-700 text-white pt-20 flex justify-center items-start'
     >
       <form
         onSubmit={handleSubmit}
-        className='border p-4 flex flex-col gap-2 rounded shadow'
+        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-800'
         method="POST"
       >
         <div className="flex flex-col">
           <label>Username</label>
           <input
-            className="border"
+            className="border bg-gray-800 p-1 rounded"
             name="username"
             value={username}
             onChange={e => setUsername(e.target.value)}
@@ -49,7 +49,7 @@ export default function Login() {
         <div className="flex flex-col">
           <label>Password</label>
           <input
-            className='border'
+            className="border bg-gray-800 p-1 rounded"
             name="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
