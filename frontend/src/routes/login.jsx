@@ -11,7 +11,7 @@ export default function Login() {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // TODO: handle server response
@@ -20,7 +20,16 @@ export default function Login() {
       return;
     }
 
-    if (username === 'user' && password === 'pass') {
+    const response = await fetch(`http://localhost:3000/login`, {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const result = await response.json();
+    if (response.ok && result.status === 'success') {
       auth.login();
       navigate('/');
     } else {
