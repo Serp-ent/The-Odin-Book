@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../authContext";
 
+// TODO: add links if user don't have already account
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

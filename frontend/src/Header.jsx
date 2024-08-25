@@ -21,7 +21,9 @@ export default function Header() {
       <div className='flex gap-4 items-center'>
         {auth.isAuthenticated ? (
           <>
-            <Link to={'/profile'}>
+            <Link to={'/profile'} className='flex items-center gap-2'>
+              {/* TODO: avatar */}
+              <div className='w-10 h-10 rounded-full bg-white'></div>
               Ben Thomson
             </Link>
             <button
@@ -30,7 +32,7 @@ export default function Header() {
             >Log out</button>
           </>
         ) : (
-          <div>
+          <div className='flex gap-4'>
             <Link to={'/login'}>Login</Link>
             <Link to={'/register'}>Register</Link>
           </div>
