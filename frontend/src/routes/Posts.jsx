@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function MainSection() {
+export default function Posts() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
