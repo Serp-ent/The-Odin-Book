@@ -35,7 +35,7 @@ export default function Login() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='h-screen flex justify-center items-center'
+      className='flex justify-center items-center'
     >
       <form
         onSubmit={handleSubmit}

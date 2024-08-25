@@ -19,13 +19,22 @@ export default function Header() {
       </div>
 
       <div className='flex gap-4 items-center'>
-        <Link to={'/profile'}>
-          Ben Thomson
-        </Link>
-        <button
-          className='py-2 px-4 rounded-lg border-2 border-white'
-          onClick={auth.logout}
-        >Log out</button>
+        {auth.isAuthenticated ? (
+          <>
+            <Link to={'/profile'}>
+              Ben Thomson
+            </Link>
+            <button
+              className='py-2 px-4 rounded-lg border-2 border-white'
+              onClick={auth.logout}
+            >Log out</button>
+          </>
+        ) : (
+          <div>
+            <Link to={'/login'}>Login</Link>
+            <Link to={'/register'}>Register</Link>
+          </div>
+        )}
       </div>
     </header>);
 }
