@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import odinIcon from './assets/odin-icon.svg';
 import './index.css'
+import { useAuth } from './authContext';
 
 export default function Header() {
+  const auth = useAuth();
   return (
     <header
       className='py-2 px-4 bg-gray-900 col-span-2 flex items-center justify-between text-white'
@@ -22,6 +24,7 @@ export default function Header() {
         </Link>
         <button
           className='py-2 px-4 rounded-lg border-2 border-white'
+          onClick={auth.logout}
         >Log out</button>
       </div>
     </header>);
