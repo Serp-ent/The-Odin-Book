@@ -13,11 +13,6 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log({
-      username,
-      password,
-    })
-
     // TODO: handle server response
     if (!username || !password) {
       setError('Username and password are required');
@@ -35,7 +30,7 @@ export default function Login() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='flex justify-center items-center'
+      className='flex justify-center items-start mt-[20vh]'
     >
       <form
         onSubmit={handleSubmit}
