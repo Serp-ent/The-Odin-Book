@@ -14,7 +14,6 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: handle server response
     if (!username || !password) {
       setError('Username and password are required');
       return;
@@ -28,8 +27,12 @@ export default function Login() {
       body: JSON.stringify({ username, password }),
     });
 
+    if (!response.ok) {
+      return;
+    }
+
     const result = await response.json();
-    if (response.ok && result.status === 'success') {
+    if (result.status === 'success') {
       auth.login();
       navigate('/');
     } else {
