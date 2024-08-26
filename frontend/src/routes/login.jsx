@@ -28,16 +28,13 @@ export default function Login() {
     });
 
     if (!response.ok) {
+      setError('Invalid username or password');
       return;
     }
 
     const result = await response.json();
-    if (result.status === 'success') {
-      auth.login();
-      navigate('/');
-    } else {
-      setError('Invalid username or password');
-    }
+    auth.login(result.token);
+    navigate('/');
   }
 
   // TODO: responsive form on smaller screens
