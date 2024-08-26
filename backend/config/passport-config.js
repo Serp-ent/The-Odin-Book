@@ -1,17 +1,20 @@
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const prisma = require('../db/prismaClient');
+require('dotenv').config();
 
-passport.use(new LocalStrategy(async (username, password, done) => {
+const secretKey = process.env.JWT_SECRET_KEY;
+
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: secretKey,
+}
+
+passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({ where: { id: jwt_payload.id } });
     if (!user) {
-      return done(null, false);
-    }
-
-    // TODO: add password hashing
-    const isMatch = password === user.password;
-    if (!isMatch) {
       return done(null, false);
     }
 
@@ -19,20 +22,7 @@ passport.use(new LocalStrategy(async (username, password, done) => {
   } catch (err) {
     return done(err);
   }
-}));
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
 })
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await prisma.user.findUnique({ where: id })
-
-    done(null, user);
-  } catch (err) {
-    done(err);
-  }
-})
+);
 
 module.exports = passport;
