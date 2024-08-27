@@ -1,10 +1,11 @@
 import Root from './root';
 import ErrorPage from './error-page';
-import Posts, { loader as postLoader } from './Posts';
+import Posts, { loader as postListLoader } from './Posts';
 import Profile, { loader as ProfileLoader } from './Profile';
 import Login from './login';
 import ProtectedRoute from '../protectedRoute';
 import Register from './register';
+import Post, { loader as postLoader } from './Post';
 
 const routes = [
   {
@@ -18,7 +19,12 @@ const routes = [
           {
             index: true,
             element: <ProtectedRoute element={<Posts />} />,
-            loader: postLoader
+            loader: postListLoader
+          },
+          {
+            path: '/post/:postId',
+            element: <ProtectedRoute element={<Post />} />,
+            loader: postLoader,
           },
           {
             path: '/profile/:id',

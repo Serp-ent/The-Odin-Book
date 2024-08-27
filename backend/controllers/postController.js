@@ -45,6 +45,65 @@ const getPosts = async (req, res) => {
   });
 }
 
+// TODO: add async handler
+const getPostWithId = async (req, res) => {
+  // TODO: handle incorrect id
+  const id = parseInt(req.params.id);
+
+  // TODO: include only first 10 comments
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+            profilePic: true,
+            registeredAt: true,
+            updatedAt: true,
+          },
+        },
+        comments: {
+          take: 10, // Limit to the first 10 comments
+          include: {
+            author: {
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                username: true,
+                profilePic: true,
+                registeredAt: true,
+                updatedAt: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            likes: true, // Count the number of likes
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    res.json(post);
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   getPosts,
+  getPostWithId,
 };
