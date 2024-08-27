@@ -83,17 +83,17 @@ export default function Posts() {
     >
       <ul>
         {posts.map((post) => (
-          <li
-            key={post.id}
-            className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white'
-          >
-            <Link to={`/post/${post.id}`}>
+          <Link to={`/post/${post.id}`} key={post.id}>
+            <li
+              key={post.id}
+              className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white'
+            >
               <div className='flex justify-center text-lg'>
                 <h4>{post.title}</h4>
               </div>
               <p>{post.content}</p>
-            </Link>
-          </li>
+            </li>
+          </Link>
         ))}
 
       </ul>

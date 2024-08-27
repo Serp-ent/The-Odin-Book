@@ -48,13 +48,11 @@ export default function FollowedUsers() {
         {
           followed.map((u) => {
             return (
-              <li key={u.id}
-                className='text-white border-2 rounded-lg p-4 m-2 flex justify-end'
-              >
-                <Link to={`/profile/${u.id}`}>
+              <Link to={`/profile/${u.id}`} key={u.id}>
+                <li className='text-white border-2 rounded-lg p-4 m-2 flex justify-end' >
                   {u.firstName} {u.lastName}
-                </Link>
-              </li>
+                </li>
+              </Link>
             )
           })
         }

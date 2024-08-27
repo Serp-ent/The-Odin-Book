@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../authContext";
 
 // TODO: add links if user don't have already account
+// TODO: prevent user accessing login and register when logged in
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
