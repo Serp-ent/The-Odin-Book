@@ -1,6 +1,6 @@
 import Root from './root';
 import ErrorPage from './error-page';
-import Posts from './Posts';
+import Posts, { loader as postLoader } from './Posts';
 import Profile from './Profile';
 import Login from './login';
 import ProtectedRoute from '../protectedRoute';
@@ -14,7 +14,8 @@ const routes = [
     children: [
       {
         index: true,
-        element: <ProtectedRoute element={<Posts />} />
+        element: <ProtectedRoute element={<Posts />} />,
+        loader: postLoader
       },
       {
         path: '/profile',
