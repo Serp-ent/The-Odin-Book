@@ -1,7 +1,7 @@
 import Root from './root';
 import ErrorPage from './error-page';
 import Posts, { loader as postLoader } from './Posts';
-import Profile from './Profile';
+import Profile, { loader as ProfileLoader } from './Profile';
 import Login from './login';
 import ProtectedRoute from '../protectedRoute';
 import Register from './register';
@@ -13,22 +13,28 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       {
-        index: true,
-        element: <ProtectedRoute element={<Posts />} />,
-        loader: postLoader
+        errorElement: <ErrorPage />,
+        children: [
+          {
+            index: true,
+            element: <ProtectedRoute element={<Posts />} />,
+            loader: postLoader
+          },
+          {
+            path: '/profile/:id',
+            element: <ProtectedRoute element={<Profile />} />,
+            loader: ProfileLoader,
+          },
+          {
+            path: '/login',
+            element: <Login />,
+          },
+          {
+            path: '/register',
+            element: <Register />,
+          }
+        ]
       },
-      {
-        path: '/profile',
-        element: <ProtectedRoute element={<Profile />} />
-      },
-      {
-        path: '/login',
-        element: <Login />,
-      },
-      {
-        path: '/register',
-        element: <Register />,
-      }
     ],
   },
 ]

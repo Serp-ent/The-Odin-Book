@@ -1,3 +1,7 @@
+export const loader = ({ params }) => {
+  throw new Error('Could not fetch for user');
+}
+
 export default function Profile() {
   return (
     <main className="text-white p-8 bg-gray-700 flex items-center flex-col">

@@ -6,6 +6,7 @@ export default function ErrorPage() {
   console.log(error);
 
   return (
+    // TODO: add tailwind container
     <div
       className='h-screen w-screen bg-slate-700 flex justify-center items-center'
     >
