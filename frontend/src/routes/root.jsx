@@ -5,25 +5,10 @@ import { useAuth } from '../authContext';
 import FollowedUsers from '../followedUsers';
 
 function Root() {
-  const auth = useAuth();
-
   return (
-    <div
-      className={`h-screen grid grid-rows-[auto_10fr] 
-      ${auth.isAuthenticated ? 'grid-cols-[5fr_2fr]' : 'grid-cols-1'}`}
-    >
+    <div className={`h-screen grid grid-rows-[auto_10fr]`} >
       <Header />
-      {
-        auth.isAuthenticated ? (
-          <>
-            <Outlet />
-            <FollowedUsers />
-          </>
-        ) : (
-          <Outlet></Outlet>
-        )
-
-      }
+      <Outlet />
     </div >
   );
 }

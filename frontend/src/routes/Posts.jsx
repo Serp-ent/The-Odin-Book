@@ -68,7 +68,11 @@ export default function Posts() {
     setLoading(true);
     const nextPage = page + 1;
     try {
-      const response = await fetch(`http://localhost:3000/api/posts?page=${nextPage}`);
+      const response = await fetch(`http://localhost:3000/api/posts?page=${nextPage}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

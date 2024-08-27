@@ -41,7 +41,7 @@ export default function Login() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='bg-gray-700 text-white pt-20 flex justify-center items-start'
+      className='bg-gray-700 text-white p-4 flex justify-center items-start'
     >
       <form
         onSubmit={handleSubmit}
