@@ -3,6 +3,7 @@ import ErrorPage from './error-page';
 import PostList, {
   loader as postListLoader,
   action as likeAction,
+  createPost,
 } from './PostList';
 import Profile, {
   loader as profileLoader,
@@ -35,6 +36,10 @@ const routes = [
           {
             path: '/post/:postId/like',
             action: likeAction,
+          },
+          {
+            path: '/post/',
+            action: createPost,
           },
           {
             path: '/profile/:userId',

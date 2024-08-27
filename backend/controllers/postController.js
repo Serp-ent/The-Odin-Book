@@ -250,8 +250,22 @@ const likePost = async (req, res) => {
   }
 };
 
+const createPost = async (req, res) => {
+  const { content } = req.body;
+  // TODO: add validation for empty posts
+  const post = await prisma.post.create({
+    data: {
+      content: content,
+      authorId: req.user.id,
+    }
+  });
+
+  res.json(post);
+}
+
 module.exports = {
   getPosts,
   getPostWithId,
   likePost,
+  createPost,
 };

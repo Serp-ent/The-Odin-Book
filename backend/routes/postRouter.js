@@ -7,6 +7,10 @@ router.get('/',
   passport.authenticate('jwt', { session: false }),
   controller.getPosts);
 
+router.post('/',
+  passport.authenticate('jwt', { session: false }),
+  controller.createPost);
+
 router.post('/:id/like',
   passport.authenticate('jwt', { session: false }),
   controller.likePost);

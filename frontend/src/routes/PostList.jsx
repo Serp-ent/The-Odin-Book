@@ -60,6 +60,25 @@ export const action = async ({ request, params }) => {
   }
 }
 
+export const createPost = async ({ request }) => {
+  const formData = await request.formData();
+
+  const response = await fetch(`http://localhost:3000/api/posts`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+    },
+    body: JSON.stringify({ content: formData.get('content') })
+  });
+
+  if (!response.ok) {
+    throw new Error('Could not create post');
+  }
+  console.log('user wants to create post with content:', formData.get('content'));
+  return null;
+}
+
 export default function PostList() {
   const initialData = useLoaderData();
   const [posts, setPosts] = useState(initialData.posts);
@@ -137,12 +156,18 @@ export default function PostList() {
       className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'
       ref={containerRef}
     >
-      {/* <div className="flex justify-center align-center gap-2">
-        <Form>
-          <input placeholder="What do you feel?"></input>
-          <button className="border rounded py-1 px-2">Publish</button>
-        </Form>
-      </div> */}
+      <fetcher.Form className="bg-gray-800 text-white border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
+        action="/post" method="POST">
+        <input className="border bg-gray-800 p-1 rounded"
+          placeholder="How do you feel?"
+          name="content"
+        ></input>
+        <div className="flex justify-end">
+          <button className="border-2 border-gray-500 rounded py-1 text-sm px-2"
+            type="submit">
+            Publish</button>
+        </div>
+      </fetcher.Form>
       <ul>
         {posts.map((post) => <PostListItem key={post.id} post={post} />)}
       </ul>
