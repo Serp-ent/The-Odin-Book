@@ -7,13 +7,46 @@ export const loader = async ({ request }) => {
   const page = url.searchParams.get("page") || 1;
   const limit = url.searchParams.get("limit") || 10;
 
-  const response = await fetch(`http://localhost:3000/api/posts?page=${page}&limit=${limit}`);
+  const response = await fetch(`http://localhost:3000/api/posts?page=${page}&limit=${limit}`, {
+    method: "GET",
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    }
+  });
   if (!response.ok) {
     throw json({ message: 'Failed to load posts' }, { status: response.status });
   }
 
   const data = await response.json();
   return data;
+}
+
+export const action = async ({ request, params }) => {
+  const formData = await request.formData();
+  const like = formData.get('like') === 'like';
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/posts/${params.postId}/like`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      },
+      body: JSON.stringify({ like }), // Send the 'like' boolean as the request body
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update like status');
+    }
+
+    const result = await response.json();
+    console.log('Post like/unlike result:', result);
+
+    return null; // You can return any required data here, or handle navigation, etc.
+  } catch (error) {
+    console.error('Error liking/unliking post:', error);
+    return { error: error.message };
+  }
 }
 
 export default function Posts() {
@@ -24,6 +57,8 @@ export default function Posts() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef(null);
+
+  const fetcher = useFetcher();
 
   const loadMorePosts = async () => {
     if (loading || !hasMore) {
@@ -90,11 +125,9 @@ export default function Posts() {
       <ul>
         {posts.map((post) => (
           <div key={post.id}
-            className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white' >
+            className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white flex flex-col gap-1' >
             <Link to={`/post/${post.id}`}>
-              <li
-
-              >
+              <li>
                 <div className='flex justify-center text-lg'>
                   <h4>{post.title}</h4>
                 </div>
@@ -103,10 +136,17 @@ export default function Posts() {
             </Link>
 
             <hr />
-            <Form className="flex justify-start" method="post">
-
-              <button className="border rounded p-2" type="submit">Like</button>
-            </Form>
+            <fetcher.Form className="flex justify-start" method="post" action={`/post/${post.id}/like`}>
+              <div className="flex justify-center items-center gap-2 border rounded py-1 px-2">
+                {post.likes}
+                <button
+                  className={`border rounded px-2 ${post.isLiked && 'bg-gray-800'}`}
+                  value={!post.isLiked ? 'like' : 'unlike'}
+                  name="like"
+                  type="submit">
+                  {post.isLiked ? "Liked" : "Like"}</button>
+              </div>
+            </fetcher.Form>
           </div>
         ))}
 

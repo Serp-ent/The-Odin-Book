@@ -1,6 +1,9 @@
 import Root from './root';
 import ErrorPage from './error-page';
-import Posts, { loader as postListLoader } from './Posts';
+import Posts, {
+  loader as postListLoader,
+  action as likeAction,
+} from './Posts';
 import Profile, {
   loader as profileLoader,
   action as followProfile,
@@ -28,6 +31,10 @@ const routes = [
             path: '/post/:postId',
             element: <ProtectedRoute element={<Post />} />,
             loader: postLoader,
+          },
+          {
+            path: '/post/:postId/like',
+            action: likeAction,
           },
           {
             path: '/profile/:userId',

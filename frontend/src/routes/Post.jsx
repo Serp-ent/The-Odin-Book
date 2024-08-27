@@ -8,7 +8,11 @@ export const loader = async ({ params }) => {
   // TODO: add loading bar
   // await new Promise(resolve => setTimeout(resolve, 2000));
 
-  const response = await fetch(`http://localhost:3000/api/posts/${postId}`);
+  const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+    }
+  });
   if (!response.ok) {
     throw json({ message: 'Failed to load posts' }, { status: response.status });
   }
