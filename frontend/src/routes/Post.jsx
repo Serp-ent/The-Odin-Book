@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom"
+import { Link, useLoaderData } from "react-router-dom"
 import { json } from "react-router-dom";
 
 export const loader = async ({ params }) => {
@@ -41,10 +41,12 @@ export default function Post() {
           return (
             <li key={comment.id}
               className="border bg-gray-800 p-2 rounded ">
-              <div className="bg-gray-900 inline-block py-1 px-2 rounded">
+              <Link to={`/profile/${comment.author.id}`}
+                className="bg-gray-900 inline-block py-1 px-2 rounded"
+              >
                 {/* TODO: add user profilepic */}
                 {comment.author.firstName} {comment.author.lastName}
-              </div>
+              </Link>
               <div>
                 {comment.content}
               </div>

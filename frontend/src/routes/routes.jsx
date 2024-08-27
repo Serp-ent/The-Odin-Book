@@ -27,7 +27,7 @@ const routes = [
             loader: postLoader,
           },
           {
-            path: '/profile/:id',
+            path: '/profile/:userId',
             element: <ProtectedRoute element={<Profile />} />,
             loader: ProfileLoader,
           },
