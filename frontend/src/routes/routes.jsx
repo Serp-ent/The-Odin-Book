@@ -1,7 +1,10 @@
 import Root from './root';
 import ErrorPage from './error-page';
 import Posts, { loader as postListLoader } from './Posts';
-import Profile, { loader as ProfileLoader } from './Profile';
+import Profile, {
+  loader as profileLoader,
+  action as followProfile,
+} from './Profile';
 import Login from './login';
 import ProtectedRoute from '../protectedRoute';
 import Register from './register';
@@ -29,7 +32,8 @@ const routes = [
           {
             path: '/profile/:userId',
             element: <ProtectedRoute element={<Profile />} />,
-            loader: ProfileLoader,
+            loader: profileLoader,
+            action: followProfile,
           },
           {
             path: '/login',

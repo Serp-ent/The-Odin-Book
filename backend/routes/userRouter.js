@@ -10,6 +10,12 @@ router.get('/followed',
   passport.authenticate('jwt', { session: false }),
   controller.getFollowedUsers);
 
-router.get('/:id', controller.getUserWithId);
+router.post('/:id/follow',
+  passport.authenticate('jwt', { session: false }),
+  controller.followUser);
+
+router.get('/:id',
+  passport.authenticate('jwt', { session: false }),
+  controller.getUserWithId);
 
 module.exports = router;

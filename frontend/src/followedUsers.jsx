@@ -23,7 +23,6 @@ export default function FollowedUsers() {
         }
 
         const data = await response.json();
-        console.log(data);
         setFollowed(data);
       } catch (error) {
         console.error('Error fetching followed users:', error);
