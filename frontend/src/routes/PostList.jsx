@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { Form, json, Link, useFetcher, useLoaderData } from 'react-router-dom';
+import PostListItem from "./PostListItem";
 
 // TODO: add loading spinner
 export const loader = async ({ request }) => {
@@ -23,16 +24,19 @@ export const loader = async ({ request }) => {
 
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
-  const like = formData.get('like') === 'like';
+  const like = formData.get('like') === 'true';
+  const postId = parseInt(params.postId);
+
+  console.log('User wants to like:', like);
 
   try {
-    const response = await fetch(`http://localhost:3000/api/posts/${params.postId}/like`, {
+    const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('authToken')}`,
       },
-      body: JSON.stringify({ like }), // Send the 'like' boolean as the request body
+      body: JSON.stringify({ like }),
     });
 
     if (!response.ok) {
@@ -42,14 +46,21 @@ export const action = async ({ request, params }) => {
     const result = await response.json();
     console.log('Post like/unlike result:', result);
 
-    return null; // You can return any required data here, or handle navigation, etc.
+    // Return the updated post data, including isLiked and like count
+    return {
+      id: postId,
+      isLiked: like, // assuming you want to reflect the like state from the client-side action
+      likesCount: result.likesCount, // include the updated like count if needed
+    };
   } catch (error) {
     console.error('Error liking/unliking post:', error);
-    return { error: error.message };
+    return {
+      error: error.message,
+    };
   }
 }
 
-export default function Posts() {
+export default function PostList() {
   const initialData = useLoaderData();
   const [posts, setPosts] = useState(initialData.posts);
   const [page, setPage] = useState(initialData.page);
@@ -57,7 +68,6 @@ export default function Posts() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef(null);
-
   const fetcher = useFetcher();
 
   const loadMorePosts = async () => {
@@ -115,6 +125,13 @@ export default function Posts() {
     };
   }, [loading, hasMore, page]);
 
+  useEffect(() => {
+    // Listen for updates from fetcher (like/unlike)
+    fetcher.data && setPosts(prevPosts => prevPosts.map(post =>
+      post.id === fetcher.data.id ? { ...post, isLiked: fetcher.data.isLiked } : post
+    ));
+  }, [fetcher.data]);
+
   return (
     <main
       className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'
@@ -127,33 +144,7 @@ export default function Posts() {
         </Form>
       </div> */}
       <ul>
-        {posts.map((post) => (
-          <div key={post.id}
-            className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white flex flex-col gap-1' >
-            <Link to={`/post/${post.id}`}>
-              <li>
-                <div className='flex justify-center text-lg'>
-                  <h4>{post.title}</h4>
-                </div>
-                <p>{post.content}</p>
-              </li>
-            </Link>
-
-            <hr />
-            <fetcher.Form className="flex justify-start" method="post" action={`/post/${post.id}/like`}>
-              <div className="flex justify-center items-center gap-2 border rounded py-1 px-2">
-                {post.likes}
-                <button
-                  className={`border rounded px-2 ${post.isLiked && 'bg-gray-800'}`}
-                  value={!post.isLiked ? 'like' : 'unlike'}
-                  name="like"
-                  type="submit">
-                  {post.isLiked ? "Liked" : "Like"}</button>
-              </div>
-            </fetcher.Form>
-          </div>
-        ))}
-
+        {posts.map((post) => <PostListItem key={post.id} post={post} />)}
       </ul>
 
       {loading && <div className='text-center text-white'>Loading more posts...</div>}

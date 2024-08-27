@@ -1,9 +1,9 @@
 import Root from './root';
 import ErrorPage from './error-page';
-import Posts, {
+import PostList, {
   loader as postListLoader,
   action as likeAction,
-} from './Posts';
+} from './PostList';
 import Profile, {
   loader as profileLoader,
   action as followProfile,
@@ -24,7 +24,7 @@ const routes = [
         children: [
           {
             index: true,
-            element: <ProtectedRoute element={<Posts />} />,
+            element: <ProtectedRoute element={<PostList />} />,
             loader: postListLoader
           },
           {

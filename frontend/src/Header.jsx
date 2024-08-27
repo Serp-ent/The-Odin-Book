@@ -41,6 +41,7 @@ export default function Header() {
                     <Link
                       className='block p-1 test-white hover:bg-gray-800'
                       onClick={closeDropdown}
+                      to={`/profile/${auth.userId}`}
                     >
                       Profile</Link>
                   </li>

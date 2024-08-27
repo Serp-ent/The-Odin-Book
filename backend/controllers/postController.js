@@ -130,7 +130,10 @@ const likePost = async (req, res) => {
   const { like } = req.body;
 
   if (typeof like !== 'boolean') {
-    return res.status(400).json({ message: 'Invalid request body. Expecting a boolean "like" property.' });
+    return res.status(400).json({
+      status: 'error',
+      message: 'Invalid request body. Expecting a boolean "like" property.',
+    });
   }
 
   try {
@@ -140,7 +143,10 @@ const likePost = async (req, res) => {
     });
 
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res.status(404).json({
+        status: 'error',
+        message: 'Post not found',
+      });
     }
 
     if (like) {
@@ -155,7 +161,10 @@ const likePost = async (req, res) => {
       });
 
       if (existingLike) {
-        return res.status(400).json({ message: 'You have already liked this post.' });
+        return res.status(400).json({
+          status: 'error',
+          message: 'You have already liked this post.',
+        });
       }
 
       // Create a new like
@@ -169,7 +178,25 @@ const likePost = async (req, res) => {
           },
         },
       });
-      return res.status(201).json({ message: 'Post liked' });
+
+      // Optionally get the updated like count
+      const updatedPost = await prisma.post.findUnique({
+        where: { id: postId },
+        select: {
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
+      });
+
+      return res.status(201).json({
+        status: 'success',
+        message: 'Post liked',
+        postId,
+        likesCount: updatedPost._count.likes, // Include updated like count
+      });
     } else {
       // If the user wants to unlike the post
       const existingLike = await prisma.like.findUnique({
@@ -182,7 +209,10 @@ const likePost = async (req, res) => {
       });
 
       if (!existingLike) {
-        return res.status(400).json({ message: 'You have not liked this post yet.' });
+        return res.status(400).json({
+          status: 'error',
+          message: 'You have not liked this post yet.',
+        });
       }
 
       // Delete the like
@@ -191,13 +221,34 @@ const likePost = async (req, res) => {
           id: existingLike.id,
         },
       });
-      return res.status(200).json({ message: 'Post unliked' });
+
+      // Optionally get the updated like count
+      const updatedPost = await prisma.post.findUnique({
+        where: { id: postId },
+        select: {
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
+      });
+
+      return res.status(200).json({
+        status: 'success',
+        message: 'Post unliked',
+        postId,
+        likesCount: updatedPost._count.likes, // Include updated like count
+      });
     }
   } catch (error) {
     console.error('Error liking/unliking post:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({
+      status: 'error',
+      message: 'Internal server error',
+    });
   }
-}
+};
 
 module.exports = {
   getPosts,
