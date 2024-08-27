@@ -1,7 +1,8 @@
-import { Link, useRouteError } from "react-router-dom";
+import { Link, useNavigate, useRouteError } from "react-router-dom";
 
 export default function ErrorPage() {
   const error = useRouteError();
+  const navigate = useNavigate();
   console.log(error);
 
   return (
@@ -24,10 +25,10 @@ export default function ErrorPage() {
         <div
           className='flex justify-end'
         >
-          <Link
-            to={'/'}
+          <button
+            onClick={() => navigate(-1)}
             className='border-2 px-4 py-2 rounded'
-          >Take me back...</Link>
+          >Take me back...</button>
         </div>
       </div>
     </div>

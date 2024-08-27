@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from "react";
-import { json, useFetcher, useLoaderData } from 'react-router-dom';
+import { json, Link, useFetcher, useLoaderData } from 'react-router-dom';
 
 // TODO: add loading spinner
 export const loader = async ({ request }) => {
@@ -38,7 +38,6 @@ export default function Posts() {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      console.log('newDAta', data);
 
       if (data.posts.length > 0) {
         setPosts(prevPosts => [...prevPosts, ...data.posts]);
@@ -82,17 +81,22 @@ export default function Posts() {
       className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'
       ref={containerRef}
     >
-      {posts.map((post) => (
-        <div
-          key={post.id}
-          className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white'
-        >
-          <div className='flex justify-center text-lg'>
-            <h4>{post.title}</h4>
-          </div>
-          <p>{post.content}</p>
-        </div>
-      ))}
+      <ul>
+        {posts.map((post) => (
+          <li
+            key={post.id}
+            className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white'
+          >
+            <Link to={`/post/${post.id}`}>
+              <div className='flex justify-center text-lg'>
+                <h4>{post.title}</h4>
+              </div>
+              <p>{post.content}</p>
+            </Link>
+          </li>
+        ))}
+
+      </ul>
 
       {loading && <div className='text-center text-white'>Loading more posts...</div>}
       {!hasMore && <div className="text-white text-center py-4">No more posts available</div>}
