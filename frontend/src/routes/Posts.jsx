@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from "react";
-import { json, Link, useFetcher, useLoaderData } from 'react-router-dom';
+import { Form, json, Link, useFetcher, useLoaderData } from 'react-router-dom';
 
 // TODO: add loading spinner
 export const loader = async ({ request }) => {
@@ -81,19 +81,33 @@ export default function Posts() {
       className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'
       ref={containerRef}
     >
+      {/* <div className="flex justify-center align-center gap-2">
+        <Form>
+          <input placeholder="What do you feel?"></input>
+          <button className="border rounded py-1 px-2">Publish</button>
+        </Form>
+      </div> */}
       <ul>
         {posts.map((post) => (
-          <Link to={`/post/${post.id}`} key={post.id}>
-            <li
-              key={post.id}
-              className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white'
-            >
-              <div className='flex justify-center text-lg'>
-                <h4>{post.title}</h4>
-              </div>
-              <p>{post.content}</p>
-            </li>
-          </Link>
+          <div key={post.id}
+            className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white' >
+            <Link to={`/post/${post.id}`}>
+              <li
+
+              >
+                <div className='flex justify-center text-lg'>
+                  <h4>{post.title}</h4>
+                </div>
+                <p>{post.content}</p>
+              </li>
+            </Link>
+
+            <hr />
+            <Form className="flex justify-start" method="post">
+
+              <button className="border rounded p-2" type="submit">Like</button>
+            </Form>
+          </div>
         ))}
 
       </ul>

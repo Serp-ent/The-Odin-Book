@@ -23,8 +23,6 @@ export const loader = async ({ params }) => {
 // TODO: should revalidate followed sidebar
 export async function action({ request, params }) {
   const formData = await request.formData();
-  console.log(params, 'user wants to follow?', formData.get('follow') === 'true');
-
   const response = await fetch(`http://localhost:3000/api/users/${parseInt(params.userId)}/follow`, {
     method: "POST",
     headers: {
@@ -36,13 +34,11 @@ export async function action({ request, params }) {
   });
 
   if (!response.ok) {
-    return null;
+    throw new Error('Failed to perform follow/unfollow action');
   }
 
   const result = await response.json();
-  console.log('TODO: sending fetch request');
-
-  return null;
+  return json(result, { status: 200 });
 }
 
 
