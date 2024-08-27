@@ -1,14 +1,30 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 
+// TODO: maybe it would be better to receive id from server
+// instead of decoding jwt
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const getUserIdFromToken = (token) => {
+    try {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.id; // Adjust this based on the structure of your token
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
+
     const token = localStorage.getItem('authToken');
     if (token) {
+      setUserId(getUserIdFromToken(token));
       setIsAuthenticated(true);
     }
     setLoading(false);
@@ -16,15 +32,17 @@ export function AuthProvider({ children }) {
 
   const login = (authToken) => {
     localStorage.setItem('authToken', authToken);
+    setUserId(getUserIdFromToken(authToken));
     setIsAuthenticated(true);
   }
   const logout = () => {
     localStorage.removeItem('authToken');
+    setUserId(null);
     setIsAuthenticated(false);
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userId, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

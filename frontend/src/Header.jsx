@@ -3,6 +3,7 @@ import odinIcon from './assets/odin-icon.svg';
 import './index.css'
 import { useAuth } from './authContext';
 
+// TODO: handle real user data
 export default function Header() {
   const auth = useAuth();
   return (

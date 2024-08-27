@@ -21,6 +21,27 @@ const getUserWithId = async (req, res) => {
   res.json(user);
 }
 
+// TODO: add error handling
+const getFollowedUsers = async (req, res) => {
+  const following = await prisma.follow.findMany({
+    where: { followerId: req.user.id },
+    include: {
+      followed: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+        }
+      }
+    }
+  });
+
+  const followedUsers = following.map(follow => follow.followed);
+  res.json(followedUsers);
+}
+
 module.exports = {
   getUserWithId,
+  getFollowedUsers,
 }

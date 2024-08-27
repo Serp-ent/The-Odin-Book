@@ -23,7 +23,7 @@ export const loader = async ({ params }) => {
 // TODO: add fetching latest comments
 export default function Profile() {
   const user = useLoaderData();
-  console.dir(user);
+
   return (
     <main
       className="p-4 flex flex-col container bg-gray-700 text-white gap-4"
@@ -40,7 +40,6 @@ export default function Profile() {
 
       <div>
         Latest comments
-
       </div>
     </main>
   );

@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
-import Aside from '../Aside';
 import Header from '../Header';
 import '../index.css'
 import { useAuth } from '../authContext';
+import FollowedUsers from '../followedUsers';
 
 function Root() {
   const auth = useAuth();
@@ -17,7 +17,7 @@ function Root() {
         auth.isAuthenticated ? (
           <>
             <Outlet />
-            <Aside />
+            <FollowedUsers />
           </>
         ) : (
           <Outlet></Outlet>
