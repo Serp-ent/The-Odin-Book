@@ -13,6 +13,7 @@ export default function Header() {
   const closeDropdown = () => setIsDropdownOpen(false);
 
   return (
+    // TODO: when clicked outside the menu should hide
     <header
       className='p-2 bg-gray-900 flex items-center justify-between text-white'
     >

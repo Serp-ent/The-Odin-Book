@@ -6,6 +6,8 @@ export default function PostListItem({ post }) {
   const [liked, setLiked] = useState(post.isLiked);
   const [likesCount, setLikesCount] = useState(post.likes);
 
+  // TODO: the post page should display post only of followed users
+  // and user own posts
   useEffect(() => {
     if (fetcher.data) {
       setLiked(fetcher.data.isLiked);

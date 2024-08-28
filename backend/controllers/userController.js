@@ -120,11 +120,24 @@ const followUser = async (req, res) => {
     console.error('Error processing follow/unfollow request:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-  return res.json('');
+}
+
+const getPostOfUser = async (req, res) => {
+  // TODO: handle errors
+  // TODO: add query parameters for sorting
+  // TODO: add pagination
+  const userId = parseInt(req.params.id);
+  const posts = await prisma.post.findMany({
+    where: { authorId: userId }
+  });
+
+  res.json(posts);
+
 }
 
 module.exports = {
   getUserWithId,
   getFollowedUsers,
   followUser,
+  getPostOfUser,
 }

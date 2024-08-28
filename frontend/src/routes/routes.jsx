@@ -6,7 +6,7 @@ import PostList, {
   createPost,
 } from './PostList';
 import Profile, {
-  loader as profileLoader,
+  profileLoader,
   action as followProfile,
 } from './Profile';
 import Login from './login';
