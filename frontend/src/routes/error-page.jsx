@@ -7,8 +7,8 @@ export default function ErrorPage() {
 
   return (
     // TODO: add tailwind container
-    <div
-      className='h-screen w-screen bg-slate-700 flex justify-center items-center'
+    <main
+      className='container h-screen p-2 bg-slate-700 flex justify-center items-center'
     >
       <div
         className='text-white bg-slate-800 py-6 px-8 rounded shadow-lg flex flex-col justify-between gap-2'
@@ -32,6 +32,6 @@ export default function ErrorPage() {
           >Take me back...</button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

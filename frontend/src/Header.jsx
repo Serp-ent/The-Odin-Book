@@ -47,6 +47,16 @@ export default function Header() {
                       Profile</Link>
                   </li>
                   <hr></hr>
+                  <Link to={'/users'}
+                    className='block p-1 test-white hover:bg-gray-800'>
+                    Find Friends
+                  </Link>
+                  <hr></hr>
+                  <Link to={'/users/followed'}
+                    className='block p-1 test-white hover:bg-gray-800'>
+                    Following
+                  </Link>
+                  <hr></hr>
                   <li>
                     <Link
                       className='block p-1 test-white hover:bg-gray-800'
@@ -77,5 +87,5 @@ export default function Header() {
           </div>
         )}
       </div>
-    </header>);
+    </header >);
 }
