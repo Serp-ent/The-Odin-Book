@@ -117,7 +117,20 @@ const getPostWithId = async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    res.json(post);
+    // Flatten the structure and add the isLiked property
+    const flattenPost = {
+      ...post,
+      // WARNING: the order is important
+      // TODO: add if is liked
+      // isLiked: post.likes.length > 0, // Whether the current user liked the post
+      likes: post._count.likes, // Number of likes
+    };
+
+    // Clean up the response by removing unnecessary properties
+    delete flattenPost['_count'];  // duplicate
+    delete flattenPost['authorId'];  // already in author object
+
+    res.json(flattenPost);
   } catch (error) {
     console.error('Error fetching post:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -275,8 +288,6 @@ const createComment = async (req, res) => {
       content,
     }
   });
-
-  console.log(post);
 
   res.json(post);
 }

@@ -23,7 +23,6 @@ export const loader = async ({ params }) => {
 
 export const createComment = async ({ request, params }) => {
   const formData = await request.formData();
-  console.log("sending request to comment post for ", params, 'with content=', formData.get('content'))
   const response = await fetch(`http://localhost:3000/api/posts/${params.postId}/comments`, {
     method: "POST",
     headers: {
@@ -39,9 +38,6 @@ export const createComment = async ({ request, params }) => {
     throw new Error('Could not create comment');
   }
 
-  const result = await response.json();
-  console.log("Comment created", result)
-
   return null;
 }
 
@@ -55,15 +51,38 @@ export default function Post() {
 
   // TODO: add comment infinite scrolling
   // TODO: add sorting comments (newest, top likes, oldest etc)
+  console.log(post);
   return (
     <main
       className='p-4 container bg-gray-800 text-white over overflow-y-auto flex flex-col gap-2'>
+      <div className="flex justify-between items-center gap-2 px-1">
+        <Link className="flex justify-start items-center gap-2"
+          to={`/profile/${post.author.id}`}>
+          <img
+            className="w-9 h-auto rounded-full"
+            src={post.author.profilePic} />
+          <p className="font-bold">
+            {post.author.firstName} {post.author.lastName}
+          </p>
+        </Link>
+
+        {/* TODO: button following functionality
+        TODO: don't show when user own user post */}
+        <button className="text-sm border rounded py-1 px-2">Follow</button>
+      </div>
+
       <div className="">
         {post.content}
       </div>
 
-      <div>
-        {post.author.firstName} {post.author.lastName}
+      {/* TODO: number of comments */}
+      {/* TODO: icons */}
+      {/* TODO: like button should be on right side for thumb */}
+      <div className="rounded border p-2">
+        {/* TODO: add button for liking */}
+        <p className="border rounded inline-block p-1">
+          Likes: {post.likes}
+        </p>
       </div>
 
       <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
