@@ -263,9 +263,28 @@ const createPost = async (req, res) => {
   res.json(post);
 }
 
+// TODO: error handling
+const createComment = async (req, res) => {
+  const { content } = req.body;
+  const postId = parseInt(req.params.id)
+
+  const post = await prisma.comment.create({
+    data: {
+      authorId: req.user.id,
+      postId,
+      content,
+    }
+  });
+
+  console.log(post);
+
+  res.json(post);
+}
+
 module.exports = {
   getPosts,
   getPostWithId,
   likePost,
   createPost,
+  createComment,
 };

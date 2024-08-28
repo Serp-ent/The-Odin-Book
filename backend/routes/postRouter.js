@@ -15,6 +15,11 @@ router.post('/:id/like',
   passport.authenticate('jwt', { session: false }),
   controller.likePost);
 
+router.post('/:id/comments',
+  passport.authenticate('jwt', { session: false }),
+  controller.createComment,
+)
+
 router.get('/:id',
   passport.authenticate('jwt', { session: false }),
   controller.getPostWithId);

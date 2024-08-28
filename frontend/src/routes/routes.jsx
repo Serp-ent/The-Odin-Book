@@ -12,7 +12,7 @@ import Profile, {
 import Login from './login';
 import ProtectedRoute from '../protectedRoute';
 import Register from './register';
-import Post, { loader as postLoader } from './Post';
+import Post, { createComment, loader as postLoader } from './Post';
 
 const routes = [
   {
@@ -36,6 +36,10 @@ const routes = [
           {
             path: '/post/:postId/like',
             action: likeAction,
+          },
+          {
+            path: '/post/:postId/comment',
+            action: createComment,
           },
           {
             path: '/post/',
