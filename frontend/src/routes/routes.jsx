@@ -13,6 +13,8 @@ import Login from './login';
 import ProtectedRoute from '../protectedRoute';
 import Register from './register';
 import Post, { createComment, loader as postLoader } from './Post';
+import FollowedUsers from '../followedUsers';
+import Users from './Users';
 
 const routes = [
   {
@@ -58,6 +60,14 @@ const routes = [
           {
             path: '/register',
             element: <Register />,
+          },
+          {
+            path: '/users/followed',
+            element: <ProtectedRoute element={<FollowedUsers />} />
+          },
+          {
+            path: '/users',
+            element: <ProtectedRoute element={<Users />} />
           }
         ]
       },

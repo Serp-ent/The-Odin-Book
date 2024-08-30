@@ -115,7 +115,6 @@ export default function Profile() {
           Latest Posts
         </h3>
         <ul className="flex flex-col gap-2">
-          {console.log(userPosts)}
           {userPosts.map(post => (
             <li key={post.id}
               className="border rounded flex justify-center p-2">

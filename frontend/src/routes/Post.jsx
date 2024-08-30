@@ -51,7 +51,6 @@ export default function Post() {
 
   // TODO: add comment infinite scrolling
   // TODO: add sorting comments (newest, top likes, oldest etc)
-  console.log(post);
   return (
     <main
       className='p-4 container bg-gray-800 text-white over overflow-y-auto flex flex-col gap-2'>

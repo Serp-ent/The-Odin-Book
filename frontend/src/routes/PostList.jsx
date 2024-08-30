@@ -27,8 +27,6 @@ export const action = async ({ request, params }) => {
   const like = formData.get('like') === 'true';
   const postId = parseInt(params.postId);
 
-  console.log('User wants to like:', like);
-
   try {
     const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
       method: 'POST',
@@ -44,8 +42,6 @@ export const action = async ({ request, params }) => {
     }
 
     const result = await response.json();
-    console.log('Post like/unlike result:', result);
-
     // Return the updated post data, including isLiked and like count
     return {
       id: postId,
