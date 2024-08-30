@@ -123,6 +123,13 @@ const followUser = async (req, res) => {
   }
 }
 
+// TODO: get info if user if followed based on req.user.id
+// TODO: add pagination
+const getUsers = async (req, res) => {
+  const users = await prisma.user.findMany({});
+  res.json(users);
+}
+
 const getPostOfUser = async (req, res) => {
   // TODO: handle errors
   // TODO: add query parameters for sorting
@@ -141,4 +148,5 @@ module.exports = {
   getFollowedUsers,
   followUser,
   getPostOfUser,
+  getUsers,
 }

@@ -14,8 +14,8 @@ import ProtectedRoute from '../protectedRoute';
 import Register from './register';
 import Post, { createComment, loader as postLoader } from './Post';
 import FollowedUsers from '../followedUsers';
-import Users from './Users';
 import ProfileSettings from './profileSettings';
+import FindFriends, { loader as loadUsers } from './findFriends';
 
 const routes = [
   {
@@ -68,7 +68,8 @@ const routes = [
           },
           {
             path: '/users',
-            element: <ProtectedRoute element={<Users />} />
+            element: <ProtectedRoute element={<FindFriends />} />,
+            loader: loadUsers,
           },
           {
             path: '/profile/settings',

@@ -18,6 +18,11 @@ router.get('/:id/posts',
   passport.authenticate('jwt', { session: false }),
   controller.getPostOfUser);
 
+router.get('/',
+  passport.authenticate('jwt', { session: false }),
+  controller.getUsers,
+);
+
 router.get('/:id',
   passport.authenticate('jwt', { session: false }),
   controller.getUserWithId);
