@@ -33,23 +33,42 @@ const getUserWithId = async (req, res) => {
 
 // TODO: add error handling
 const getFollowedUsers = async (req, res) => {
-  const following = await prisma.follow.findMany({
-    where: { followerId: req.user.id },
-    include: {
-      followed: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          profilePic: true,
+  try {
+    const loggedInUserId = req.user.id;
+
+    // Fetch all users that the logged-in user is following
+    const following = await prisma.follow.findMany({
+      where: { followerId: loggedInUserId },
+      include: {
+        followed: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            profilePic: true,
+
+            followedBy: {
+              where: { followerId: loggedInUserId },
+              select: {
+                id: true,
+              },
+            },
+          }
         }
       }
-    }
-  });
+    });
 
-  const followedUsers = following.map(follow => follow.followed);
-  res.json(followedUsers);
+    const followedUsers = following.map(follow => ({
+      ...follow.followed,
+      isFollowed: follow.followed.followedBy.length > 0,
+    }));
+
+    res.json(followedUsers);
+  } catch (error) {
+    console.error('Error fetching followed users:', error);
+    res.status(500).json({ error: 'An error occurred while fetching followed users' });
+  }
 }
 
 // TODO: handle errors
@@ -126,8 +145,36 @@ const followUser = async (req, res) => {
 // TODO: get info if user if followed based on req.user.id
 // TODO: add pagination
 const getUsers = async (req, res) => {
-  const users = await prisma.user.findMany({});
-  res.json(users);
+  try {
+    const loggedInUserId = req.user.id;
+
+    // Fetch all users along with checking if they are followed by the logged-in user
+    const users = await prisma.user.findMany({
+      include: {
+        followedBy: {
+          where: {
+            followerId: loggedInUserId,
+          },
+          select: {
+            id: true,  // Just include the id for checking purposes
+          },
+        },
+      },
+    });
+
+    // Map over users to add the isFollowed field
+    const usersWithFollowStatus = users.map(user => {
+      return {
+        ...user,
+        isFollowed: user.followedBy.length > 0,
+      };
+    });
+
+    res.json(usersWithFollowStatus);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'An error occurred while fetching users' });
+  }
 }
 
 const getPostOfUser = async (req, res) => {

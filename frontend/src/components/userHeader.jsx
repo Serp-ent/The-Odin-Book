@@ -8,6 +8,8 @@ export default function UserHeader({ user }) {
   //   ? fetcher.formData.get('follow') === 'true'
   //   : user.isFollowed;
 
+  // TODO: add props validation
+
   return (
     <div className="flex justify-between items-center">
       <Link className="flex items-center gap-1"
@@ -27,6 +29,5 @@ export default function UserHeader({ user }) {
         >{user.isFollowed ? 'Unfollow' : 'Follow'}</button>
       </fetcher.Form>
     </div>
-
   );
 }
