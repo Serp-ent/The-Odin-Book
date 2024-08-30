@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 
 export async function loader() {
   const response = await fetch('http://localhost:3000/api/users', {
@@ -32,11 +32,12 @@ export default function FindFriends() {
       <ul className="border rounded p-2 flex flex-col gap-2 overflow-y-auto grow">
         {users.map(user => (
           <li key={user.id} className="flex justify-between items-center border rounded p-3">
-            <div className="flex gap-2 items-center">
+            <Link className="flex gap-2 items-center"
+            to={`/profile/${user.id}`}>
               <img src={user.profilePic}
                 className="w-8 rounded-full" />
               <h4>{user.firstName} {user.lastName}</h4>
-            </div>
+            </Link>
 
             <button className="block text-xs border px-1 rounded"
               onClick={() => console.log(`Follow user ${user.id}`)}>
