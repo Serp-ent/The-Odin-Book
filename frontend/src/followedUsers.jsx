@@ -1,6 +1,7 @@
 import { Link, NavLink, useFetcher } from 'react-router-dom';
 import './index.css'
 import { useEffect, useState } from "react"
+import UserHeader from './components/userHeader';
 
 // TODO: add infinite scrolling
 // TODO: add nice loading spinner
@@ -39,19 +40,11 @@ export default function FollowedUsers() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-
-  console.log(followedUsers);
-  const followed = true;
-  // const followed = fetcher.formData
-  //   ? fetcher.formData.get('follow') === 'true'
-  //   : userProfile.isFollowed;
-
-  // TODO: fix that component
-  // TODO: create user brief info component
   return (
     <aside
       className='bg-gray-800 shadow flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400'
     >
+      {/* TODO: fix that component */}
       <p className='text-white flex justify-center align-center pt-2 text-xl font-bold'> Followed </p>
       <ul>
         {
@@ -59,25 +52,7 @@ export default function FollowedUsers() {
             return (
               <li className='text-white border-2 rounded-lg p-4 m-2 flex justify-between items-center'
                 key={u.id} >
-                <Link to={`/profile/${u.id}`}>
-                  <div className='flex items-center gap-1'>
-                    <img
-                      className='w-10 rounded-full'
-                      src={u.profilePic} />
-                    <h5>
-                      {u.firstName} {u.lastName}
-                    </h5>
-                  </div>
-                </Link>
-
-                {/* TODO: add icons using react icons */}
-                <fetcher.Form method='POST' action={`/profile/${u.id}`}
-                  className="text-sm">
-                  <button className="border rounded py-1 px-2"
-                    name="follow"
-                    value={followed ? "false" : "true"}
-                  >{followed ? 'Unfollow' : 'Follow'}</button>
-                </fetcher.Form>
+                <UserHeader user={u} />
               </li>
             )
           })

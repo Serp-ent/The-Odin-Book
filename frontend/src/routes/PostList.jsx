@@ -147,6 +147,7 @@ export default function PostList() {
     ));
   }, [fetcher.data]);
 
+
   return (
     <main
       className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'

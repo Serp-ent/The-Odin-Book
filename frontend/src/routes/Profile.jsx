@@ -1,4 +1,5 @@
 import { json, Link, useFetcher, useLoaderData } from "react-router-dom";
+import UserHeader from "../components/userHeader";
 
 export const loader = async ({ params }) => {
   const userId = parseInt(params.userId);
@@ -88,28 +89,11 @@ export const profileLoader = async ({ params }) => {
 // TODO: add icons
 export default function Profile() {
   const { userProfile, userPosts } = useLoaderData();
-  const fetcher = useFetcher();
-
-  const followed = fetcher.formData
-    ? fetcher.formData.get('follow') === 'true'
-    : userProfile.isFollowed;
-
   return (
     <main
       className="p-4 flex flex-col container bg-gray-700 text-white gap-4"
     >
-      <div className="flex items-center justify-between text-2xl font-bold">
-        <div className="flex items-center gap-2">
-          <img src={userProfile.profilePic} className="w-1/4 h-auto rounded-full" />
-          {userProfile.firstName} {userProfile.lastName}
-        </div>
-        <fetcher.Form method='POST' className="text-sm">
-          <button className="border rounded py-1 px-2"
-            name="follow"
-            value={followed ? "false" : "true"}
-          >{followed ? 'Unfollow' : 'Follow'}</button>
-        </fetcher.Form>
-      </div>
+      <UserHeader user={userProfile} />
 
       {/* // TODO: fetch latest user posts */}
       {/* TODO: add infinite scrolling */}

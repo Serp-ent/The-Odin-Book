@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useFetcher } from "react-router-dom";
+import UserHeader from "../components/userHeader";
 
 export default function PostListItem({ post }) {
   const fetcher = useFetcher();
@@ -15,36 +16,12 @@ export default function PostListItem({ post }) {
     }
   }, [fetcher.data]);
 
-
   // TODO: from post api remove authorId and leave only author
   // TODO: add favicon
   // TODO: maybe for post lists display only first comment?
-
-  const followed = fetcher.formData
-    ? fetcher.formData.get('follow') === 'true'
-    : post.author.isFollowed;
-
-  console.log(post.author)
   return (
     <div className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white flex flex-col gap-1' >
-      <div className="flex justify-between items-center">
-        <Link className="flex items-center gap-1"
-          to={`/profile/${post.author.id}`}>
-          <img src={post.author.profilePic} className="w-8 rounded-full" />
-          <h4 className="text-l">
-            {post.author.firstName} {post.author.lastName}
-          </h4>
-        </Link>
-
-        {/* TODO: there is need to refresh page to see the result */}
-        <fetcher.Form method='POST' action={`/profile/${post.author.id}`}
-          className="text-sm">
-          <button className="border rounded py-1 px-2"
-            name="follow"
-            value={followed ? "false" : "true"}
-          >{followed ? 'Unfollow' : 'Follow'}</button>
-        </fetcher.Form>
-      </div>
+      <UserHeader user={post.author} />
       <Link to={`/post/${post.id}`}>
         <li>
           <div className='flex justify-center text-lg'>
