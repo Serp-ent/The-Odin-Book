@@ -50,7 +50,7 @@ export default function FollowedUsers() {
         {
           followedUsers.map((u) => {
             return (
-              <li className='text-white border-2 rounded-lg p-4 m-2 flex justify-between items-center'
+              <li className='text-white border-2 rounded-lg p-4 m-2'
                 key={u.id} >
                 <UserHeader user={u} />
               </li>

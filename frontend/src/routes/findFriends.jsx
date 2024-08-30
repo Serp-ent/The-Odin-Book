@@ -32,7 +32,7 @@ export default function FindFriends() {
       {/* // TODO: remove password from fetched users */}
       <ul className="border rounded p-2 flex flex-col gap-2 overflow-y-auto grow">
         {users.map(user => (
-          <li key={user.id} className="flex justify-between items-center border rounded p-3">
+          <li key={user.id} className="border rounded p-3">
             <UserHeader user={user} />
           </li>
         ))}
