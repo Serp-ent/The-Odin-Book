@@ -20,7 +20,11 @@ export default function PostListItem({ post }) {
   // TODO: add favicon
   // TODO: maybe for post lists display only first comment?
 
-  console.log(post)
+  const followed = fetcher.formData
+    ? fetcher.formData.get('follow') === 'true'
+    : post.author.isFollowed;
+
+  console.log(post.author)
   return (
     <div className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white flex flex-col gap-1' >
       <div className="flex justify-between items-center">
@@ -31,10 +35,15 @@ export default function PostListItem({ post }) {
             {post.author.firstName} {post.author.lastName}
           </h4>
         </Link>
-        <button className="text-xs rounded border py-1 px-2"
-          onClick={() => console.log(`trying to follow user ${post.author.id}`)}>
-          Follow
-        </button>
+
+        {/* TODO: there is need to refresh page to see the result */}
+        <fetcher.Form method='POST' action={`/profile/${post.author.id}`}
+          className="text-sm">
+          <button className="border rounded py-1 px-2"
+            name="follow"
+            value={followed ? "false" : "true"}
+          >{followed ? 'Unfollow' : 'Follow'}</button>
+        </fetcher.Form>
       </div>
       <Link to={`/post/${post.id}`}>
         <li>

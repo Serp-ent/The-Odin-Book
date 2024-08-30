@@ -22,6 +22,15 @@ const getPosts = async (req, res) => {
           profilePic: true,
           registeredAt: true,
           updatedAt: true,
+          // Check if the current user follows the author
+          followedBy: {
+            where: {
+              followerId: req.user.id,
+            },
+            select: {
+              id: true,
+            },
+          },
         },
       },
       _count: {
@@ -45,17 +54,23 @@ const getPosts = async (req, res) => {
 
   const totalPages = Math.ceil(totalPosts / limit);
 
-  // Flatten the structure and add the isLiked property
+  // Flatten the structure and add the isLiked and isFollowed properties
   const adjustedPosts = posts.map(post => ({
     ...post,
-    // WARNING: the order is important
-    isLiked: post.likes.length > 0, // Whether the current user liked the post
+    // Whether the current user liked the post
+    isLiked: post.likes.length > 0,
     likes: post._count.likes, // Number of likes
+    // Whether the current user follows the author
+    author: {
+      ...post.author,
+      isFollowed: post.author.followedBy.length > 0,
+    },
   }));
 
   // Clean up the response by removing unnecessary properties
   adjustedPosts.forEach(post => {
     delete post['_count'];
+    delete post.author['followedBy'];
   });
 
   res.json({
@@ -64,7 +79,7 @@ const getPosts = async (req, res) => {
     totalPages,
     page,
   });
-}
+};
 
 // TODO: add async handler
 const getPostWithId = async (req, res) => {
