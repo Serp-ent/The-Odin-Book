@@ -2,15 +2,30 @@ import { Link } from 'react-router-dom';
 import odinIcon from './assets/odin-icon.svg';
 import './index.css'
 import { useAuth } from './authContext';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // TODO: handle real user data
 export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const closeDropdown = () => setIsDropdownOpen(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        closeDropdown();
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     // TODO: when clicked outside the menu should hide
@@ -26,7 +41,7 @@ export default function Header() {
         </Link>
       </div>
 
-      <div className='flex gap-4 items-center'>
+      <div className='flex gap-4 items-center' ref={dropdownRef}>
         {auth.isAuthenticated ? (
           <div className='relative'>
             <button
