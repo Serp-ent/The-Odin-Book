@@ -42,6 +42,7 @@ const getFollowedUsers = async (req, res) => {
           firstName: true,
           lastName: true,
           email: true,
+          profilePic: true,
         }
       }
     }

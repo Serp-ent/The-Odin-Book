@@ -38,6 +38,7 @@ export default function FollowedUsers() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
+  // TODO: create user brief info component
   return (
     <aside
       className='bg-gray-800 shadow flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400'
@@ -48,8 +49,20 @@ export default function FollowedUsers() {
           followed.map((u) => {
             return (
               <Link to={`/profile/${u.id}`} key={u.id}>
-                <li className='text-white border-2 rounded-lg p-4 m-2 flex justify-end' >
-                  {u.firstName} {u.lastName}
+                <li className='text-white border-2 rounded-lg p-4 m-2 flex justify-between items-center' >
+                  <div className='flex items-center gap-1'>
+                    <img
+                      className='w-10 rounded-full'
+                      src={u.profilePic} />
+                    <h5>
+                      {u.firstName} {u.lastName}
+                    </h5>
+                  </div>
+
+                  {/* TODO: add icons using react icons */}
+                  <button className='block rounded border text-sm py-1 px-2' >
+                    Follow
+                  </button>
                 </li>
               </Link>
             )
