@@ -79,9 +79,10 @@ export default function Post() {
       {/* TODO: like button should be on right side for thumb */}
       <div className="rounded border p-2">
         {/* TODO: add button for liking */}
-        <p className="border rounded inline-block p-1">
+        <button className="border rounded inline-block p-1"
+        onClick={() => console.log("Like post with id", post.id)}>
           Likes: {post.likes}
-        </p>
+        </button>
       </div>
 
       <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
@@ -107,6 +108,19 @@ export default function Post() {
                     </Link>
                     <div>
                       {comment.content}
+                    </div>
+
+                    <div className="flex justify-end text-xs gap-1">
+                      <button className="border rounded px-2 py-1"
+                        onClick={() => console.log("Replying to comment with id", comment.id)}
+                      >
+                        Reply
+                      </button>
+                      <button
+                        className="rounded border px-2 py-1"
+                        onClick={() => console.log("Liking comment with id", comment.id)}>
+                        Like
+                      </button>
                     </div>
                   </li>
                 )

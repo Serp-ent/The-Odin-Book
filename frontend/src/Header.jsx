@@ -60,6 +60,7 @@ export default function Header() {
                   <li>
                     <Link
                       className='block p-1 test-white hover:bg-gray-800'
+                      to={`/profile/settings`}
                     >
                       Settings</Link>
                   </li>

@@ -82,6 +82,10 @@ export const profileLoader = async ({ params }) => {
 // TODO: handle follow action using useFetcher
 // TODO: maybe add some kind of bio
 // TODO: add fetching latest comments
+
+// TODO: if its own profile show settings button or edit
+// TODO: add light theme
+// TODO: add icons
 export default function Profile() {
   const { userProfile, userPosts } = useLoaderData();
   const fetcher = useFetcher();

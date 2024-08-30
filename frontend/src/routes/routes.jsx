@@ -15,6 +15,7 @@ import Register from './register';
 import Post, { createComment, loader as postLoader } from './Post';
 import FollowedUsers from '../followedUsers';
 import Users from './Users';
+import ProfileSettings from './profileSettings';
 
 const routes = [
   {
@@ -68,7 +69,11 @@ const routes = [
           {
             path: '/users',
             element: <ProtectedRoute element={<Users />} />
-          }
+          },
+          {
+            path: '/profile/settings',
+            element: <ProtectedRoute element={<ProfileSettings />} />
+          },
         ]
       },
     ],
