@@ -16,8 +16,26 @@ export default function PostListItem({ post }) {
   }, [fetcher.data]);
 
 
+  // TODO: from post api remove authorId and leave only author
+  // TODO: add favicon
+  // TODO: maybe for post lists display only first comment?
+
+  console.log(post)
   return (
     <div className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white flex flex-col gap-1' >
+      <div className="flex justify-between items-center">
+        <Link className="flex items-center gap-1"
+          to={`/profile/${post.author.id}`}>
+          <img src={post.author.profilePic} className="w-8 rounded-full" />
+          <h4 className="text-l">
+            {post.author.firstName} {post.author.lastName}
+          </h4>
+        </Link>
+        <button className="text-xs rounded border py-1 px-2"
+          onClick={() => console.log(`trying to follow user ${post.author.id}`)}>
+          Follow
+        </button>
+      </div>
       <Link to={`/post/${post.id}`}>
         <li>
           <div className='flex justify-center text-lg'>
