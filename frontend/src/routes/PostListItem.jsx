@@ -4,17 +4,9 @@ import UserHeader from "../components/userHeader";
 
 export default function PostListItem({ post }) {
   const fetcher = useFetcher();
-  const [liked, setLiked] = useState(post.isLiked);
-  const [likesCount, setLikesCount] = useState(post.likes);
 
   // TODO: the post page should display post only of followed users
   // and user own posts
-  useEffect(() => {
-    if (fetcher.data) {
-      setLiked(fetcher.data.isLiked);
-      setLikesCount(fetcher.data.likesCount);
-    }
-  }, [fetcher.data]);
 
   // TODO: from post api remove authorId and leave only author
   // TODO: add favicon
@@ -35,13 +27,13 @@ export default function PostListItem({ post }) {
       {/* // TODO:  fix button style (refresh is required) */}
       <fetcher.Form className="flex justify-start" method="post" action={`/post/${post.id}/like`}>
         <div className="flex justify-center items-center gap-2 border rounded py-1 px-2">
-          {likesCount}
+          {post.likes}
           <button
             className={`border rounded px-2 ${post.isLiked && 'bg-gray-800'}`}
-            value={liked ? 'false' : 'true'}
+            value={post.isLiked ? 'false' : 'true'}
             name="like"
             type="submit">
-            {liked ? "Liked" : "Like"}</button>
+            {post.isLiked ? "Liked" : "Like"}</button>
         </div>
       </fetcher.Form>
     </div>

@@ -1,7 +1,7 @@
 import { Link, useFetcher } from "react-router-dom";
 
 export default function UserHeader({ user }) {
-  const fetcher = useFetcher();
+  const fetcher = useFetcher({ key: "followUser" });
 
   // TODO: implement optimistic ui
   // const followed = fetcher.formData

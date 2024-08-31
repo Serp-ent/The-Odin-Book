@@ -84,7 +84,7 @@ export default function PostList() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef(null);
-  const fetcher = useFetcher();
+  const fetcher = useFetcher({ key: "followUser" });
 
   const loadMorePosts = async () => {
     if (loading || !hasMore) {
@@ -142,10 +142,17 @@ export default function PostList() {
   }, [loading, hasMore, page]);
 
   useEffect(() => {
-    // Listen for updates from fetcher (like/unlike)
-    fetcher.data && setPosts(prevPosts => prevPosts.map(post =>
-      post.id === fetcher.data.id ? { ...post, isLiked: fetcher.data.isLiked } : post
-    ));
+    if (fetcher.data) {
+      const user = fetcher.data;
+      // Update the posts with the new user data
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.author.id === user.id
+            ? { ...post, author: user }
+            : post
+        )
+      );
+    }
   }, [fetcher.data]);
 
 
