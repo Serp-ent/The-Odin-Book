@@ -30,6 +30,7 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  // TODO: if authToken expired remove it from localStorage
   const login = (authToken) => {
     localStorage.setItem('authToken', authToken);
     setUserId(getUserIdFromToken(authToken));

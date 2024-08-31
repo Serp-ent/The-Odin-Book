@@ -1,5 +1,7 @@
 import { Link, useFetcher } from "react-router-dom";
 
+import { FaRegEye } from "react-icons/fa";
+
 export default function UserHeader({ user }) {
   const fetcher = useFetcher({ key: "followUser" });
 
@@ -22,11 +24,11 @@ export default function UserHeader({ user }) {
 
       {/* TODO: there is need to refresh page to see the result */}
       <fetcher.Form method='POST' action={`/profile/${user.id}`}
-        className="text-sm">
-        <button className="border rounded py-1 px-2"
+        className="border rounded text-sm">
+        <button className="px-2 py-1"
           name="follow"
           value={user.isFollowed ? "false" : "true"}
-        >{user.isFollowed ? 'Unfollow' : 'Follow'}</button>
+        >{user.isFollowed ? <FaRegEye className="text-xl" /> : 'Follow'}</button>
       </fetcher.Form>
     </div>
   );

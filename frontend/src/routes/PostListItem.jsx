@@ -11,7 +11,7 @@ export default function PostListItem({ post }) {
   // TODO: add favicon
   // TODO: maybe for post lists display only first comment?
   return (
-    <div className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white flex flex-col gap-1' >
+    <div className='border-2 m-2 border-gray-800 py-4 px-6 rounded-xl text-white flex flex-col gap-2' >
       <UserHeader user={post.author} />
       <Link to={`/post/${post.id}`}>
         <li>
@@ -22,7 +22,6 @@ export default function PostListItem({ post }) {
         </li>
       </Link>
 
-      <hr />
       {/* // TODO:  fix button style (refresh is required) */}
       <PostFooter post={post}></PostFooter>
     </div>
