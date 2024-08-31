@@ -111,7 +111,11 @@ const followUser = async (req, res) => {
         }
       });
 
-      return res.status(201).json({ message: 'User followed successfully' });
+      const user = await prisma.user.findUnique({ where: { id: followedId } });
+      user.isFollowed = true;
+      delete user.password;
+
+      return res.status(201).json(user);
 
     } else {
       // Unfollow the user
@@ -134,7 +138,11 @@ const followUser = async (req, res) => {
         }
       });
 
-      return res.status(200).json({ message: 'User unfollowed successfully' });
+      const user = await prisma.user.findUnique({ where: { id: followedId } });
+      user.isFollowed = false;
+      delete user.password;
+
+      return res.status(200).json(user);
     }
   } catch (error) {
     console.error('Error processing follow/unfollow request:', error);
