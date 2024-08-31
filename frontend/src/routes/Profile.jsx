@@ -43,7 +43,7 @@ export async function action({ request, params }) {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to perform follow/unfollow action');
+    throw new Error(`Failed to perform ${formData.get('follow') === 'true' ? 'follow' : 'unfollow'} action`);
   }
 
   const result = await response.json();

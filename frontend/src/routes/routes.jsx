@@ -13,7 +13,7 @@ import Login from './login';
 import ProtectedRoute from '../protectedRoute';
 import Register from './register';
 import Post, { createComment, loader as postLoader } from './Post';
-import FollowedUsers from '../followedUsers';
+import FollowedUsers, { loader as loadFollowedUsers } from '../followedUsers';
 import ProfileSettings from './profileSettings';
 import FindFriends, { loader as loadUsers } from './findFriends';
 
@@ -64,7 +64,8 @@ const routes = [
           },
           {
             path: '/users/followed',
-            element: <ProtectedRoute element={<FollowedUsers />} />
+            element: <ProtectedRoute element={<FollowedUsers />} />,
+            loader: loadFollowedUsers,
           },
           {
             path: '/users',
