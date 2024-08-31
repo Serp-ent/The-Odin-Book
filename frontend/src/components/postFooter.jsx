@@ -2,7 +2,6 @@ import { useFetcher } from "react-router-dom";
 
 export default function PostFooter({ post }) {
   const likeFetcher = useFetcher({ key: "likePost" });
-
   // TODO: add props validation
 
   return (

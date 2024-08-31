@@ -126,6 +126,14 @@ const getPostWithId = async (req, res) => {
             },
           },
         },
+        likes: {
+          where: {
+            userId: currentUserId,
+          },
+          select: {
+            id: true, // Check if the post is liked by the current user
+          }
+        },
         _count: {
           select: {
             likes: true, // Count the number of likes
@@ -138,15 +146,17 @@ const getPostWithId = async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Flatten the structure and add the isFollowed property
+    // Flatten the structure and add the isFollowed, isLiked, and likes properties
     const flattenPost = {
       ...post,
-      likes: post._count.likes, // Number of likes
+      likes: post._count.likes, // Total number of likes
+      isLiked: post.likes.length > 0, // Determine if the current user liked the post
       author: {
         ...post.author,
         isFollowed: post.author.followedBy.length > 0, // Determine if the current user follows the author
       },
     };
+
 
     // Clean up the response by removing unnecessary properties
     delete flattenPost['_count'];  // Remove duplicate
@@ -158,6 +168,7 @@ const getPostWithId = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
 
 const likePost = async (req, res) => {
   const postId = parseInt(req.params.id);

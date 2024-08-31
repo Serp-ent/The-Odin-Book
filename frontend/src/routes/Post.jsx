@@ -1,7 +1,8 @@
 import { Link, useFetcher, useLoaderData, useLocation, useNavigate } from "react-router-dom"
 import { json } from "react-router-dom";
 import UserHeader from "../components/userHeader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import PostFooter from "../components/postFooter";
 
 export const loader = async ({ params }) => {
   const postId = parseInt(params.postId);
@@ -45,14 +46,23 @@ export const createComment = async ({ request, params }) => {
 
 export default function Post() {
   const post = useLoaderData();
-  const fetcher = useFetcher();
-  const location = useLocation();
+  const [postData, setPostData] = useState(post);
 
-  // useEffect(() => {
-  //   if (fetcher.state === 'idle' && fetcher.data) {
-  //     fetcher.load(location.pathname);
-  //   }
-  // }, [fetcher, location])
+  // TODO: fix following in post
+
+  const likeFetcher = useFetcher({ key: "likePost" });
+
+  useEffect(() => {
+    if (likeFetcher.data) {
+      const { isLiked, likesCount } = likeFetcher.data;
+      setPostData(prevData => ({
+        ...prevData,
+        isLiked,
+        likes: likesCount,
+      }));
+    }
+
+  }, [likeFetcher.data])
 
   if (navigation.state === 'loading') {
     return <div>Loading...</div>
@@ -63,7 +73,7 @@ export default function Post() {
   return (
     <main
       className='p-4 container bg-gray-800 text-white over overflow-y-auto flex flex-col gap-2'>
-      <UserHeader user={post.author} />
+      <UserHeader user={postData.author} />
 
       <div className="">
         {post.content}
@@ -72,22 +82,16 @@ export default function Post() {
       {/* TODO: number of comments */}
       {/* TODO: icons */}
       {/* TODO: like button should be on right side for thumb */}
-      <div className="rounded border p-2">
-        {/* TODO: add button for liking */}
-        <button className="border rounded inline-block p-1"
-          onClick={() => console.log("Like post with id", post.id)}>
-          Likes: {post.likes}
-        </button>
-      </div>
+      <PostFooter post={postData} />
 
       <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
-        <fetcher.Form className="flex gap-1" action="comment" method="POST">
+        <likeFetcher.Form className="flex gap-1" action="comment" method="POST">
           <input
             className="border bg-gray-800 p-1 rounded grow"
             name="content"
             placeholder="comment now..."></input>
           <button className="rounded border bg-gray-900 p-1">Post</button>
-        </fetcher.Form>
+        </likeFetcher.Form>
         {
           post.comments.length > 0 ? (
             <ul >
