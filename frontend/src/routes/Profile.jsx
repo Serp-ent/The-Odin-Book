@@ -28,9 +28,7 @@ export async function action({ request, params }) {
   if (!['true', 'false'].includes(formData.get('follow'))) {
     throw new Error('form should contain follow with value true or false received:',
       formData.get('follow'));
-   } else {
-    console.log("form data follow value:", formData.get('follow'))
-   }
+  }
 
   const response = await fetch(`http://localhost:3000/api/users/${parseInt(params.userId)}/follow`, {
     method: "POST",
@@ -96,7 +94,6 @@ export const profileLoader = async ({ params }) => {
 // TODO: add icons
 export default function Profile() {
   const { userProfile, userPosts } = useLoaderData();
-  console.log(userProfile);
   return (
     <main
       className="p-4 flex flex-col container bg-gray-700 text-white gap-4"

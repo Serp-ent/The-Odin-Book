@@ -84,7 +84,9 @@ export default function PostList() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef(null);
-  const fetcher = useFetcher({ key: "followUser" });
+
+  const followFetcher = useFetcher({ key: "followUser" });
+  const likeFetcher = useFetcher({ key: "likePost" });
 
   const loadMorePosts = async () => {
     if (loading || !hasMore) {
@@ -142,8 +144,8 @@ export default function PostList() {
   }, [loading, hasMore, page]);
 
   useEffect(() => {
-    if (fetcher.data) {
-      const user = fetcher.data;
+    if (followFetcher.data) {
+      const user = followFetcher.data;
       // Update the posts with the new user data
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -153,15 +155,27 @@ export default function PostList() {
         )
       );
     }
-  }, [fetcher.data]);
+  }, [followFetcher.data]);
 
+  useEffect(() => {
+    if (likeFetcher.data) {
+      const { id, isLiked, likesCount } = likeFetcher.data;
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === id
+            ? { ...post, isLiked: isLiked, likes: likesCount }
+            : post
+        )
+      );
+    }
+  }, [likeFetcher.data]);
 
   return (
     <main
       className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'
       ref={containerRef}
     >
-      <fetcher.Form className="bg-gray-800 text-white border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
+      <followFetcher.Form className="bg-gray-800 text-white border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
         action="/post" method="POST">
         <input className="border bg-gray-800 p-1 rounded"
           placeholder="How do you feel?"
@@ -172,7 +186,7 @@ export default function PostList() {
             type="submit">
             Publish</button>
         </div>
-      </fetcher.Form>
+      </followFetcher.Form>
       <ul>
         {posts.map((post) => <PostListItem key={post.id} post={post} />)}
       </ul>

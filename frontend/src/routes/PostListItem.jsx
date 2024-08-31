@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useFetcher } from "react-router-dom";
 import UserHeader from "../components/userHeader";
+import PostFooter from "../components/postFooter";
 
 export default function PostListItem({ post }) {
-  const fetcher = useFetcher();
-
   // TODO: the post page should display post only of followed users
   // and user own posts
 
@@ -25,17 +24,7 @@ export default function PostListItem({ post }) {
 
       <hr />
       {/* // TODO:  fix button style (refresh is required) */}
-      <fetcher.Form className="flex justify-start" method="post" action={`/post/${post.id}/like`}>
-        <div className="flex justify-center items-center gap-2 border rounded py-1 px-2">
-          {post.likes}
-          <button
-            className={`border rounded px-2 ${post.isLiked && 'bg-gray-800'}`}
-            value={post.isLiked ? 'false' : 'true'}
-            name="like"
-            type="submit">
-            {post.isLiked ? "Liked" : "Like"}</button>
-        </div>
-      </fetcher.Form>
+      <PostFooter post={post}></PostFooter>
     </div>
   );
 }
