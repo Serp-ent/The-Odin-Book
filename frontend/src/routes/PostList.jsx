@@ -8,6 +8,7 @@ export const loader = async ({ request }) => {
   const page = url.searchParams.get("page") || 1;
   const limit = url.searchParams.get("limit") || 10;
 
+  // TDOO: triger refetch using useLocation on like
   const response = await fetch(`http://localhost:3000/api/posts?page=${page}&limit=${limit}`, {
     method: "GET",
     headers: {

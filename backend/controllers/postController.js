@@ -82,11 +82,11 @@ const getPosts = async (req, res) => {
 };
 
 // TODO: add async handler
+// TODO: add informaiton if user is followed
 const getPostWithId = async (req, res) => {
-  // TODO: handle incorrect id
   const id = parseInt(req.params.id);
+  const currentUserId = parseInt(req.user.id); // Assuming you have the current user ID available in the request (e.g., through middleware)
 
-  // TODO: include only first 10 comments
   try {
     const post = await prisma.post.findUnique({
       where: { id },
@@ -101,6 +101,12 @@ const getPostWithId = async (req, res) => {
             profilePic: true,
             registeredAt: true,
             updatedAt: true,
+            followedBy: {
+              where: { followerId: currentUserId },
+              select: {
+                id: true, // We just need to check if a record exists
+              }
+            },
           },
         },
         comments: {
@@ -132,18 +138,19 @@ const getPostWithId = async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Flatten the structure and add the isLiked property
+    // Flatten the structure and add the isFollowed property
     const flattenPost = {
       ...post,
-      // WARNING: the order is important
-      // TODO: add if is liked
-      // isLiked: post.likes.length > 0, // Whether the current user liked the post
       likes: post._count.likes, // Number of likes
+      author: {
+        ...post.author,
+        isFollowed: post.author.followedBy.length > 0, // Determine if the current user follows the author
+      },
     };
 
     // Clean up the response by removing unnecessary properties
-    delete flattenPost['_count'];  // duplicate
-    delete flattenPost['authorId'];  // already in author object
+    delete flattenPost['_count'];  // Remove duplicate
+    delete flattenPost['author'].followedBy; // Remove the followedBy field
 
     res.json(flattenPost);
   } catch (error) {

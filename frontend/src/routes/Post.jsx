@@ -1,5 +1,7 @@
-import { Link, useFetcher, useLoaderData } from "react-router-dom"
+import { Link, useFetcher, useLoaderData, useLocation, useNavigate } from "react-router-dom"
 import { json } from "react-router-dom";
+import UserHeader from "../components/userHeader";
+import { useEffect } from "react";
 
 export const loader = async ({ params }) => {
   const postId = parseInt(params.postId);
@@ -44,6 +46,13 @@ export const createComment = async ({ request, params }) => {
 export default function Post() {
   const post = useLoaderData();
   const fetcher = useFetcher();
+  const location = useLocation();
+
+  // useEffect(() => {
+  //   if (fetcher.state === 'idle' && fetcher.data) {
+  //     fetcher.load(location.pathname);
+  //   }
+  // }, [fetcher, location])
 
   if (navigation.state === 'loading') {
     return <div>Loading...</div>
@@ -54,21 +63,7 @@ export default function Post() {
   return (
     <main
       className='p-4 container bg-gray-800 text-white over overflow-y-auto flex flex-col gap-2'>
-      <div className="flex justify-between items-center gap-2 px-1">
-        <Link className="flex justify-start items-center gap-2"
-          to={`/profile/${post.author.id}`}>
-          <img
-            className="w-9 h-auto rounded-full"
-            src={post.author.profilePic} />
-          <p className="font-bold">
-            {post.author.firstName} {post.author.lastName}
-          </p>
-        </Link>
-
-        {/* TODO: button following functionality
-        TODO: don't show when user own user post */}
-        <button className="text-sm border rounded py-1 px-2">Follow</button>
-      </div>
+      <UserHeader user={post.author} />
 
       <div className="">
         {post.content}
@@ -80,7 +75,7 @@ export default function Post() {
       <div className="rounded border p-2">
         {/* TODO: add button for liking */}
         <button className="border rounded inline-block p-1"
-        onClick={() => console.log("Like post with id", post.id)}>
+          onClick={() => console.log("Like post with id", post.id)}>
           Likes: {post.likes}
         </button>
       </div>
