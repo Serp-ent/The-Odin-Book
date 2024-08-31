@@ -48,9 +48,18 @@ export default function Post() {
   const post = useLoaderData();
   const [postData, setPostData] = useState(post);
 
-  // TODO: fix following in post
-
   const likeFetcher = useFetcher({ key: "likePost" });
+  const followFetcher = useFetcher({ key: "followUser" });
+
+  // TODO: should remove authorId field (duplicates data with author object)
+  useEffect(() => {
+    if (followFetcher.data) {
+      setPostData(prevPost => ({
+        ...prevPost,
+        author: followFetcher.data
+      }));
+    }
+  }, [followFetcher.data]);
 
   useEffect(() => {
     if (likeFetcher.data) {
