@@ -173,7 +173,7 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
   }, [likeFetcher.data]);
 
   return (
-    <main className="bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2" ref={containerRef}>
+    <main className="overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2" ref={containerRef}>
       {/* <followFetcher.Form className="bg-gray-800 text-white border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
         action="/post" method="POST">
         <input className="border bg-gray-800 p-1 rounded"

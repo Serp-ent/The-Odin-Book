@@ -107,7 +107,7 @@ export default function Profile() {
   const { userId } = useParams();
   return (
     <main
-      className="p-2 flex flex-col container bg-gray-700 text-white gap-4"
+      className="p-2 flex flex-col container text-white gap-4"
     >
       <UserHeader user={userProfile} />
 

@@ -31,11 +31,11 @@ export default function Register() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='bg-gray-700 text-white p-4 flex flex-col items-center'
+      className='text-white p-4 flex flex-col items-center'
     >
       <form
         onSubmit={handleSubmit}
-        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-800'
+        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700'
         method="POST"
       >
         <div className="flex flex-col">

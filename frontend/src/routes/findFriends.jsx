@@ -21,7 +21,7 @@ export default function FindFriends() {
   // TODO: filter users 
   // TODO: add debouncing
   return (
-    <div className="flex flex-col text-white bg-gray-700 p-2 gap-2 grow">
+    <div className="flex flex-col text-white p-2 gap-2 grow">
       <input
         className="border bg-gray-800 p-1 rounded"
         name="firstName"
