@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../authContext";
 import { useNavigate } from "react-router-dom";
 
+// TODO: user should be able to provide image that he want to use
 export default function Register() {
   const [formData, setFormData] = useState({
     username: '', email: '', password: '',

@@ -92,6 +92,10 @@ export const profileLoader = async ({ params }) => {
 // TODO: if its own profile show settings button or edit
 // TODO: add light theme
 // TODO: add icons
+// TODO: add tailwind primary color and tailwind config 
+
+// TODO: if its user own allow to modify it
+// TODO: allow user to change profile pic
 export default function Profile() {
   const { userProfile, userPosts } = useLoaderData();
   return (
@@ -99,6 +103,8 @@ export default function Profile() {
       className="p-4 flex flex-col container bg-gray-700 text-white gap-4"
     >
       <UserHeader user={userProfile} />
+
+      {/* TODO: post should be in order newest first */}
 
       {/* // TODO: fetch latest user posts */}
       {/* TODO: add infinite scrolling */}

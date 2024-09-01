@@ -76,6 +76,7 @@ export const createPost = async ({ request }) => {
   return null;
 }
 
+// TODO: this component should show only user post and followed users posts
 export default function PostList() {
   const initialData = useLoaderData();
   const [posts, setPosts] = useState(initialData.posts);
@@ -170,6 +171,7 @@ export default function PostList() {
     }
   }, [likeFetcher.data]);
 
+  // TODO: post creation should remove post input and move to that post...
   return (
     <main
       className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'

@@ -5,6 +5,12 @@ import { FaRegComment } from "react-icons/fa";
 export default function PostFooter({ post }) {
   const likeFetcher = useFetcher({ key: "likePost" });
   // TODO: add props validation
+  // TODO: commenting post button should move to comment section
+
+  // TODO: there should be number of comments next to comment button
+
+  // TODO: user should be able to remove its own comments
+  // TODO: if its user post he should be able to moderate comments
 
   return (
     <div className="flex justify-end text-xl gap-4 border rounded p-2">

@@ -44,6 +44,8 @@ export const createComment = async ({ request, params }) => {
   return null;
 }
 
+// TODO: allow user for posting images
+// TODO: create some kind of guest account
 export default function Post() {
   const post = useLoaderData();
   const [postData, setPostData] = useState(post);
