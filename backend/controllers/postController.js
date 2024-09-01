@@ -313,6 +313,29 @@ const createPost = async (req, res) => {
   res.json(post);
 }
 
+const getComments = async (req, res) => {
+  const postId = parseInt(req.params.id);
+
+  const comments = await prisma.comment.findMany({
+    where: { postId },
+    include: {
+      author: {
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          username: true,
+          profilePic: true,
+          registeredAt: true,
+        }
+      }
+    }
+  });
+
+  res.json({ comments });
+}
+
 // TODO: error handling
 const createComment = async (req, res) => {
   const { content } = req.body;
@@ -335,4 +358,5 @@ module.exports = {
   likePost,
   createPost,
   createComment,
+  getComments,
 };

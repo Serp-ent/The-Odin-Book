@@ -3,6 +3,7 @@ import { json } from "react-router-dom";
 import UserHeader from "../components/userHeader";
 import { useEffect, useState } from "react";
 import PostFooter from "../components/postFooter";
+import CommentSection from "../components/commentSection";
 
 export const loader = async ({ params }) => {
   const postId = parseInt(params.postId);
@@ -93,55 +94,8 @@ export default function Post() {
 
       <PostFooter post={postData} />
 
-      <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
-        <likeFetcher.Form className="flex gap-1" action="comment" method="POST">
-          <input
-            className="border bg-gray-800 p-1 rounded grow"
-            name="content"
-            placeholder="comment now..."></input>
-          <button className="rounded border bg-gray-900 p-1">Post</button>
-        </likeFetcher.Form>
-        {
-          post.comments.length > 0 ? (
-            <ul >
-              {post.comments.map(comment => {
-                return (
-                  <li key={comment.id}
-                    className="border bg-gray-800 p-2 rounded ">
-                    <Link to={`/profile/${comment.author.id}`}
-                      className="bg-gray-900 inline-block py-1 px-2 rounded"
-                    >
-                      {/* TODO: add user profile pic */}
-                      {comment.author.firstName} {comment.author.lastName}
-                    </Link>
-                    <div>
-                      {comment.content}
-                    </div>
 
-                    <div className="flex justify-end text-xs gap-1">
-                      <button className="border rounded px-2 py-1"
-                        onClick={() => console.log("Replying to comment with id", comment.id)}
-                      >
-                        Reply
-                      </button>
-                      <button
-                        className="rounded border px-2 py-1"
-                        onClick={() => console.log("Liking comment with id", comment.id)}>
-                        Like
-                      </button>
-                    </div>
-                  </li>
-                )
-              }
-              )}
-            </ul>
-          ) : (
-            <p>
-              No Comments
-            </p>
-          )
-        }
-      </div>
+      <CommentSection postId={post.id} />
     </main>
   );
 }
