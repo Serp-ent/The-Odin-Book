@@ -5,10 +5,9 @@ import { FaRegEye } from "react-icons/fa";
 export default function UserHeader({ user }) {
   const fetcher = useFetcher({ key: "followUser" });
 
-  // TODO: implement optimistic ui
-  // const followed = fetcher.formData
-  //   ? fetcher.formData.get('follow') === 'true'
-  //   : user.isFollowed;
+  const followed = fetcher.formData
+    ? fetcher.formData.get('follow') === 'true'
+    : user.isFollowed;
 
   // TODO: add props validation
 
