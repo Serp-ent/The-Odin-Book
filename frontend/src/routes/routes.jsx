@@ -54,11 +54,11 @@ const routes = [
           },
           {
             path: '/login',
-            element: <Login />,
+            element: <ProtectedRoute element={<Login />} requireUnlogged={true} />,
           },
           {
             path: '/register',
-            element: <Register />,
+            element: <ProtectedRoute element={<Register />} requireUnlogged={true} />,
           },
           {
             path: '/users/followed',
