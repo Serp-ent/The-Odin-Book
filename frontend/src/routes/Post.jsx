@@ -91,9 +91,6 @@ export default function Post() {
         {post.content}
       </div>
 
-      {/* TODO: number of comments */}
-      {/* TODO: icons */}
-      {/* TODO: like button should be on right side for thumb */}
       <PostFooter post={postData} />
 
       <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">

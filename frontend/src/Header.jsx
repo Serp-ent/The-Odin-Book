@@ -3,6 +3,7 @@ import odinIcon from './assets/odin-icon.svg';
 import './index.css'
 import { useAuth } from './authContext';
 import { useEffect, useRef, useState } from 'react';
+import { FaBars } from "react-icons/fa";
 
 // TODO: handle real user data
 export default function Header() {
@@ -28,7 +29,6 @@ export default function Header() {
   }, []);
 
   return (
-    // TODO: when clicked outside the menu should hide
     <header
       className='p-2 bg-gray-900 flex items-center justify-between text-white'
     >
@@ -47,8 +47,9 @@ export default function Header() {
             <button
               className='py-1 px-2 rounded-lg border border-white'
               onClick={toggleDropdown}
-            // TODO hamburger icon
-            >Menu</button>
+            >
+              <FaBars />
+            </button>
 
             {isDropdownOpen && (
               <div className='border p-2 absolute right-0 mt-2 w-48 bg-gray-900 rounded-lg shadow-lg z-50'>

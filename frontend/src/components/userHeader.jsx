@@ -21,7 +21,6 @@ export default function UserHeader({ user }) {
         </h4>
       </Link>
 
-      {/* TODO: there is need to refresh page to see the result */}
       <fetcher.Form method='POST' action={`/profile/${user.id}`}
         className="border rounded text-sm">
         <button className="px-2 py-1"
