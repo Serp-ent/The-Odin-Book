@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useFetcher } from "react-router-dom";
 import { ClipLoader } from 'react-spinners'
+import CommentInput from "./CommentInput";
 
 const fetchComments = async (postId) => {
   // TODO: change link comment
@@ -40,16 +41,8 @@ export default function CommentSection({ postId }) {
 
   return (
     <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
+      <CommentInput />
 
-      {/*
-       TODO: add CommentInput component
-       <fetcher.Form className="flex gap-1" action="comment" method="POST">
-        <input
-          className="border bg-gray-800 p-1 rounded grow"
-          name="content"
-          placeholder="comment now..."></input>
-        <button className="rounded border bg-gray-900 p-1">Post</button>
-      </fetcher.Form> */}
       {
         comments.length > 0 ? (
           <ul >
