@@ -5,6 +5,8 @@ const passport = require('../config/passport-config.js');
 
 // router.get('/', controller.getPosts);
 
+// TODO: add documentation for all conventions of namings in api
+
 // Define before to prevent pattern matching
 router.get('/followed',
   passport.authenticate('jwt', { session: false }),

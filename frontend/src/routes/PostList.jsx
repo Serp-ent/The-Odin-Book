@@ -55,6 +55,7 @@ export const createPost = async ({ request }) => {
   return null;
 };
 
+// TODO: extract create post component
 export default function PostList({ initialType = "all", initialUserId = null }) {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
@@ -75,7 +76,7 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
           if (!userId) {
             throw new Error("userId is required for fetching user posts");
           }
-          return `http://localhost:3000/api/posts/user/${userId}?page=${page}`;
+          return `http://localhost:3000/api/users/${userId}/posts?page=${page}`;
         default:
           return `http://localhost:3000/api/posts?page=${page}`;
       }
@@ -131,7 +132,7 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
     };
 
     initializePosts();
-  }, [initialType, initialUserId]);
+  }, [initialType, initialUserId, page]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -173,7 +174,7 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
 
   return (
     <main className="bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2" ref={containerRef}>
-      <followFetcher.Form className="bg-gray-800 text-white border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
+      {/* <followFetcher.Form className="bg-gray-800 text-white border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
         action="/post" method="POST">
         <input className="border bg-gray-800 p-1 rounded"
           placeholder="How do you feel?"
@@ -184,7 +185,7 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
             type="submit">
             Publish</button>
         </div>
-      </followFetcher.Form>
+      </followFetcher.Form> */}
       <ul>
         {posts.map(post => <PostListItem key={post.id} post={post} />)}
       </ul>

@@ -185,18 +185,89 @@ const getUsers = async (req, res) => {
   }
 }
 
+// TODO: create services because there is a lot of business logic code duplication
 const getPostOfUser = async (req, res) => {
-  // TODO: handle errors
-  // TODO: add query parameters for sorting
-  // TODO: add pagination
-  const userId = parseInt(req.params.id);
-  const posts = await prisma.post.findMany({
-    where: { authorId: userId }
-  });
+  try {
+    // TODO: add pagination
+    const userId = parseInt(req.params.id);
+    const currentUserId = req.user.id; // Assuming you have the current user's ID from authentication middleware
 
-  res.json(posts);
+    // Fetch posts of the user
+    const posts = await prisma.post.findMany({
+      where: { authorId: userId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+            profilePic: true,
+            registeredAt: true,
+          }
+        },
+        _count: {
+          select: {
+            comments: true,
+            likes: true,
+          }
+        },
+      }
+    });
 
-}
+    // Enhance each post with additional data
+    const enhancedPosts = await Promise.all(posts.map(async (post) => {
+      // Count likes for the post
+      const likeCount = post._count.likes;
+
+      // Check if the current user follows the post's author
+      const isFollowed = await prisma.follow.findUnique({
+        where: {
+          followerId_followedId: {
+            followerId: currentUserId,
+            followedId: post.authorId
+          }
+        }
+      }) !== null;
+
+      // Check if the current user has liked the post
+      const isLiked = await prisma.like.findUnique({
+        where: {
+          postId_userId: {
+            postId: post.id,
+            userId: currentUserId
+          }
+        }
+      }) !== null;
+
+      // Count comments for the post
+      const commentsCount = post._count.comments;
+
+      // Remove unnecessary fields
+      delete post.authorId;
+      delete post._count;
+
+      return {
+        ...post,
+        likes: likeCount,
+        isLiked: isLiked,
+        author: {
+          ...post.author,
+          isFollowed: isFollowed,
+        },
+        commentsCount: commentsCount,
+      };
+    }));
+
+    res.json({
+      posts: enhancedPosts
+    });
+  } catch (error) {
+    console.error('Error fetching user posts:', error);
+    res.status(500).json({ error: 'Failed to fetch posts' });
+  }
+};
 
 module.exports = {
   getUserWithId,

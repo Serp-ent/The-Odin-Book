@@ -1,5 +1,6 @@
-import { json, Link, useFetcher, useLoaderData } from "react-router-dom";
+import { json, Link, useFetcher, useLoaderData, useParams } from "react-router-dom";
 import UserHeader from "../components/userHeader";
+import PostList from "./PostList";
 
 export const loader = async ({ params }) => {
   const userId = parseInt(params.userId);
@@ -101,10 +102,12 @@ export const profileLoader = async ({ params }) => {
 
 // TODO: maybe add some info like number of followers
 export default function Profile() {
+  // TODO: remove user posts data from loader
   const { userProfile, userPosts } = useLoaderData();
+  const { userId } = useParams();
   return (
     <main
-      className="p-4 flex flex-col container bg-gray-700 text-white gap-4"
+      className="p-2 flex flex-col container bg-gray-700 text-white gap-4"
     >
       <UserHeader user={userProfile} />
 
@@ -113,21 +116,13 @@ export default function Profile() {
       {/* // TODO: fetch latest user posts */}
       {/* TODO: add infinite scrolling */}
       {/* TODO: add switch button to display latest comments too */}
-      <div className="container border rounded p-2 flex flex-col gap-3">
+      <div>
         <h3 className="flex justify-center text-xl p-1 border rounded">
           Latest Posts
         </h3>
-        <ul className="flex flex-col gap-2">
-          {userPosts.map(post => (
-            <li key={post.id}
-              className="border rounded flex justify-center p-2">
-              <Link to={`/post/${post.id}`} className="grow">
-                {post.content}
-              </Link>
-            </li>
-          )
-          )}
-        </ul>
+        <PostList
+          initialType="user"
+          initialUserId={userId} />
       </div>
     </main>
   );
