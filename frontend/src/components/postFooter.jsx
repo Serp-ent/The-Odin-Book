@@ -7,8 +7,6 @@ export default function PostFooter({ post }) {
   // TODO: add props validation
   // TODO: commenting post button should move to comment section
 
-  // TODO: there should be number of comments next to comment button
-
   // TODO: user should be able to remove its own comments
   // TODO: if its user post he should be able to moderate comments
 
@@ -34,7 +32,10 @@ export default function PostFooter({ post }) {
 
         </div>
       </likeFetcher.Form>
-      <div className="flex flex-col items-center">
+      <div className="flex items-center gap-1">
+        <p className="text-xs items-center">
+          {post.commentsCount}
+        </p>
         <button
           onClick={() => console.log("add comment to", post.id)}
         >

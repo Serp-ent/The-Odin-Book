@@ -36,6 +36,7 @@ const getPosts = async (req, res) => {
       _count: {
         select: {
           likes: true, // Get the total number of likes
+          comments: true,
         }
       },
       // Check if the current user has liked the post
@@ -59,6 +60,7 @@ const getPosts = async (req, res) => {
     ...post,
     // Whether the current user liked the post
     isLiked: post.likes.length > 0,
+    commentsCount: post._count.comments,
     likes: post._count.likes, // Number of likes
     // Whether the current user follows the author
     author: {
@@ -137,6 +139,7 @@ const getPostWithId = async (req, res) => {
         _count: {
           select: {
             likes: true, // Count the number of likes
+            comments: true,
           },
         },
       },
@@ -150,6 +153,7 @@ const getPostWithId = async (req, res) => {
     const flattenPost = {
       ...post,
       likes: post._count.likes, // Total number of likes
+      commentsCount: post._count.comments,
       isLiked: post.likes.length > 0, // Determine if the current user liked the post
       author: {
         ...post.author,

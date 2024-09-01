@@ -96,6 +96,10 @@ export const profileLoader = async ({ params }) => {
 
 // TODO: if its user own allow to modify it
 // TODO: allow user to change profile pic
+
+// TODO: the profile should use PostList
+
+// TODO: maybe add some info like number of followers
 export default function Profile() {
   const { userProfile, userPosts } = useLoaderData();
   return (
