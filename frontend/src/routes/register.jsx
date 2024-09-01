@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../authContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // TODO: user should be able to provide image that he want to use
 export default function Register() {
@@ -31,7 +31,7 @@ export default function Register() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='bg-gray-700 text-white p-4 flex justify-center items-start'
+      className='bg-gray-700 text-white p-4 flex flex-col items-center'
     >
       <form
         onSubmit={handleSubmit}
@@ -104,9 +104,22 @@ export default function Register() {
           <button
             className="border px-4 py-2 rounded"
             type="submit"
-          >Login</button>
+          >Register</button>
         </div>
+
       </form>
+
+      <div className="flex justify-center mt-4 text-sm">
+        <p>
+          Already have an account?{' '}
+          <Link
+            to='/login'
+            className="text-blue-400 underline"
+          >
+            Login here
+          </Link>.
+        </p>
+      </div>
     </main>
   );
 }

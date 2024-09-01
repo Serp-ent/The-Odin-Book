@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../authContext";
 
 // TODO: add links if user don't have already account
@@ -11,6 +11,14 @@ export default function Login() {
 
   const auth = useAuth();
   const navigate = useNavigate();
+
+  // TODO: this should be in wrapper instead of useEffect
+  useEffect(() => {
+    // Redirect to home page if user is authenticated
+    if (auth.isAuthenticated) {
+      navigate('/');
+    }
+  }, [auth.isAuthenticated, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +49,7 @@ export default function Login() {
   // TODO: responsive form on smaller screens
   return (
     <main
-      className='bg-gray-700 text-white p-4 flex justify-center items-start'
+      className='bg-gray-700 text-white p-4 flex flex-col items-center'
     >
       <form
         onSubmit={handleSubmit}
@@ -80,7 +88,20 @@ export default function Login() {
             type="submit"
           >Login</button>
         </div>
+
       </form>
+
+      <div className="flex justify-center mt-4 text-sm">
+        <p>
+          Don&apos;t have an account?{' '}
+          <Link
+            to='/register'
+            className="text-blue-400 underline"
+          >
+            Register here
+          </Link>
+        </p>
+      </div>
     </main>
   );
 }
