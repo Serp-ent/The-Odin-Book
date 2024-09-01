@@ -3,26 +3,6 @@ import { Form, json, Link, useFetcher, useLoaderData } from 'react-router-dom';
 import PostListItem from "./PostListItem";
 
 // TODO: add loading spinner
-export const loader = async ({ request }) => {
-  const url = new URL(request.url);
-  const page = url.searchParams.get("page") || 1;
-  const limit = url.searchParams.get("limit") || 10;
-
-  // TDOO: triger refetch using useLocation on like
-  const response = await fetch(`http://localhost:3000/api/posts?page=${page}&limit=${limit}`, {
-    method: "GET",
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    }
-  });
-  if (!response.ok) {
-    throw json({ message: 'Failed to load posts' }, { status: response.status });
-  }
-
-  const data = await response.json();
-  return data;
-}
-
 export const action = async ({ request, params }) => {
   const formData = await request.formData();
   const like = formData.get('like') === 'true';
@@ -43,11 +23,10 @@ export const action = async ({ request, params }) => {
     }
 
     const result = await response.json();
-    // Return the updated post data, including isLiked and like count
     return {
       id: postId,
-      isLiked: like, // assuming you want to reflect the like state from the client-side action
-      likesCount: result.likesCount, // include the updated like count if needed
+      isLiked: like,
+      likesCount: result.likesCount,
     };
   } catch (error) {
     console.error('Error liking/unliking post:', error);
@@ -55,7 +34,7 @@ export const action = async ({ request, params }) => {
       error: error.message,
     };
   }
-}
+};
 
 export const createPost = async ({ request }) => {
   const formData = await request.formData();
@@ -74,14 +53,12 @@ export const createPost = async ({ request }) => {
   }
   console.log('user wants to create post with content:', formData.get('content'));
   return null;
-}
+};
 
-// TODO: this component should show only user post and followed users posts
-export default function PostList() {
-  const initialData = useLoaderData();
-  const [posts, setPosts] = useState(initialData.posts);
-  const [page, setPage] = useState(initialData.page);
-  const [totalPages, setTotalPages] = useState(initialData.totalPages);
+export default function PostList({ initialType = "all", initialUserId = null }) {
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef(null);
@@ -89,46 +66,78 @@ export default function PostList() {
   const followFetcher = useFetcher({ key: "followUser" });
   const likeFetcher = useFetcher({ key: "likePost" });
 
-  const loadMorePosts = async () => {
-    if (loading || !hasMore) {
-      return;
+  const fetchPosts = async (type, page, userId = null) => {
+    const getEndPoint = (type, userId, page) => {
+      switch (type) {
+        case "followed":
+          return `http://localhost:3000/api/posts/followed?page=${page}`;
+        case "user":
+          if (!userId) {
+            throw new Error("userId is required for fetching user posts");
+          }
+          return `http://localhost:3000/api/posts/user/${userId}?page=${page}`;
+        default:
+          return `http://localhost:3000/api/posts?page=${page}`;
+      }
     }
+
+    const endpoint = getEndPoint(type, userId, page);
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load posts');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      return { posts: [], totalPages: 1 };
+    }
+  };
+
+  const loadMorePosts = async () => {
+    if (loading || !hasMore) return;
 
     setLoading(true);
     const nextPage = page + 1;
-    try {
-      const response = await fetch(`http://localhost:3000/api/posts?page=${nextPage}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
 
-      if (data.posts.length > 0) {
-        setPosts(prevPosts => [...prevPosts, ...data.posts]);
-        setPage(nextPage);
-        setTotalPages(data.totalPages);
-        setHasMore(nextPage < data.totalPages);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error('Error fetching more posts:', error);
-    } finally {
-      setLoading(false);
+    const data = await fetchPosts(initialType, nextPage, initialUserId);
+
+    if (data.posts.length > 0) {
+      setPosts(prevPosts => [...prevPosts, ...data.posts]);
+      setPage(nextPage);
+      setTotalPages(data.totalPages);
+      setHasMore(nextPage < data.totalPages);
+    } else {
+      setHasMore(false);
     }
-  }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const initializePosts = async () => {
+      setLoading(true);
+      const data = await fetchPosts(initialType, page, initialUserId);
+      setPosts(data.posts);
+      setTotalPages(data.totalPages);
+      setHasMore(page < data.totalPages);
+      setLoading(false);
+    };
+
+    initializePosts();
+  }, [initialType, initialUserId]);
 
   useEffect(() => {
     const handleScroll = () => {
       const container = containerRef.current;
-      if (container) {
-        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
-          loadMorePosts();
-        }
+      if (container && container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+        loadMorePosts();
       }
     };
 
@@ -147,13 +156,8 @@ export default function PostList() {
   useEffect(() => {
     if (followFetcher.data) {
       const user = followFetcher.data;
-      // Update the posts with the new user data
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post.author.id === user.id
-            ? { ...post, author: user }
-            : post
-        )
+      setPosts(prevPosts =>
+        prevPosts.map(post => post.author.id === user.id ? { ...post, author: user } : post)
       );
     }
   }, [followFetcher.data]);
@@ -161,28 +165,20 @@ export default function PostList() {
   useEffect(() => {
     if (likeFetcher.data) {
       const { id, isLiked, likesCount } = likeFetcher.data;
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post.id === id
-            ? { ...post, isLiked: isLiked, likes: likesCount }
-            : post
-        )
+      setPosts(prevPosts =>
+        prevPosts.map(post => post.id === id ? { ...post, isLiked, likes: likesCount } : post)
       );
     }
   }, [likeFetcher.data]);
 
-  // TODO: post creation should remove post input and move to that post...
   return (
-    <main
-      className='bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2'
-      ref={containerRef}
-    >
+    <main className="bg-gray-700 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2" ref={containerRef}>
       <followFetcher.Form className="bg-gray-800 text-white border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
         action="/post" method="POST">
         <input className="border bg-gray-800 p-1 rounded"
           placeholder="How do you feel?"
           name="content"
-        ></input>
+        />
         <div className="flex justify-end">
           <button className="border-2 border-gray-500 rounded py-1 text-sm px-2"
             type="submit">
@@ -190,7 +186,7 @@ export default function PostList() {
         </div>
       </followFetcher.Form>
       <ul>
-        {posts.map((post) => <PostListItem key={post.id} post={post} />)}
+        {posts.map(post => <PostListItem key={post.id} post={post} />)}
       </ul>
 
       {loading && <div className='text-center text-white'>Loading more posts...</div>}

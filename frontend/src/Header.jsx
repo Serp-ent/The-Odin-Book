@@ -5,7 +5,7 @@ import { useAuth } from './authContext';
 import { useEffect, useRef, useState } from 'react';
 import { FaBars } from "react-icons/fa";
 
-// TODO: handle real user data
+// TODO: handle real user data, user should be able to see on which account he is logged in
 export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

@@ -1,7 +1,6 @@
 import Root from './root';
 import ErrorPage from './error-page';
 import PostList, {
-  loader as postListLoader,
   action as likeAction,
   createPost,
 } from './PostList';
@@ -29,7 +28,6 @@ const routes = [
           {
             index: true,
             element: <ProtectedRoute element={<PostList />} />,
-            loader: postListLoader
           },
           {
             path: '/post/:postId',
