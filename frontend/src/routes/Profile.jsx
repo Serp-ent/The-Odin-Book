@@ -1,6 +1,6 @@
 import { json, Link, useFetcher, useLoaderData, useParams } from "react-router-dom";
 import UserHeader from "../components/userHeader";
-import PostList from "./PostList";
+import PostList from "../components/PostList";
 
 export const loader = async ({ params }) => {
   const userId = parseInt(params.userId);

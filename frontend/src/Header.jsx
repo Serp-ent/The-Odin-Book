@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import odinIcon from './assets/odin-icon.svg';
 import './index.css'
-import { useAuth } from './authContext';
+import { useAuth } from './auth/authContext';
 import { useEffect, useRef, useState } from 'react';
 import { FaBars } from "react-icons/fa";
 

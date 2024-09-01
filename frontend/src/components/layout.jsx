@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../Header';
 import '../index.css'
-import { useAuth } from '../authContext';
-import FollowedUsers from '../followedUsers';
+import { useAuth } from '../auth/authContext';
+import FollowedUsers from '../routes/followedUsers';
 
-function Root() {
+function Layout() {
   return (
     <div className={`h-screen grid grid-rows-[auto_10fr]`} >
       <Header />
@@ -13,4 +13,4 @@ function Root() {
   );
 }
 
-export default Root
+export default Layout

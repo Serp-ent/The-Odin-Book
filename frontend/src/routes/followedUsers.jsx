@@ -1,7 +1,7 @@
 import { json, Link, NavLink, useFetcher, useLoaderData } from 'react-router-dom';
-import './index.css'
+import '../index.css'
 import { useEffect, useState } from "react"
-import UserHeader from './components/userHeader';
+import UserHeader from '../components/userHeader';
 
 export const loader = async () => {
   const response = await fetch(`http://localhost:3000/api/users/followed`, {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../authContext";
+import { useAuth } from "../auth/authContext";
 import { Link, useNavigate } from "react-router-dom";
 
 // TODO: user should be able to provide image that he want to use

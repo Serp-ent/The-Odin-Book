@@ -1,25 +1,26 @@
-import Root from './root';
+import Layout from '../components/layout';
 import ErrorPage from './error-page';
 import PostList, {
   action as likeAction,
   createPost,
-} from './PostList';
+} from '../components/PostList';
 import Profile, {
   profileLoader,
   action as followProfile,
 } from './Profile';
 import Login from './login';
-import ProtectedRoute from '../protectedRoute';
+import ProtectedRoute from '../auth/protectedRoute';
 import Register from './register';
 import Post, { createComment, loader as postLoader } from './Post';
-import FollowedUsers, { loader as loadFollowedUsers } from '../followedUsers';
+import FollowedUsers, { loader as loadFollowedUsers } from './followedUsers';
 import ProfileSettings from './profileSettings';
 import FindFriends, { loader as loadUsers } from './findFriends';
+import Home from './home';
 
 const routes = [
   {
     path: '/',
-    element: <Root />,
+    element: <Layout />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -27,7 +28,7 @@ const routes = [
         children: [
           {
             index: true,
-            element: <ProtectedRoute element={<PostList />} />,
+            element: <ProtectedRoute element={<Home />} />,
           },
           {
             path: '/post/:postId',

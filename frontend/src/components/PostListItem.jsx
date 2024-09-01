@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useFetcher } from "react-router-dom";
-import UserHeader from "../components/userHeader";
-import PostFooter from "../components/postFooter";
+import UserHeader from "./userHeader";
+import PostFooter from "./postFooter";
 
 export default function PostListItem({ post }) {
   // TODO: the post page should display post only of followed users
