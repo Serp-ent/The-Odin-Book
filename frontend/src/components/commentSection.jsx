@@ -20,6 +20,7 @@ const fetchComments = async (postId) => {
 export default function CommentSection({ postId }) {
   const queryClient = useQueryClient();
 
+  // TODO: use useInfiniteQuery for infinite scrolling comments
   const { data, error, isLoading } = useQuery({
     queryKey: ['comments', postId],
     queryFn: () => fetchComments(postId),
@@ -61,7 +62,7 @@ export default function CommentSection({ postId }) {
 
       {
         comments.length > 0 ? (
-          <ul >
+          <ul className="" >
             {comments.map(comment => {
               return (
                 <li key={comment.id}
@@ -94,8 +95,8 @@ export default function CommentSection({ postId }) {
             )}
           </ul>
         ) : (
-          <p>
-            No Comments
+          <p className="text-sm">
+            No Comments. Be first!
           </p>
         )
       }
