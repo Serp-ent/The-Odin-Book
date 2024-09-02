@@ -107,7 +107,7 @@ export default function Profile() {
   const { userId } = useParams();
   return (
     <main
-      className="p-2 flex flex-col container text-white gap-4"
+      className="p-2 flex flex-col container text-white gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400  "
     >
       <UserHeader user={userProfile} />
 

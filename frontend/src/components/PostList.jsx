@@ -173,7 +173,7 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
   }, [likeFetcher.data]);
 
   return (
-    <main className="overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 flex flex-col gap-2" ref={containerRef}>
+    <main className="flex flex-col gap-2" ref={containerRef}>
       <ul>
         {posts.map(post => <PostListItem key={post.id} post={post} />)}
       </ul>
