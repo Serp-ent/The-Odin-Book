@@ -12,9 +12,9 @@ import Login from './login';
 import ProtectedRoute from '../auth/protectedRoute';
 import Register from './register';
 import Post, { createComment, loader as postLoader } from './Post';
-import FollowedUsers, { loader as loadFollowedUsers } from './followedUsers';
+import FollowedUsers from './followedUsers';
 import ProfileSettings from './profileSettings';
-import FindFriends, { loader as loadUsers } from './findFriends';
+import FindFriends from './findFriends';
 import Home from './home';
 
 const routes = [
@@ -50,7 +50,6 @@ const routes = [
           {
             path: '/profile/:userId',
             element: <ProtectedRoute element={<Profile />} />,
-            loader: profileLoader,
             action: followProfile,
           },
           {
@@ -64,12 +63,10 @@ const routes = [
           {
             path: '/users/followed',
             element: <ProtectedRoute element={<FollowedUsers />} />,
-            loader: loadFollowedUsers,
           },
           {
             path: '/users',
             element: <ProtectedRoute element={<FindFriends />} />,
-            loader: loadUsers,
           },
           {
             path: '/profile/settings',

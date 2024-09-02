@@ -6,10 +6,6 @@ export default function CommentInput({ onSubmit }) {
 
   const [content, setContent] = useState('');
   const [showPopup, setShowPopup] = useState(false);
-  // TODO: currently adding new comment requires page reload
-  // to see posted comment
-
-  // TODO: add some kind of popup that comment was added
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -17,7 +13,6 @@ export default function CommentInput({ onSubmit }) {
     setContent('');
     setShowPopup(true);
 
-    // TODO: allow user to close popup faster 
     setTimeout(() => {
       setShowPopup(false);
     }, 3000)
@@ -46,6 +41,7 @@ export default function CommentInput({ onSubmit }) {
         <button className="rounded border bg-gray-900 p-1">Post</button>
       </fetcher.Form>
 
+      {/* TODO: add options for receiving sorted comments by top likes, and oldest */}
       {/* TODO: add animation of disappearing and showing up */}
       {/* // TODO: maybe some circle that show how much time is left */}
       {showPopup && (

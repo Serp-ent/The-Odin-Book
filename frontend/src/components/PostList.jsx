@@ -1,6 +1,9 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import { Form, json, Link, useFetcher, useLoaderData } from 'react-router-dom';
 import PostListItem from "./PostListItem";
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { ClipLoader } from 'react-spinners'
+import { debounce } from 'loadsh';
 
 // TODO: add loading spinner
 export const action = async ({ request, params }) => {
@@ -56,18 +59,11 @@ export const createPost = async ({ request }) => {
 };
 
 // TODO: extract create post component
-export default function PostList({ initialType = "all", initialUserId = null }) {
-  const [posts, setPosts] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const containerRef = useRef(null);
-
+export default function PostList({ scrollContainerRef, initialType = "all", initialUserId = null }) {
   const followFetcher = useFetcher({ key: "followUser" });
   const likeFetcher = useFetcher({ key: "likePost" });
 
-  const fetchPosts = async (type, page, userId = null) => {
+  const fetchPosts = async ({ pageParam = 1 }) => {
     const getEndPoint = (type, userId, page) => {
       switch (type) {
         case "followed":
@@ -82,7 +78,7 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
       }
     }
 
-    const endpoint = getEndPoint(type, userId, page);
+    const endpoint = getEndPoint(initialType, initialUserId, pageParam);
     try {
       const response = await fetch(endpoint, {
         headers: {
@@ -95,91 +91,88 @@ export default function PostList({ initialType = "all", initialUserId = null }) 
       }
 
       const data = await response.json();
-      return data;
+      return {
+        posts: data.posts,
+        nextPage: data.page + 1,
+        totalPages: data.totalPages,
+      }
     } catch (error) {
       console.error('Error fetching posts:', error);
       return { posts: [], totalPages: 1 };
     }
   };
 
-  const loadMorePosts = async () => {
-    if (loading || !hasMore) return;
-
-    setLoading(true);
-    const nextPage = page + 1;
-
-    const data = await fetchPosts(initialType, nextPage, initialUserId);
-
-    if (data.posts.length > 0) {
-      setPosts(prevPosts => [...prevPosts, ...data.posts]);
-      setPage(nextPage);
-      setTotalPages(data.totalPages);
-      setHasMore(nextPage < data.totalPages);
-    } else {
-      setHasMore(false);
-    }
-    setLoading(false);
-  };
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ['posts', initialType, initialUserId],
+    queryFn: fetchPosts,
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPage <= lastPage.totalPages ? lastPage.nextPage : undefined;
+    },
+  });
 
   useEffect(() => {
-    const initializePosts = async () => {
-      setLoading(true);
-      const data = await fetchPosts(initialType, page, initialUserId);
-      setPosts(data.posts);
-      setTotalPages(data.totalPages);
-      setHasMore(page < data.totalPages);
-      setLoading(false);
-    };
+    const container = scrollContainerRef.current;
 
-    initializePosts();
-  }, [initialType, initialUserId, page]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const container = containerRef.current;
-      if (container && container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
-        loadMorePosts();
-      }
-    };
-
-    const container = containerRef.current;
     if (container) {
+      const handleScroll = debounce(() => {
+        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+          fetchNextPage();
+        }
+      }, 200);
+
       container.addEventListener('scroll', handleScroll);
-    }
 
-    return () => {
-      if (container) {
+      return () => {
         container.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, [loading, hasMore, page]);
-
-  useEffect(() => {
-    if (followFetcher.data) {
-      const user = followFetcher.data;
-      setPosts(prevPosts =>
-        prevPosts.map(post => post.author.id === user.id ? { ...post, author: user } : post)
-      );
+      };
     }
-  }, [followFetcher.data]);
+  }, [fetchNextPage, scrollContainerRef]);
 
-  useEffect(() => {
-    if (likeFetcher.data) {
-      const { id, isLiked, likesCount } = likeFetcher.data;
-      setPosts(prevPosts =>
-        prevPosts.map(post => post.id === id ? { ...post, isLiked, likes: likesCount } : post)
-      );
-    }
-  }, [likeFetcher.data]);
+  // useEffect(() => {
+  //   if (followFetcher.data) {
+  //     const user = followFetcher.data;
+  //     setPosts(prevPosts =>
+  //       prevPosts.map(post => post.author.id === user.id ? { ...post, author: user } : post)
+  //     );
+  //   }
+  // }, [followFetcher.data]);
 
+  // useEffect(() => {
+  //   if (likeFetcher.data) {
+  //     const { id, isLiked, likesCount } = likeFetcher.data;
+  //     setPosts(prevPosts =>
+  //       prevPosts.map(post => post.id === id ? { ...post, isLiked, likes: likesCount } : post)
+  //     );
+  //   }
+  // }, [likeFetcher.data]);
+
+  const posts = data?.pages?.flatMap(page => page.posts) || [];
   return (
-    <main className="flex flex-col gap-2" ref={containerRef}>
-      <ul>
-        {posts.map(post => <PostListItem key={post.id} post={post} />)}
-      </ul>
+    <main className="flex flex-col gap-2">
+      {isLoading && <div className="flex justify-center items-center">
+        <ClipLoader color="white" />
+      </div>}
+      {!isLoading && !isError && (
+        <ul>
+          {posts.map(post => <PostListItem key={post.id} post={post} />)}
+        </ul>
+      )}
 
-      {loading && <div className='text-center text-white'>Loading more posts...</div>}
-      {!hasMore && <div className="text-white text-center py-4">No more posts available</div>}
+      {isError && <div className="text-center text-red-500">Error loading posts.</div>}
+      {
+        isFetchingNextPage && <div className="flex justify-center m-1">
+          <ClipLoader color="white" />
+        </div>
+      }
+      {!(hasNextPage) && <div className="text-white text-center py-4">No more posts available</div>}
+
     </main>
   );
 }

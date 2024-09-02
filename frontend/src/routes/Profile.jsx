@@ -1,6 +1,8 @@
 import { json, Link, useFetcher, useLoaderData, useParams } from "react-router-dom";
 import UserHeader from "../components/userHeader";
 import PostList from "../components/PostList";
+import { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export const loader = async ({ params }) => {
   const userId = parseInt(params.userId);
@@ -101,30 +103,72 @@ export const profileLoader = async ({ params }) => {
 // TODO: the profile should use PostList
 
 // TODO: maybe add some info like number of followers
+const fetchUserProfile = async (userId) => {
+  const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to load user profile');
+  }
+
+  return response.json();
+};
+
+const fetchUserPosts = async (userId) => {
+  const response = await fetch(`http://localhost:3000/api/users/${userId}/posts`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to load user posts');
+  }
+
+  return response.json();
+};
+
 export default function Profile() {
-  // TODO: remove user posts data from loader
-  const { userProfile, userPosts } = useLoaderData();
   const { userId } = useParams();
+  const container = useRef(null);
+
+  // Fetch user profile
+  const { data: userProfile, isLoading: isProfileLoading, isError: isProfileError } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUserProfile(userId),
+  });
+
+  // Fetch user posts
+  const { data: userPosts, isLoading: isPostsLoading, isError: isPostsError } = useQuery({
+    queryKey: ['userPosts', userId],
+    queryFn: () => fetchUserPosts(userId),
+  });
+
+  if (isProfileLoading || isPostsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isProfileError || isPostsError) {
+    return <div>Error loading data</div>;
+  }
+
   return (
-    <main
-      className="p-2 flex flex-col container text-white gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400  "
-    >
+    <main className="p-2 flex flex-col container text-white gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
       <UserHeader user={userProfile} />
 
-      {/* TODO: post should be in order newest first */}
-
-      {/* // TODO: fetch latest user posts */}
-      {/* TODO: add infinite scrolling */}
-      {/* TODO: add switch button to display latest comments too */}
       <div>
         <h3 className="flex justify-center text-xl p-1 border rounded">
           Latest Posts
         </h3>
         <PostList
+          scrollContainerRef={container}
           initialType="user"
-          initialUserId={userId} />
+          initialUserId={userId}
+        />
       </div>
     </main>
   );
-
 }

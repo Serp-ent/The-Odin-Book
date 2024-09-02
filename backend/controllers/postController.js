@@ -84,7 +84,7 @@ const getPosts = async (req, res) => {
 };
 
 // TODO: add async handler
-// TODO: add informaiton if user is followed
+// TODO: add information if user is followed
 const getPostWithId = async (req, res) => {
   const id = parseInt(req.params.id);
   const currentUserId = parseInt(req.user.id); // Assuming you have the current user ID available in the request (e.g., through middleware)
