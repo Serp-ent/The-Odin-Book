@@ -45,10 +45,10 @@ export default function Header() {
         {auth.isAuthenticated ? (
           <div className='relative'>
             <button
-              className='py-1 px-2 rounded-lg border border-white'
+              className='py-1 px-2'
               onClick={toggleDropdown}
             >
-              <FaBars />
+              <FaBars size={"24px"} />
             </button>
 
             {isDropdownOpen && (
