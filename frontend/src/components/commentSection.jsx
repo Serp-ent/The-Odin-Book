@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useFetcher } from "react-router-dom";
 import { ClipLoader } from 'react-spinners'
 import CommentInput from "./CommentInput";
@@ -18,11 +18,27 @@ const fetchComments = async (postId) => {
 }
 
 export default function CommentSection({ postId }) {
-  const fetcher = useFetcher();
+  const queryClient = useQueryClient();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['comments'],
+    queryKey: ['comments', postId],
     queryFn: () => fetchComments(postId),
+  });
+
+  const mutation = useMutation({
+    mutationFn: (newComment) => {
+      return fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
+        method: "POST",
+        headers: {
+          'Content-Type': "application/json",
+          'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify({ content: newComment.content }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['comments', postId]);
+    }
   });
 
   if (isLoading) {
@@ -41,7 +57,7 @@ export default function CommentSection({ postId }) {
 
   return (
     <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
-      <CommentInput />
+      <CommentInput onSubmit={content => mutation.mutate({ postId, content })} />
 
       {
         comments.length > 0 ? (
