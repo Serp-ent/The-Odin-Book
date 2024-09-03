@@ -18,17 +18,31 @@ export function AuthProvider({ children }) {
     }
   };
 
-  useEffect(() => {
+  const isTokenExpired = (token) => {
+    try {
+      const decodedToken = jwtDecode(token);
+      return (decodedToken.exp * 1000 < Date.now());
+    } catch (err) {
+      console.error('Invalid token', error);
+      return true;
+    }
+  }
 
+  useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
-      setUserId(getUserIdFromToken(token));
-      setIsAuthenticated(true);
+      if (isTokenExpired(token)) {
+        localStorage.removeItem('authToken');
+        setUserId(null);
+        setIsAuthenticated(false);
+      } else {
+        setUserId(getUserIdFromToken(token));
+        setIsAuthenticated(true);
+      }
     }
     setLoading(false);
   }, []);
 
-  // TODO: if authToken expired remove it from localStorage
   const login = (authToken) => {
     localStorage.setItem('authToken', authToken);
     setUserId(getUserIdFromToken(authToken));
