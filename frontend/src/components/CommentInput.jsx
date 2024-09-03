@@ -56,7 +56,6 @@ export default function CommentInput({ onSubmit }) {
         </button>
       </fetcher.Form>
 
-      {/* TODO: add options for receiving sorted comments by top likes, and oldest */}
       {showPopup && (
         <div className="fixed bottom-5 right-5 p-2 bg-green-500 text-white rounded shadow-lg flex items-center">
           <span className="mr-2">Comment added!</span>

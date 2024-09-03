@@ -427,27 +427,44 @@ const createPost = async (req, res) => {
 
 const getComments = async (req, res) => {
   const postId = parseInt(req.params.id);
-  const limit = parseInt(req.query.limit) || 999; // TODO: change it to pagination
+  const limit = parseInt(req.query.limit) || 10; // Default limit if not provided
+  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+  const sort = req.query.sort || 'newest'; // Default sort criteria
 
-  const comments = await prisma.comment.findMany({
-    where: { postId },
-    include: {
-      author: {
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          username: true,
-          profilePic: true,
-          registeredAt: true,
+  // Ensure limit and page are valid numbers
+  if (limit <= 0 || page <= 0) {
+    return res.status(400).json({ error: 'Invalid limit or page number' });
+  }
+
+  // Determine sort order
+  const orderBy = sort === 'oldest' ? { createdAt: 'asc' } : { createdAt: 'desc' };
+
+  try {
+    const comments = await prisma.comment.findMany({
+      where: { postId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+            profilePic: true,
+            registeredAt: true,
+          }
         }
-      }
-    },
-    take: limit,
-  });
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: orderBy,
+    });
 
-  res.json({ comments });
+    res.json({ comments });
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    res.status(500).json({ error: 'Failed to fetch comments' });
+  }
 }
 
 // TODO: error handling
