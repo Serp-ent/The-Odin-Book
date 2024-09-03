@@ -4,6 +4,7 @@ import { ClipLoader } from 'react-spinners'
 import CommentInput from "./CommentInput";
 import { useState } from "react";
 import queryString from 'query-string'
+import UserHeader from "./userHeader";
 
 const fetchComments = async (postId, short = false, sort = 'newest') => {
   const queryParams = queryString.stringify({
@@ -89,17 +90,17 @@ export default function CommentSection({ postId, short = false }) {
                 <option value="top_likes">Top Likes</option>
               </select>
             </div>
-            <ul className="" >
+            <ul className="flex flex-col gap-2" >
               {comments.map(comment => {
                 return (
                   <li key={comment.id}
                     className="border bg-gray-800 p-2 rounded ">
-                    <Link to={`/profile/${comment.author.id}`}
-                      className="bg-gray-900 inline-block py-1 px-2 rounded"
-                    >
-                      {/* TODO: add user profile pic */}
-                      {comment.author.firstName} {comment.author.lastName}
-                    </Link>
+                    {/* TODO: fix following button here */}
+                    <div className="mb-2">
+                      <UserHeader
+                        user={comment.author}
+                        createdAt={comment.createdAt} />
+                    </div>
                     <div>
                       {comment.content}
                     </div>
