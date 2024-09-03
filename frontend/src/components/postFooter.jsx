@@ -22,10 +22,6 @@ const likePost = async (postId, isLiked) => {
 };
 
 export default function PostFooter({ post }) {
-  // TODO: add props validation
-  // TODO: commenting post button should move to comment section
-
-  // TODO: user should be able to remove its own comments
   // TODO: if its user post he should be able to moderate comments
   const queryClient = useQueryClient();
 

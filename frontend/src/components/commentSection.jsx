@@ -5,6 +5,7 @@ import CommentInput from "./CommentInput";
 import { useState } from "react";
 import queryString from 'query-string'
 import UserHeader from "./userHeader";
+import { useAuth } from "../auth/authContext";
 
 const fetchComments = async (postId, short = false, sort = 'newest') => {
   const queryParams = queryString.stringify({
@@ -27,6 +28,7 @@ const fetchComments = async (postId, short = false, sort = 'newest') => {
 export default function CommentSection({ postId, short = false }) {
   const queryClient = useQueryClient();
   const [sortOption, setSortOption] = useState('newest');
+  const auth = useAuth();
 
   // TODO: use useInfiniteQuery for infinite scrolling comments
   const { data, error, isLoading } = useQuery({
@@ -90,12 +92,12 @@ export default function CommentSection({ postId, short = false }) {
                 <option value="top_likes">Top Likes</option>
               </select>
             </div>
+            {/* // TODO: user should be able to remove its own comments */}
             <ul className="flex flex-col gap-2" >
               {comments.map(comment => {
                 return (
                   <li key={comment.id}
                     className="border bg-gray-800 p-2 rounded ">
-                    {/* TODO: fix following button here */}
                     <div className="mb-2">
                       <UserHeader
                         user={comment.author}
@@ -105,7 +107,18 @@ export default function CommentSection({ postId, short = false }) {
                       {comment.content}
                     </div>
 
+                    {/* // TODO: post footer should be created from array with loop to have style in one place */}
                     <div className="flex justify-end text-xs gap-1">
+                      {
+                        (auth.userId === comment.author.id) && (
+                          <button
+                            className="border rounded px-2 py-1"
+                            onClick={() => console.log("remove comment with id", comment.id)}
+                          >
+                            Delete
+                          </button>
+                        )
+                      }
                       <button className="border rounded px-2 py-1"
                         onClick={() => console.log("Replying to comment with id", comment.id)}
                       >

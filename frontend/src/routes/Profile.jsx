@@ -4,6 +4,7 @@ import PostList from "../components/PostList";
 import { format } from 'date-fns'
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../auth/authContext";
 
 // TODO: generate avatar using Gravatar API
 export async function action({ request, params }) {
@@ -75,7 +76,6 @@ const fetchUserPosts = async (userId) => {
 export default function Profile() {
   const { userId } = useParams();
   const container = useRef(null);
-
   // Fetch user profile
   const { data: userProfile, isLoading: isProfileLoading, isError: isProfileError } = useQuery({
     queryKey: ['user', userId],
