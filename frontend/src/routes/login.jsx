@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/authContext";
 
-// TODO: add links if user don't have already account
-// TODO: prevent user accessing login and register when logged in
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -11,14 +9,6 @@ export default function Login() {
 
   const auth = useAuth();
   const navigate = useNavigate();
-
-  // TODO: this should be in wrapper instead of useEffect
-  useEffect(() => {
-    // Redirect to home page if user is authenticated
-    if (auth.isAuthenticated) {
-      navigate('/');
-    }
-  }, [auth.isAuthenticated, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +36,6 @@ export default function Login() {
     navigate('/');
   }
 
-  // TODO: responsive form on smaller screens
   return (
     <main
       className='text-white p-4 flex flex-col items-center'

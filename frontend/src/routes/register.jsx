@@ -28,7 +28,6 @@ export default function Register() {
     }));
   }
 
-  // TODO: responsive form on smaller screens
   return (
     <main
       className='text-white p-4 flex flex-col items-center'
