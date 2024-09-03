@@ -92,7 +92,6 @@ export default function CommentSection({ postId, short = false }) {
                 <option value="top_likes">Top Likes</option>
               </select>
             </div>
-            {/* // TODO: user should be able to remove its own comments */}
             <ul className="flex flex-col gap-2" >
               {comments.map(comment => {
                 return (

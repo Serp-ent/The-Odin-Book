@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { useAuth } from "../auth/authContext";
 
 // TODO: on server prevent user from following himself
+// TODO: add size for that component
 export default function UserHeader({ user, createdAt }) {
   const auth = useAuth();
   const queryClient = useQueryClient();

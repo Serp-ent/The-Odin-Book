@@ -37,8 +37,6 @@ const createComment = async ({ postId, content }) => {
   return response.json();
 };
 
-
-// TODO: prevent user following himself 
 export default function Post() {
   const { postId } = useParams();
   const queryClient = useQueryClient();
