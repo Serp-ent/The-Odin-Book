@@ -427,6 +427,7 @@ const createPost = async (req, res) => {
 
 const getComments = async (req, res) => {
   const postId = parseInt(req.params.id);
+  const limit = parseInt(req.query.limit) || 999; // TODO: change it to pagination
 
   const comments = await prisma.comment.findMany({
     where: { postId },
@@ -442,7 +443,8 @@ const getComments = async (req, res) => {
           registeredAt: true,
         }
       }
-    }
+    },
+    take: limit,
   });
 
   res.json({ comments });

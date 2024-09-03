@@ -3,27 +3,29 @@ import { Link, useFetcher } from "react-router-dom";
 import { ClipLoader } from 'react-spinners'
 import CommentInput from "./CommentInput";
 
-const fetchComments = async (postId) => {
-  // TODO: change link comment
-  const response = await fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
+const fetchComments = async (postId, short = false) => {
+  // Determine the endpoint based on whether we want short comments or all comments
+  const limitParam = short ? '?limit=2' : '';
+  const response = await fetch(`http://localhost:3000/api/posts/${postId}/comments${limitParam}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('authToken')}`,
     }
   });
+
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
 
   return response.json();
 }
-
-export default function CommentSection({ postId }) {
+// TODO: add option to specify if the comments should be short
+export default function CommentSection({ postId, short = false }) {
   const queryClient = useQueryClient();
 
   // TODO: use useInfiniteQuery for infinite scrolling comments
   const { data, error, isLoading } = useQuery({
     queryKey: ['comments', postId],
-    queryFn: () => fetchComments(postId),
+    queryFn: () => fetchComments(postId, short),
   });
 
   const mutation = useMutation({

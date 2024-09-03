@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useFetcher } from "react-router-dom";
+import { FaRegPaperPlane } from "react-icons/fa";
 
 export default function CommentInput({ onSubmit }) {
   const fetcher = useFetcher();
@@ -30,15 +31,19 @@ export default function CommentInput({ onSubmit }) {
         method="POST"
         onSubmit={handleSubmit}
       >
+        {/* TODO: change to text area */}
+        {/* TODO: when user creates comment he don't see it while limiting */}
         <input
-          className="border bg-gray-800 p-1 rounded grow"
+          className="border text-xs bg-gray-800 p-1 rounded grow"
           name="content"
           placeholder="comment now..."
           value={content}
           onChange={e => setContent(e.target.value)}
         />
 
-        <button className="rounded border bg-gray-900 p-1">Post</button>
+        <button className="rounded border bg-gray-900 p-1">
+          <FaRegPaperPlane color="white" />
+        </button>
       </fetcher.Form>
 
       {/* TODO: add options for receiving sorted comments by top likes, and oldest */}
