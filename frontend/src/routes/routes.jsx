@@ -9,7 +9,7 @@ import Profile, {
 import Login from './login';
 import ProtectedRoute from '../auth/protectedRoute';
 import Register from './register';
-import Post, { createComment, loader as postLoader } from './Post';
+import Post from './Post';
 import FollowedUsers from './followedUsers';
 import ProfileSettings from './profileSettings';
 import FindFriends from './findFriends';
@@ -31,14 +31,12 @@ const routes = [
           {
             path: '/post/:postId',
             element: <ProtectedRoute element={<Post />} />,
-            loader: postLoader,
           },
           {
             path: '/post/:postId/like',
           },
           {
             path: '/post/:postId/comment',
-            action: createComment,
           },
           {
             path: '/post/',

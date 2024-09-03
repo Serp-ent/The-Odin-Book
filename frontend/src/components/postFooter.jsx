@@ -1,6 +1,7 @@
 import { useFetcher } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
+import PropTypes from 'prop-types'
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const likePost = async (postId, isLiked) => {
@@ -29,19 +30,27 @@ export default function PostFooter({ post }) {
   const queryClient = useQueryClient();
 
   const { mutate: likePostMutation } = useMutation({
-    mutationFn: (isLiked) => likePost(post.id, isLiked),
-    onSuccess: (updatedPost) => {
-      queryClient.invalidateQueries(['post', post.id])
+    mutationFn: () => likePost(post.id, post.isLiked),
+    onMutate: () => {
+      // Optimistic update
+      queryClient.setQueryData(['post', post.id], (oldData) => ({
+        ...oldData,
+        isLiked: !post.isLiked,
+        likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+      }));
     },
-    onError: (err) => {
+    onError: (err, variables, context) => {
       console.error('Error liking the post', err);
-    }
+      queryClient.setQueryData(['post', post.id], context.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['post', post.id]);
+    },
   });
 
   const handleLikeClick = () => {
-    likePostMutation(post.isLiked);
-  }
-
+    likePostMutation();
+  };
   return (
     <div className="flex justify-end text-xl gap-4 border rounded p-2">
       <div className="flex items-center gap-4 text-xl">
@@ -70,3 +79,12 @@ export default function PostFooter({ post }) {
     </div>
   );
 }
+
+PostFooter.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    likes: PropTypes.number.isRequired,
+    isLiked: PropTypes.bool.isRequired,
+    commentsCount: PropTypes.number.isRequired,
+  }).isRequired,
+};

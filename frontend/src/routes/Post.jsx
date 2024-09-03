@@ -1,101 +1,88 @@
-import { Link, useFetcher, useLoaderData, useLocation, useNavigate } from "react-router-dom"
+import { Link, useFetcher, useLoaderData, useLocation, useNavigate, useParams } from "react-router-dom"
 import { json } from "react-router-dom";
 import UserHeader from "../components/userHeader";
 import { useEffect, useState } from "react";
 import PostFooter from "../components/postFooter";
 import CommentSection from "../components/commentSection";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const loader = async ({ params }) => {
-  const postId = parseInt(params.postId);
-
-  // Simulate a 3-second delay
-  // TODO: add loading bar
-  // await new Promise(resolve => setTimeout(resolve, 2000));
-
+const fetchPost = async (postId) => {
   const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-    }
+    },
   });
+
   if (!response.ok) {
-    throw json({ message: 'Failed to load posts' }, { status: response.status });
+    throw new Error('Failed to load post');
   }
 
-  const data = await response.json();
-  return data;
-}
+  return response.json();
+};
 
-export const createComment = async ({ request, params }) => {
-  const formData = await request.formData();
-  const response = await fetch(`http://localhost:3000/api/posts/${params.postId}/comments`, {
-    method: "POST",
+const createComment = async ({ postId, content }) => {
+  const response = await fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
+    method: 'POST',
     headers: {
-      'Content-Type': "application/json",
-      'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
-    body: JSON.stringify({
-      content: formData.get("content"),
-    })
+    body: JSON.stringify({ content }),
   });
 
   if (!response.ok) {
     throw new Error('Could not create comment');
   }
 
-  return null;
-}
+  return response.json();
+};
 
-// TODO: allow user for posting images
-// TODO: create some kind of guest account
+
+// TODO: prevent user following himself 
 export default function Post() {
-  const post = useLoaderData();
-  const [postData, setPostData] = useState(post);
+  const { postId } = useParams();
+  const queryClient = useQueryClient();
 
-  const likeFetcher = useFetcher({ key: "likePost" });
-  const followFetcher = useFetcher({ key: "followUser" });
+  const { data: postData, error, isLoading } = useQuery({
+    queryKey: ['post', postId],
+    queryFn: () => fetchPost(postId),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-  // TODO: should remove authorId field (duplicates data with author object)
-  useEffect(() => {
-    if (followFetcher.data) {
-      setPostData(prevPost => ({
-        ...prevPost,
-        author: followFetcher.data
+  const commentMutation = useMutation({
+    mutationFn: createComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['post', postId]);
+    },
+  });
+
+  const followMutation = useMutation({
+    mutationFn: (updatedAuthor) => {/* Add your follow/unfollow logic here */ },
+    onSuccess: (updatedAuthor) => {
+      queryClient.setQueryData(['post', postId], (oldData) => ({
+        ...oldData,
+        author: updatedAuthor,
       }));
-    }
-  }, [followFetcher.data]);
+    },
+  });
 
-  useEffect(() => {
-    if (likeFetcher.data) {
-      const { isLiked, likesCount } = likeFetcher.data;
-      setPostData(prevData => ({
-        ...prevData,
-        isLiked,
-        likes: likesCount,
-      }));
-    }
-
-  }, [likeFetcher.data])
-
-  if (navigation.state === 'loading') {
-    return <div>Loading...</div>
-  }
-
-  // TODO: add comment infinite scrolling
-  // TODO: add sorting comments (newest, top likes, oldest etc)
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading post</div>;
 
   return (
-    <main
-      className='p-4 container bg-gray-800 text-white over overflow-y-auto flex flex-col gap-2'>
+    <main className="p-4 container bg-gray-800 text-white overflow-y-auto flex flex-col gap-2">
       <UserHeader user={postData.author} />
 
-      <div className="">
-        {post.content}
+      <div className="mt-4">
+        {postData.content}
       </div>
 
       <PostFooter post={postData} />
 
-
-      <CommentSection postId={post.id} />
+      <CommentSection
+        postId={postData.id}
+        onCommentSubmit={(content) => commentMutation.mutate({ postId: postData.id, content })}
+      />
     </main>
   );
 }
