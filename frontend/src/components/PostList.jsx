@@ -1,43 +1,9 @@
-import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
-import { Form, json, Link, useFetcher, useLoaderData } from 'react-router-dom';
+import { useEffect } from "react";
+import { useFetcher } from 'react-router-dom';
 import PostListItem from "./PostListItem";
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ClipLoader } from 'react-spinners'
 import { debounce } from 'loadsh';
-
-// TODO: add loading spinner
-export const action = async ({ request, params }) => {
-  const formData = await request.formData();
-  const like = formData.get('like') === 'true';
-  const postId = parseInt(params.postId);
-
-  try {
-    const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-      },
-      body: JSON.stringify({ like }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update like status');
-    }
-
-    const result = await response.json();
-    return {
-      id: postId,
-      isLiked: like,
-      likesCount: result.likesCount,
-    };
-  } catch (error) {
-    console.error('Error liking/unliking post:', error);
-    return {
-      error: error.message,
-    };
-  }
-};
 
 export const createPost = async ({ request }) => {
   const formData = await request.formData();
@@ -58,10 +24,7 @@ export const createPost = async ({ request }) => {
   return null;
 };
 
-// TODO: extract create post component
 export default function PostList({ scrollContainerRef, initialType = "all", initialUserId = null }) {
-  const followFetcher = useFetcher({ key: "followUser" });
-  const likeFetcher = useFetcher({ key: "likePost" });
 
   const fetchPosts = async ({ pageParam = 1 }) => {
     const getEndPoint = (type, userId, page) => {
@@ -134,24 +97,6 @@ export default function PostList({ scrollContainerRef, initialType = "all", init
       };
     }
   }, [fetchNextPage, scrollContainerRef]);
-
-  // useEffect(() => {
-  //   if (followFetcher.data) {
-  //     const user = followFetcher.data;
-  //     setPosts(prevPosts =>
-  //       prevPosts.map(post => post.author.id === user.id ? { ...post, author: user } : post)
-  //     );
-  //   }
-  // }, [followFetcher.data]);
-
-  // useEffect(() => {
-  //   if (likeFetcher.data) {
-  //     const { id, isLiked, likesCount } = likeFetcher.data;
-  //     setPosts(prevPosts =>
-  //       prevPosts.map(post => post.id === id ? { ...post, isLiked, likes: likesCount } : post)
-  //     );
-  //   }
-  // }, [likeFetcher.data]);
 
   const posts = data?.pages?.flatMap(page => page.posts) || [];
   return (

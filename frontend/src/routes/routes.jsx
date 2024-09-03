@@ -1,7 +1,6 @@
 import Layout from '../components/layout';
 import ErrorPage from './error-page';
 import PostList, {
-  action as likeAction,
   createPost,
 } from '../components/PostList';
 import Profile, {
@@ -37,7 +36,6 @@ const routes = [
           },
           {
             path: '/post/:postId/like',
-            action: likeAction,
           },
           {
             path: '/post/:postId/comment',

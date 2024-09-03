@@ -6,12 +6,14 @@ export default function Home() {
   const scrollContainerRef = useRef(null);
 
   return (
-    <div 
-      ref={scrollContainerRef} 
+    <div
+      ref={scrollContainerRef}
       className="overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 h-screen"
     >
       <CreatePost />
-      <PostList scrollContainerRef={scrollContainerRef} />
+      <PostList
+        scrollContainerRef={scrollContainerRef}
+        initialType="followed" />
     </div>
   );
 }

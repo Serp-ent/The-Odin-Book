@@ -4,9 +4,6 @@ import UserHeader from "./userHeader";
 import PostFooter from "./postFooter";
 
 export default function PostListItem({ post }) {
-  // TODO: the post page should display post only of followed users
-  // and user own posts
-
   // TODO: from post api remove authorId and leave only author
   // TODO: add favicon
   // TODO: maybe for post lists display only first comment?
@@ -22,7 +19,6 @@ export default function PostListItem({ post }) {
         </li>
       </Link>
 
-      {/* // TODO:  fix button style (refresh is required) */}
       <PostFooter post={post}></PostFooter>
     </div>
   );

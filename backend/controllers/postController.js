@@ -1,5 +1,115 @@
 const prisma = require("../db/prismaClient");
 
+const getFollowedPosts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const offset = (page - 1) * limit;
+
+  // Get the IDs of the users that the current user follows
+  const followedUserIds = await prisma.follow.findMany({
+    where: {
+      followerId: req.user.id,
+    },
+    select: {
+      followedId: true,
+    },
+  }).then(followedUsers => followedUsers.map(follow => follow.followedId));
+
+  // If no followed users, return an empty result
+  if (followedUserIds.length === 0) {
+    return res.json({
+      status: 'success',
+      posts: [],
+      totalPages: 0,
+      page,
+    });
+  }
+
+  const totalPosts = await prisma.post.count({
+    where: {
+      authorId: { in: followedUserIds },
+    },
+  });
+
+  const posts = await prisma.post.findMany({
+    where: {
+      authorId: { in: followedUserIds },
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          username: true,
+          profilePic: true,
+          registeredAt: true,
+          updatedAt: true,
+          // Check if the current user follows the author
+          followedBy: {
+            where: {
+              followerId: req.user.id,
+            },
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          likes: true, // Get the total number of likes
+          comments: true,
+        }
+      },
+      // Check if the current user has liked the post
+      likes: {
+        where: {
+          userId: req.user.id,
+        },
+        select: {
+          id: true,
+        },
+      },
+    },
+    skip: offset,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc', // Order by creation date, newest first
+    },
+  });
+
+  const totalPages = Math.ceil(totalPosts / limit);
+
+  // Flatten the structure and add the isLiked and isFollowed properties
+  const adjustedPosts = posts.map(post => ({
+    ...post,
+    // Whether the current user liked the post
+    isLiked: post.likes.length > 0,
+    commentsCount: post._count.comments,
+    likes: post._count.likes, // Number of likes
+    // Whether the current user follows the author
+    author: {
+      ...post.author,
+      isFollowed: post.author.followedBy.length > 0,
+    },
+  }));
+
+  // Clean up the response by removing unnecessary properties
+  adjustedPosts.forEach(post => {
+    delete post['_count'];
+    delete post.author['followedBy'];
+  });
+
+  res.json({
+    status: 'success',
+    posts: adjustedPosts,
+    totalPages,
+    page,
+  });
+}
 // TODO: add async handler
 // TODO: add tests
 const getPosts = async (req, res) => {
@@ -359,4 +469,5 @@ module.exports = {
   createPost,
   createComment,
   getComments,
+  getFollowedPosts,
 };

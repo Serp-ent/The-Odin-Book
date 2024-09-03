@@ -7,6 +7,10 @@ router.get('/',
   passport.authenticate('jwt', { session: false }),
   controller.getPosts);
 
+router.get('/followed',
+  passport.authenticate('jwt', { session: false }),
+  controller.getFollowedPosts);
+
 router.post('/',
   passport.authenticate('jwt', { session: false }),
   controller.createPost);
