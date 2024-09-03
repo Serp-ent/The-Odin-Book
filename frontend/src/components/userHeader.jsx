@@ -2,10 +2,9 @@ import { Link, useFetcher } from "react-router-dom";
 import { format } from 'date-fns';
 import { FaRegEye } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import PropTypes from 'prop-types';
 
 export default function UserHeader({ user, createdAt }) {
-  const fetcher = useFetcher({ key: "followUser" });
-
   const queryClient = useQueryClient();
   const followMutation = useMutation({
     mutationFn: async (follow) => {
@@ -16,7 +15,7 @@ export default function UserHeader({ user, createdAt }) {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
         body: JSON.stringify(
-          { follow: !user.isFollowed }),
+          { follow: follow }),
       });
 
       if (!response.ok) {
@@ -63,3 +62,14 @@ export default function UserHeader({ user, createdAt }) {
     </div>
   );
 }
+
+UserHeader.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    profilePic: PropTypes.string,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    isFollowed: PropTypes.bool.isRequired,
+  }).isRequired,
+  createdAt: PropTypes.string,
+};
