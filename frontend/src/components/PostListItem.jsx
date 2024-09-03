@@ -4,7 +4,6 @@ import UserHeader from "./userHeader";
 import PostFooter from "./postFooter";
 
 export default function PostListItem({ post }) {
-  // TODO: from post api remove authorId and leave only author
   // TODO: add favicon
   // TODO: maybe for post lists display only first comment?
   return (

@@ -101,6 +101,7 @@ const getFollowedPosts = async (req, res) => {
   adjustedPosts.forEach(post => {
     delete post['_count'];
     delete post.author['followedBy'];
+    delete post.authorId;
   });
 
   res.json({
@@ -183,6 +184,7 @@ const getPosts = async (req, res) => {
   adjustedPosts.forEach(post => {
     delete post['_count'];
     delete post.author['followedBy'];
+    delete post.authorId;
   });
 
   res.json({

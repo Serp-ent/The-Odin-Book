@@ -3,8 +3,6 @@ import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 
-// TODO: maybe it would be better to receive id from server
-// instead of decoding jwt
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState(null);
