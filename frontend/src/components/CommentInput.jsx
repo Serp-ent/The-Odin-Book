@@ -14,6 +14,9 @@ export default function CommentInput({ onSubmit }) {
     setContent('');
     setShowPopup(true);
 
+    const textarea = event.target.querySelector('textarea');
+    textarea.style.height = 'auto';
+
     setTimeout(() => {
       setShowPopup(false);
     }, 3000)
@@ -23,22 +26,29 @@ export default function CommentInput({ onSubmit }) {
     setShowPopup(false);
   }
 
+  const handleInputChange = (e) => {
+    setContent(e.target.value);
+
+    e.target.style.height = 'auto';
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  }
+
   return (
     <>
       <fetcher.Form
-        className="flex gap-1"
+        className="flex gap-1 items-end"
         action="comment"
         method="POST"
         onSubmit={handleSubmit}
       >
-        {/* TODO: change to text area */}
         {/* TODO: when user creates comment he don't see it while limiting */}
-        <input
-          className="border text-xs bg-gray-800 p-1 rounded grow"
+        <textarea
+          className="border text-xs bg-gray-800 p-1 rounded grow overflow-y-hidden resize-none"
           name="content"
           placeholder="comment now..."
           value={content}
-          onChange={e => setContent(e.target.value)}
+          onChange={handleInputChange}
+          rows={1}
         />
 
         <button className="rounded border bg-gray-900 p-1">

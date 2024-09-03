@@ -18,7 +18,6 @@ const fetchComments = async (postId, short = false) => {
 
   return response.json();
 }
-// TODO: add option to specify if the comments should be short
 export default function CommentSection({ postId, short = false }) {
   const queryClient = useQueryClient();
 
