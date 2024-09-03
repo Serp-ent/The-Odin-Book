@@ -5,19 +5,23 @@ const getUserWithId = async (req, res) => {
   // TODO: handle non int id
   const id = parseInt(req.params.id);
 
-  // TODO: handle non existent user
-  // TODO: write tests using supertest
+  // TODO: handle non-existent user
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
       id: true,
       firstName: true,
+      email: true,
       lastName: true,
       profilePic: true,
       registeredAt: true,
       username: true,
     }
   });
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
 
   const isFollowed = req.user ? await prisma.follow.findUnique({
     where: {
@@ -28,7 +32,24 @@ const getUserWithId = async (req, res) => {
     }
   }) !== null : false;
 
-  res.json({ ...user, isFollowed });
+  const followerCount = await prisma.follow.count({
+    where: {
+      followedId: user.id,
+    }
+  });
+
+  const followedCount = await prisma.follow.count({
+    where: {
+      followerId: user.id,
+    }
+  });
+
+  res.json({
+    ...user,
+    isFollowed,
+    followerCount,
+    followedCount,
+  });
 }
 
 // TODO: add error handling

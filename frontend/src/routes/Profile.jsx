@@ -1,6 +1,7 @@
 import { json, Link, useFetcher, useLoaderData, useParams } from "react-router-dom";
 import UserHeader from "../components/userHeader";
 import PostList from "../components/PostList";
+import { format } from 'date-fns'
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -45,9 +46,6 @@ export async function action({ request, params }) {
 // TODO: if its user own allow to modify it
 // TODO: allow user to change profile pic
 
-// TODO: the profile should use PostList
-
-// TODO: maybe add some info like number of followers
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
     headers: {
@@ -100,9 +98,26 @@ export default function Profile() {
     return <div>Error loading data</div>;
   }
 
+
+  const formattedDate = format(new Date(userProfile.registeredAt), 'PPpp');
   return (
     <main className="p-2 flex flex-col container text-white gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
       <UserHeader user={userProfile} />
+      <div className="text-sm">
+        <p>Email: {userProfile.email}</p>
+        <p>Registered: {formattedDate}</p>
+      </div>
+
+      <div className="flex justify-center gap-5 text-sm">
+        <div className="rounded border py-1 px-2">
+          <h4>Followers</h4>
+          <p className="text-center text-xl">{userProfile.followerCount}</p>
+        </div>
+        <div className="rounded border py-1 px-2">
+          <h4>Followed</h4>
+          <p className="text-center text-xl">{userProfile.followedCount}</p>
+        </div>
+      </div>
 
       <div>
         <h3 className="flex justify-center text-xl p-1 border rounded">
