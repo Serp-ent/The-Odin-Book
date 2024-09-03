@@ -1,9 +1,9 @@
 import { Link, useFetcher } from "react-router-dom";
-
+import { format } from 'date-fns';
 import { FaRegEye } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export default function UserHeader({ user }) {
+export default function UserHeader({ user, createdAt }) {
   const fetcher = useFetcher({ key: "followUser" });
 
   const queryClient = useQueryClient();
@@ -38,14 +38,19 @@ export default function UserHeader({ user }) {
 
   // TODO: add props validation
 
+  const formattedDate = createdAt ? format(new Date(createdAt), 'PPpp') : null;
+
   return (
     <div className="flex justify-between items-center">
       <Link className="flex items-center gap-1"
         to={`/profile/${user.id}`}>
         <img src={user.profilePic} className="w-8 rounded-full" />
-        <h4 className="text-l">
-          {user.firstName} {user.lastName}
-        </h4>
+        <div className="flex flex-col">
+          <h4 className="text-l">
+            {user.firstName} {user.lastName}
+          </h4>
+          {formattedDate && <p className="text-xs">{formattedDate}</p>}
+        </div>
       </Link>
 
       <button className="px-2 py-1"

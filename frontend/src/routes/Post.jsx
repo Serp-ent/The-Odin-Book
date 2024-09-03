@@ -71,7 +71,7 @@ export default function Post() {
 
   return (
     <main className="p-4 container bg-gray-800 text-white overflow-y-auto flex flex-col gap-2">
-      <UserHeader user={postData.author} />
+      <UserHeader user={postData.author} createdAt={postData.createdAt} />
 
       <div className="mt-4">
         {postData.content}
