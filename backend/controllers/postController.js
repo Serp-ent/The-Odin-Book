@@ -430,6 +430,7 @@ const getComments = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10; // Default limit if not provided
   const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
   const sort = req.query.sort || 'newest'; // Default sort criteria
+  const userId = req.user.id; // Assuming user ID is available in req.user
 
   // Ensure limit and page are valid numbers
   if (limit <= 0 || page <= 0) {
@@ -440,6 +441,7 @@ const getComments = async (req, res) => {
   const orderBy = sort === 'oldest' ? { createdAt: 'asc' } : { createdAt: 'desc' };
 
   try {
+    // Fetch comments
     const comments = await prisma.comment.findMany({
       where: { postId },
       include: {
@@ -460,12 +462,37 @@ const getComments = async (req, res) => {
       orderBy: orderBy,
     });
 
-    res.json({ comments });
+    // Fetch follow status for each comment author
+    const followStatus = await prisma.follow.findMany({
+      where: {
+        followerId: userId,
+        followedId: {
+          in: comments.map(comment => comment.authorId),
+        }
+      },
+      select: {
+        followedId: true
+      }
+    });
+
+    // Create a Set of followed user IDs for quick lookup
+    const followedUserIds = new Set(followStatus.map(follow => follow.followedId));
+
+    // Add isFollowed property to each comment
+    const commentsWithFollowStatus = comments.map(comment => ({
+      ...comment,
+      author: {
+        ...comment.author,
+        isFollowed: followedUserIds.has(comment.authorId),
+      }
+    }));
+
+    res.json({ comments: commentsWithFollowStatus });
   } catch (error) {
     console.error('Error fetching comments:', error);
     res.status(500).json({ error: 'Failed to fetch comments' });
   }
-}
+};
 
 // TODO: error handling
 const createComment = async (req, res) => {
