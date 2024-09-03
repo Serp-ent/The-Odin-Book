@@ -4,26 +4,6 @@ import PostList from "../components/PostList";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-export const loader = async ({ params }) => {
-  const userId = parseInt(params.userId);
-
-  // Simulate a 3-second delay
-  // TODO: add loading bar
-  // await new Promise(resolve => setTimeout(resolve, 2000));
-
-  const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-    }
-  });
-  if (!response.ok) {
-    throw json({ message: 'Failed to load posts' }, { status: response.status });
-  }
-
-  const user = await response.json();
-  return { user };
-}
-
 // TODO: generate avatar using Gravatar API
 // TODO: should revalidate followed sidebar
 export async function action({ request, params }) {
@@ -50,41 +30,6 @@ export async function action({ request, params }) {
   const result = await response.json();
   return json(result, { status: 200 });
 }
-
-// TODO: use this with promise all
-export const profileLoader = async ({ params }) => {
-  const userId = parseInt(params.userId);
-
-  // Fetch the user profile
-  const userProfileResponse = await fetch(`http://localhost:3000/api/users/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-    }
-  });
-
-  if (!userProfileResponse.ok) {
-    throw new Error('Failed to load user profile');
-  }
-
-  const userProfile = await userProfileResponse.json();
-
-  // Fetch the user posts
-  const userPostsResponse = await fetch(`http://localhost:3000/api/users/${userId}/posts`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-    }
-  });
-
-  if (!userPostsResponse.ok) {
-    throw new Error('Failed to load user posts');
-  }
-
-  const userPosts = await userPostsResponse.json();
-
-  // Return both the profile and posts data
-  return { userProfile, userPosts };
-};
-
 
 // TODO: add pipeline that automatically formats 
 // TODO: handle if its the user own profile

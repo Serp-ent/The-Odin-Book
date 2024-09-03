@@ -4,7 +4,6 @@ import PostList, {
   createPost,
 } from '../components/PostList';
 import Profile, {
-  profileLoader,
   action as followProfile,
 } from './Profile';
 import Login from './login';
