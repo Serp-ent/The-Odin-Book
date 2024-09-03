@@ -6,7 +6,6 @@ import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 // TODO: generate avatar using Gravatar API
-// TODO: should revalidate followed sidebar
 export async function action({ request, params }) {
   const formData = await request.formData();
   if (!['true', 'false'].includes(formData.get('follow'))) {
@@ -34,7 +33,6 @@ export async function action({ request, params }) {
 
 // TODO: add pipeline that automatically formats 
 // TODO: handle if its the user own profile
-// TODO: handle follow action using useFetcher
 // TODO: maybe add some kind of bio
 // TODO: add fetching latest comments
 
@@ -110,6 +108,7 @@ export default function Profile() {
 
       <div className="flex justify-center gap-5 text-sm">
         <div className="rounded border py-1 px-2">
+          {/* TODO: these should be buttons that list followed users and followers */}
           <h4>Followers</h4>
           <p className="text-center text-xl">{userProfile.followerCount}</p>
         </div>

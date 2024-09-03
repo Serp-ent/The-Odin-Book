@@ -3,8 +3,11 @@ import { format } from 'date-fns';
 import { FaRegEye } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PropTypes from 'prop-types';
+import { useAuth } from "../auth/authContext";
 
+// TODO: on server prevent user from following himself
 export default function UserHeader({ user, createdAt }) {
+  const auth = useAuth();
   const queryClient = useQueryClient();
   const followMutation = useMutation({
     mutationFn: async (follow) => {
@@ -35,8 +38,6 @@ export default function UserHeader({ user, createdAt }) {
     await followMutation.mutateAsync(newFollowStatus);
   };
 
-  // TODO: add props validation
-
   const formattedDate = createdAt ? format(new Date(createdAt), 'PPpp') : null;
 
   return (
@@ -52,13 +53,17 @@ export default function UserHeader({ user, createdAt }) {
         </div>
       </Link>
 
-      <button className="px-2 py-1"
-        name="follow"
-        value={user.isFollowed ? "false" : "true"}
-        onClick={handleFollowClick}
-      >
-        {user.isFollowed ? <FaRegEye className="text-xl" /> : 'Follow'}
-      </button>
+      {
+        auth.userId !== user.id && (
+          <button className="px-2 py-1"
+            name="follow"
+            value={user.isFollowed ? "false" : "true"}
+            onClick={handleFollowClick}
+          >
+            {user.isFollowed ? <FaRegEye className="text-xl" /> : 'Follow'}
+          </button>
+        )
+      }
     </div>
   );
 }
