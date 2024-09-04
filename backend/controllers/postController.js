@@ -427,21 +427,21 @@ const createPost = async (req, res) => {
 
 const getComments = async (req, res) => {
   const postId = parseInt(req.params.id);
-  const limit = parseInt(req.query.limit) || 10; // Default limit if not provided
-  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-  const sort = req.query.sort || 'newest'; // Default sort criteria
+  const limit = parseInt(req.query.limit) || 10; // Default limit to 10
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const sort = req.query.sort || 'newest'; // Default sort is 'newest'
   const userId = req.user.id; // Assuming user ID is available in req.user
 
-  // Ensure limit and page are valid numbers
+  // Validate limit and page number
   if (limit <= 0 || page <= 0) {
     return res.status(400).json({ error: 'Invalid limit or page number' });
   }
 
-  // Determine sort order
+  // Determine sorting order
   const orderBy = sort === 'oldest' ? { createdAt: 'asc' } : { createdAt: 'desc' };
 
   try {
-    // Fetch comments
+    // Fetch comments with pagination and sorting
     const comments = await prisma.comment.findMany({
       where: { postId },
       include: {
@@ -462,6 +462,15 @@ const getComments = async (req, res) => {
       orderBy: orderBy,
     });
 
+    // Fetch the total number of comments for the post
+    const totalComments = await prisma.comment.count({
+      where: { postId },
+    });
+
+    // Determine if there are more pages
+    const hasNextPage = page * limit < totalComments;
+    const nextPage = hasNextPage ? page + 1 : null;
+
     // Fetch follow status for each comment author
     const followStatus = await prisma.follow.findMany({
       where: {
@@ -478,21 +487,29 @@ const getComments = async (req, res) => {
     // Create a Set of followed user IDs for quick lookup
     const followedUserIds = new Set(followStatus.map(follow => follow.followedId));
 
-    // Add isFollowed property to each comment
+    // Add isFollowed property to each comment author
     const commentsWithFollowStatus = comments.map(comment => ({
       ...comment,
       author: {
         ...comment.author,
-        isFollowed: followedUserIds.has(comment.authorId),
+        isFollowed: followedUserIds.has(comment.author.id),
       }
     }));
 
-    res.json({ comments: commentsWithFollowStatus });
+    // Respond with comments and pagination info
+    res.json({
+      comments: commentsWithFollowStatus,
+      nextPage,
+      hasNextPage,
+      currentPage: page,
+      totalComments,
+    });
   } catch (error) {
     console.error('Error fetching comments:', error);
     res.status(500).json({ error: 'Failed to fetch comments' });
   }
 };
+
 
 // TODO: error handling
 const createComment = async (req, res) => {

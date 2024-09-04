@@ -1,17 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useFetcher } from "react-router-dom";
 import { createComment } from '../routes/Post'
 import { ClipLoader } from 'react-spinners'
 import CommentInput from "./CommentInput";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import queryString from 'query-string'
 import UserHeader from "./userHeader";
 import { useAuth } from "../auth/authContext";
 
-const fetchComments = async (postId, short = false, sort = 'newest') => {
+const fetchComments = async ({ postId, pageParam = 1, short = false, sort = 'newest' }) => {
   const queryParams = queryString.stringify({
-    limit: short ? 2 : undefined,
+    limit: short ? 2 : 10,
     sort: sort !== 'newest' ? sort : 'newest',
+    page: pageParam,
   });
 
   const response = await fetch(`http://localhost:3000/api/posts/${postId}/comments?${queryParams}`, {
@@ -23,50 +24,67 @@ const fetchComments = async (postId, short = false, sort = 'newest') => {
     throw new Error('Network response was not ok');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  return {
+    comments: data.comments,
+    nextPage: data.nextPage, // Assuming API sends nextPage info
+    hasNextPage: data.hasNextPage, // Assuming API sends hasNextPage info
+  }
 }
 
 export default function CommentSection({ postId, short = false }) {
   const queryClient = useQueryClient();
   const [sortOption, setSortOption] = useState('newest');
-  const [comments, setComments] = useState([]);
   const auth = useAuth();
 
-  // TODO: use useInfiniteQuery for infinite scrolling comments
-  const { error, isLoading } = useQuery({
+  const fetchCommentsFn = useCallback(({ pageParam = 1 }) => {
+    return fetchComments({ postId, pageParam, short, sort: sortOption });
+  }, [postId, short, sortOption]);
+
+  const {
+    data,
+    error,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ['comments', postId, short, sortOption],
-    queryFn: async () => {
-      const fetchedComments = await fetchComments(postId, short, sortOption);
-      setComments(fetchedComments.comments);
-      return fetchedComments;
+    queryFn: fetchCommentsFn,
+    getNextPageParam: (lastPage) => {
+      return lastPage.hasNextPage ? lastPage.nextPage : undefined;
+    },
+    onSuccess: (data) => {
+      // Optional: perform actions when the query is successful
+      console.log('Fetch Comments Success:', data);
     }
   });
-
 
   const mutation = useMutation({
     mutationFn: createComment,
     onSuccess: (newComment) => {
-      setComments(prevComments => [newComment, ...prevComments]);
-
-      // optionally invalidate the query
-      // queryClient.invalidateQueries(['comments', postId, short, sortOption]);
+      // Invalidate query to refetch comments with new comment
+      queryClient.invalidateQueries(['comments', postId, short, sortOption]);
     }
   });
 
   const handleSortChange = (event) => {
-    setSortOption(event.target.value);
-  }
+    const newSortOption = event.target.value;
+    setSortOption(newSortOption);
+    queryClient.invalidateQueries(['comments', postId, short, newSortOption]); // Invalidate query with new sort option
+  };
 
   if (isLoading) {
     return (
       <div className="flex justify-center">
         <ClipLoader color="white" />
       </div>
-    )
+    );
   }
 
   if (error) {
-    return <div>An error occurred! {error.message}</div>
+    return <div>An error occurred! {error.message}</div>;
   }
 
   return (
@@ -74,7 +92,7 @@ export default function CommentSection({ postId, short = false }) {
       <CommentInput onSubmit={(content) => mutation.mutate({ postId, content })} />
 
       {
-        comments.length > 0 ? (
+        data?.pages?.length ? (
           <div>
             <div className="mb-1 text-xs flex justify-end items-center">
               <label htmlFor="sort" className="text-sm font-medium text-white">
@@ -91,50 +109,53 @@ export default function CommentSection({ postId, short = false }) {
                 <option value="top_likes">Top Likes</option>
               </select>
             </div>
-            <ul className="flex flex-col gap-2" >
-              {comments.map(comment => {
-                return (
-                  <li key={comment.id}
-                    className="border bg-gray-800 p-2 rounded ">
-                    <div className="mb-2">
-                      <UserHeader
-                        user={comment.author}
-                        createdAt={comment.createdAt}
-                        size="small"
-                      />
-                    </div>
-                    <div>
-                      {comment.content}
-                    </div>
-
-                    {/* // TODO: post footer should be created from array with loop to have style in one place */}
-                    <div className="flex justify-end text-xs gap-1">
-                      {
-                        (auth.userId === comment.author.id) && (
-                          <button
-                            className="border rounded px-2 py-1"
-                            onClick={() => console.log("remove comment with id", comment.id)}
-                          >
-                            Delete
-                          </button>
-                        )
-                      }
-                      <button className="border rounded px-2 py-1"
-                        onClick={() => console.log("Replying to comment with id", comment.id)}
-                      >
-                        Reply
-                      </button>
+            <ul className="flex flex-col gap-2">
+              {data.pages.flatMap(page => page.comments).map(comment => (
+                <li key={comment.id} className="border bg-gray-800 p-2 rounded">
+                  <div className="mb-2">
+                    <UserHeader
+                      user={comment.author}
+                      createdAt={comment.createdAt}
+                      size="small"
+                    />
+                  </div>
+                  <div>{comment.content}</div>
+                  <div className="flex justify-end text-xs gap-1">
+                    {(auth.userId === comment.author.id) && (
                       <button
-                        className="rounded border px-2 py-1"
-                        onClick={() => console.log("Liking comment with id", comment.id)}>
-                        Like
+                        className="border rounded px-2 py-1"
+                        onClick={() => console.log("remove comment with id", comment.id)}
+                      >
+                        Delete
                       </button>
-                    </div>
-                  </li>
-                )
-              }
-              )}
+                    )}
+                    <button
+                      className="border rounded px-2 py-1"
+                      onClick={() => console.log("Replying to comment with id", comment.id)}
+                    >
+                      Reply
+                    </button>
+                    <button
+                      className="rounded border px-2 py-1"
+                      onClick={() => console.log("Liking comment with id", comment.id)}
+                    >
+                      Like
+                    </button>
+                  </div>
+                </li>
+              ))}
             </ul>
+            {(!short && hasNextPage) && (
+              <div className="flex justify-center">
+                <button
+                  className="mt-2 bg-blue-500 text-white px-2 py-1 text-xs rounded"
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                >
+                  {isFetchingNextPage ? 'Loading...' : 'Load More'}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-sm">

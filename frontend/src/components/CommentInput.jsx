@@ -41,7 +41,6 @@ export default function CommentInput({ onSubmit }) {
         method="POST"
         onSubmit={handleSubmit}
       >
-        {/* TODO: when user creates comment he don't see it while limiting */}
         <textarea
           className="border text-xs bg-gray-800 p-1 rounded grow overflow-y-hidden resize-none"
           name="content"
