@@ -16,8 +16,11 @@ const getFollowedPosts = async (req, res) => {
     },
   }).then(followedUsers => followedUsers.map(follow => follow.followedId));
 
-  // If no followed users, return an empty result
-  if (followedUserIds.length === 0) {
+  // Add the current user ID to the list of user IDs
+  const userIds = [...followedUserIds, req.user.id];
+
+  // If no users, return an empty result
+  if (userIds.length === 0) {
     return res.json({
       status: 'success',
       posts: [],
@@ -26,15 +29,17 @@ const getFollowedPosts = async (req, res) => {
     });
   }
 
+  // Get the total number of posts from followed users and the current user
   const totalPosts = await prisma.post.count({
     where: {
-      authorId: { in: followedUserIds },
+      authorId: { in: userIds },
     },
   });
 
+  // Fetch posts from followed users and the current user
   const posts = await prisma.post.findMany({
     where: {
-      authorId: { in: followedUserIds },
+      authorId: { in: userIds },
     },
     include: {
       author: {
@@ -111,6 +116,7 @@ const getFollowedPosts = async (req, res) => {
     page,
   });
 }
+
 // TODO: add async handler
 // TODO: add tests
 const getPosts = async (req, res) => {

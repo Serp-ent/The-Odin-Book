@@ -33,7 +33,7 @@ const fetchComments = async ({ postId, pageParam = 1, short = false, sort = 'new
   }
 }
 
-export default function CommentSection({ postId, short = false }) {
+export default function CommentSection({ postId, isPostAuthor = false, short = false }) {
   const queryClient = useQueryClient();
   const [sortOption, setSortOption] = useState('newest');
   const auth = useAuth();
