@@ -33,6 +33,21 @@ const fetchComments = async ({ postId, pageParam = 1, short = false, sort = 'new
   }
 }
 
+const removeComment = async (commentId) => {
+  const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete comment');
+  }
+
+  return response.json();
+};
 export default function CommentSection({ postId, isPostAuthor = false, short = false }) {
   const queryClient = useQueryClient();
   const [sortOption, setSortOption] = useState('newest');
@@ -67,6 +82,18 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
       // Invalidate query to refetch comments with new comment
       queryClient.invalidateQueries(['comments', postId, short, sortOption]);
     }
+  });
+
+  const deleteCommentMutation = useMutation({
+    mutationFn: removeComment,
+    onSuccess: () => {
+      // Invalidate queries to refetch comments after a successful deletion
+      queryClient.invalidateQueries(['comments', postId, short, sortOption]);
+    },
+    onError: (error) => {
+      // Handle error if needed
+      console.error('Error deleting comment:', error);
+    },
   });
 
   const handleSortChange = (event) => {
@@ -121,10 +148,10 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                   </div>
                   <div>{comment.content}</div>
                   <div className="flex justify-end text-xs gap-1">
-                    {(auth.userId === comment.author.id) && (
+                    {(isPostAuthor || (auth.userId === comment.author.id)) && (
                       <button
                         className="border rounded px-2 py-1"
-                        onClick={() => console.log("remove comment with id", comment.id)}
+                        onClick={() => deleteCommentMutation.mutate(comment.id)}
                       >
                         Delete
                       </button>

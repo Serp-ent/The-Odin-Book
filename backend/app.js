@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 const authRouter = require('./routes/authRouter.js');
 const postRouter = require('./routes/postRouter.js');
 const userRouter = require('./routes/userRouter.js');
+const commentRouter = require('./routes/commentRouter.js');
 
 var app = express();
 
@@ -25,5 +26,6 @@ app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/users', userRouter);
+app.use('/api/comments', commentRouter);
 
 module.exports = app;

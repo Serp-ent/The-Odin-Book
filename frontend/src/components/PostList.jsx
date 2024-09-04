@@ -4,6 +4,7 @@ import PostListItem from "./PostListItem";
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ClipLoader } from 'react-spinners'
 import { debounce } from 'loadsh';
+import { useAuth } from "../auth/authContext";
 
 export const createPost = async ({ request }) => {
   const formData = await request.formData();
@@ -25,7 +26,6 @@ export const createPost = async ({ request }) => {
 };
 
 export default function PostList({ scrollContainerRef, initialType = "all", initialUserId = null }) {
-
   const fetchPosts = async ({ pageParam = 1 }) => {
     const getEndPoint = (type, userId, page) => {
       switch (type) {
