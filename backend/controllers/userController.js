@@ -172,14 +172,43 @@ const followUser = async (req, res) => {
   }
 }
 
-// TODO: get info if user if followed based on req.user.id
 // TODO: add pagination
 const getUsers = async (req, res) => {
   try {
     const loggedInUserId = req.user.id;
+    const searchQuery = req.query.search || '';
 
     // Fetch all users along with checking if they are followed by the logged-in user
     const users = await prisma.user.findMany({
+      where: {
+        // Filter users based on search query
+        OR: [
+          {
+            username: {
+              contains: searchQuery, // Assuming users have a 'username' field
+              mode: 'insensitive', // Case-insensitive search
+            },
+          },
+          {
+            email: {
+              contains: searchQuery, // Assuming users have an 'email' field
+              mode: 'insensitive', // Case-insensitive search
+            },
+          },
+          {
+            firstName: {
+              contains: searchQuery, // Assuming users have an 'email' field
+              mode: 'insensitive', // Case-insensitive search
+            },
+          },
+          {
+            lastName: {
+              contains: searchQuery, // Assuming users have an 'email' field
+              mode: 'insensitive', // Case-insensitive search
+            },
+          },
+        ],
+      },
       include: {
         followedBy: {
           where: {

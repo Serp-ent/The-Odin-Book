@@ -33,12 +33,10 @@ export async function action({ request, params }) {
 }
 
 // TODO: add pipeline that automatically formats 
-// TODO: maybe add some kind of bio
 // TODO: add fetching latest comments
 
 // TODO: if its own profile show settings button or edit
 // TODO: add light theme
-// TODO: add icons
 // TODO: add tailwind primary color and tailwind config 
 
 // TODO: if its user own allow to modify it

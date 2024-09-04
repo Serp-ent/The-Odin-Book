@@ -1,13 +1,17 @@
 import { Link, useLoaderData } from "react-router-dom";
 import UserHeader from "../components/userHeader";
 import { useQuery } from '@tanstack/react-query';
-import { useState, useMemo } from 'react';
-import debounce from 'loadsh'; // For debouncing
+import debounce from 'lodash/debounce';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 
-export const fetchUsers = async () => {
-  const response = await fetch('http://localhost:3000/api/users', {
+export const fetchUsers = async (query) => {
+  const endpoint = query
+    ? `http://localhost:3000/api/users?search=${query}`
+    : 'http://localhost:3000/api/users';
+
+  const response = await fetch(endpoint, {
     headers: {
-      'Content-Type': "application/json",
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`
     }
   });
@@ -19,25 +23,41 @@ export const fetchUsers = async () => {
   return response.json();
 };
 
-// TODO: fix searching query
+// FindFriends Component
 export default function FindFriends() {
+  const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const inputRef = useRef(null);
+
+  // Debounce function setup
+  const debouncedSetSearchQuery = useCallback(
+    debounce((query) => {
+      setSearchQuery(query);
+    }, 300),
+    [] // Empty dependency array to ensure debounce is only set up once
+  );
+
+  // React Query hook
   const { data: users = [], isLoading, isError, error } = useQuery({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
+    queryKey: ['users', searchQuery],
+    queryFn: () => fetchUsers(searchQuery),
+    enabled: true, // Fetch all users when searchQuery is empty
     staleTime: 60000, // Cache data for 1 minute
   });
 
-  // Debounced search function
-  const handleSearch = () => debounce((event) => {
-    setSearchQuery(event.target.value);
-  }, 300);
+  // Handle input change with debounced function
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+    debouncedSetSearchQuery(value);
+  };
 
-  // Filter users based on the search query
-  const filteredUsers = users.filter(user =>
-    user.firstName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputRef, isLoading, isError]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -53,16 +73,39 @@ export default function FindFriends() {
         className="border bg-gray-800 p-1 rounded"
         name="firstName"
         placeholder="Find friends"
-        onChange={handleSearch}
+        value={inputValue} // Controlled input value
+        onChange={handleInputChange}
+        ref={inputRef}
       />
 
-      <ul className="border rounded p-2 flex flex-col gap-2 overflow-y-auto grow h-[10vh]">
-        {filteredUsers.map(user => (
-          <li key={user.id} className="border rounded p-3">
-            <UserHeader user={user} />
-          </li>
-        ))}
-      </ul>
+      {
+        users.length > 0 ?
+          (
+            <ul className="border rounded p-2 flex flex-col gap-2 overflow-y-auto grow h-[10vh]">
+              {users.map(user => (
+                <li key={user.id} className="border rounded p-3">
+                  <UserHeader user={user} />
+                </li>
+              ))}
+            </ul>
+          )
+          : (
+            <div className="h-full flex flex-col justify-center items-center">
+              {
+                searchQuery.length > 0 ? (
+                  <>
+                    <h3>
+                      No user found that matches
+                    </h3>
+                    <p>{searchQuery}</p>
+                  </>
+                ) : (
+                  <p>No users found</p>
+                )
+              }
+            </div>
+          )
+      }
     </div>
   );
 }

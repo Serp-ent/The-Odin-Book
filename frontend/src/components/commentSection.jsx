@@ -48,6 +48,7 @@ const removeComment = async (commentId) => {
 
   return response.json();
 };
+
 export default function CommentSection({ postId, isPostAuthor = false, short = false }) {
   const queryClient = useQueryClient();
   const [sortOption, setSortOption] = useState('newest');

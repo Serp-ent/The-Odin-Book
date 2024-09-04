@@ -22,7 +22,6 @@ const likePost = async (postId, isLiked) => {
 };
 
 export default function PostFooter({ post }) {
-  // TODO: if its user post he should be able to moderate comments
   const queryClient = useQueryClient();
 
   const { mutate: likePostMutation } = useMutation({
@@ -47,6 +46,7 @@ export default function PostFooter({ post }) {
   const handleLikeClick = () => {
     likePostMutation();
   };
+
   return (
     <div className="flex justify-end text-xl gap-4 border rounded p-2">
       <div className="flex items-center gap-4 text-xl">
