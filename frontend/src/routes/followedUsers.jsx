@@ -20,8 +20,6 @@ export const fetchFollowedUsers = async () => {
   return response.json();
 };
 
-// TODO: add infinite scrolling
-// TODO: add nice loading spinner
 export default function FollowedUsers() {
   const { data: followedUsers = [], isLoading, isError, error } = useQuery({
     queryKey: ['followedUsers'],

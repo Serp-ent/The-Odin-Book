@@ -21,7 +21,6 @@ const fetchUserInfo = async (userId) => {
   return response.json();
 };
 
-// TODO: handle real user data, user should be able to see on which account he is logged in
 export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -67,10 +66,10 @@ export default function Header() {
         </Link>
       </div>
 
-      <div className='flex gap-4 items-center' ref={dropdownRef}>
+      <div className='flex gap-1 items-center' ref={dropdownRef}>
         {auth.isAuthenticated ? (
           <>
-            <UserHeader user={userInfo}  size='medium'/>
+            <UserHeader user={userInfo} size='small' />
             <div className='relative'>
               <button
                 className='py-1 px-2'

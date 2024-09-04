@@ -19,6 +19,7 @@ export const fetchUsers = async () => {
   return response.json();
 };
 
+// TODO: fix searching query
 export default function FindFriends() {
   const [searchQuery, setSearchQuery] = useState('');
 

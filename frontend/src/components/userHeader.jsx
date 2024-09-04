@@ -5,12 +5,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PropTypes from 'prop-types';
 import { useAuth } from "../auth/authContext";
 
-// TODO: on server prevent user from following himself
-// TODO: add size for that component
 export default function UserHeader({ user, createdAt, size = 'medium' }) {
   const auth = useAuth();
   const queryClient = useQueryClient();
-  
+
   const followMutation = useMutation({
     mutationFn: async (follow) => {
       const response = await fetch(`http://localhost:3000/api/users/${user.id}/follow`, {

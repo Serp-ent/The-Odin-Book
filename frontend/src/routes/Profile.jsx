@@ -33,7 +33,6 @@ export async function action({ request, params }) {
 }
 
 // TODO: add pipeline that automatically formats 
-// TODO: handle if its the user own profile
 // TODO: maybe add some kind of bio
 // TODO: add fetching latest comments
 
@@ -45,6 +44,7 @@ export async function action({ request, params }) {
 // TODO: if its user own allow to modify it
 // TODO: allow user to change profile pic
 
+// TODO: add routes to see which users follow that user and which ones the user is following
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
     headers: {
@@ -104,6 +104,13 @@ export default function Profile() {
       <div className="text-sm">
         <p>Email: {userProfile.email}</p>
         <p>Registered: {formattedDate}</p>
+        {
+          userProfile.bio && (
+            <div className="flex flex-col justify-center items-center mt-2">
+              <p>{userProfile.bio}</p>
+            </div>
+          )
+        }
       </div>
 
       <div className="flex justify-center gap-5 text-sm">

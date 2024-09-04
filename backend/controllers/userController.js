@@ -16,6 +16,7 @@ const getUserWithId = async (req, res) => {
       profilePic: true,
       registeredAt: true,
       username: true,
+      bio: true,
     }
   });
 

@@ -24,7 +24,6 @@ export const createPost = async ({ request }) => {
   return null;
 };
 
-// TODO: the unfollowed users should not disappear immediately
 export default function PostList({ scrollContainerRef, initialType = "all", initialUserId = null }) {
 
   const fetchPosts = async ({ pageParam = 1 }) => {
