@@ -7,9 +7,10 @@ import { useAuth } from "../auth/authContext";
 
 // TODO: on server prevent user from following himself
 // TODO: add size for that component
-export default function UserHeader({ user, createdAt }) {
+export default function UserHeader({ user, createdAt, size = 'medium' }) {
   const auth = useAuth();
   const queryClient = useQueryClient();
+  
   const followMutation = useMutation({
     mutationFn: async (follow) => {
       const response = await fetch(`http://localhost:3000/api/users/${user.id}/follow`, {
@@ -18,8 +19,7 @@ export default function UserHeader({ user, createdAt }) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
-        body: JSON.stringify(
-          { follow: follow }),
+        body: JSON.stringify({ follow }),
       });
 
       if (!response.ok) {
@@ -29,7 +29,6 @@ export default function UserHeader({ user, createdAt }) {
       return response.json();
     },
     onSuccess: () => {
-      // Invalidate or refetch the posts query to ensure the data is fresh
       queryClient.invalidateQueries(['user', user.id]);
     },
   });
@@ -41,27 +40,51 @@ export default function UserHeader({ user, createdAt }) {
 
   const formattedDate = createdAt ? format(new Date(createdAt), 'PPpp') : null;
 
+  // Define sizes based on the provided size prop
+  const sizes = {
+    small: {
+      profilePicSize: 'w-6',
+      textSize: 'text-sm',
+      buttonSize: 'px-1 py-0.5',
+      iconSize: 'text-sm',
+    },
+    medium: {
+      profilePicSize: 'w-8',
+      textSize: 'text-md',
+      buttonSize: 'px-2 py-1',
+      iconSize: 'text-lg',
+    },
+    large: {
+      profilePicSize: 'w-10',
+      textSize: 'text-lg',
+      buttonSize: 'px-3 py-2',
+      iconSize: 'text-xl',
+    },
+  };
+
+  const selectedSize = sizes[size] || sizes.medium;
+
   return (
     <div className="flex justify-between items-center">
-      <Link className="flex items-center gap-1"
-        to={`/profile/${user.id}`}>
-        <img src={user.profilePic} className="w-8 rounded-full" />
+      <Link className="flex items-center gap-1" to={`/profile/${user.id}`}>
+        <img src={user.profilePic} className={`${selectedSize.profilePicSize} rounded-full`} />
         <div className="flex flex-col">
-          <h4 className="text-l">
+          <h4 className={selectedSize.textSize}>
             {user.firstName} {user.lastName}
           </h4>
-          {formattedDate && <p className="text-xs">{formattedDate}</p>}
+          {formattedDate && <p className={`text-xs ${selectedSize.textSize}`}>{formattedDate}</p>}
         </div>
       </Link>
 
       {
         auth.userId !== user.id && (
-          <button className="px-2 py-1"
+          <button
+            className={selectedSize.buttonSize}
             name="follow"
             value={user.isFollowed ? "false" : "true"}
             onClick={handleFollowClick}
           >
-            {user.isFollowed ? <FaRegEye className="text-xl" /> : 'Follow'}
+            {user.isFollowed ? <FaRegEye className={selectedSize.iconSize} /> : 'Follow'}
           </button>
         )
       }
@@ -78,4 +101,5 @@ UserHeader.propTypes = {
     isFollowed: PropTypes.bool.isRequired,
   }).isRequired,
   createdAt: PropTypes.string,
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
 };

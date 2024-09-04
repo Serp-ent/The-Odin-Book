@@ -70,7 +70,7 @@ export default function Header() {
       <div className='flex gap-4 items-center' ref={dropdownRef}>
         {auth.isAuthenticated ? (
           <>
-            <UserHeader user={userInfo} />
+            <UserHeader user={userInfo}  size='medium'/>
             <div className='relative'>
               <button
                 className='py-1 px-2'

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useFetcher } from "react-router-dom";
+import { createComment } from '../routes/Post'
 import { ClipLoader } from 'react-spinners'
 import CommentInput from "./CommentInput";
 import { useState } from "react";
@@ -28,27 +29,27 @@ const fetchComments = async (postId, short = false, sort = 'newest') => {
 export default function CommentSection({ postId, short = false }) {
   const queryClient = useQueryClient();
   const [sortOption, setSortOption] = useState('newest');
+  const [comments, setComments] = useState([]);
   const auth = useAuth();
 
   // TODO: use useInfiniteQuery for infinite scrolling comments
-  const { data, error, isLoading } = useQuery({
+  const { error, isLoading } = useQuery({
     queryKey: ['comments', postId, short, sortOption],
-    queryFn: () => fetchComments(postId, short, sortOption),
+    queryFn: async () => {
+      const fetchedComments = await fetchComments(postId, short, sortOption);
+      setComments(fetchedComments.comments);
+      return fetchedComments;
+    }
   });
 
+
   const mutation = useMutation({
-    mutationFn: (newComment) => {
-      return fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
-        method: "POST",
-        headers: {
-          'Content-Type': "application/json",
-          'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
-        },
-        body: JSON.stringify({ content: newComment.content }),
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['comments', postId, short, sortOption]);
+    mutationFn: createComment,
+    onSuccess: (newComment) => {
+      setComments(prevComments => [newComment, ...prevComments]);
+
+      // optionally invalidate the query
+      // queryClient.invalidateQueries(['comments', postId, short, sortOption]);
     }
   });
 
@@ -68,11 +69,9 @@ export default function CommentSection({ postId, short = false }) {
     return <div>An error occurred! {error.message}</div>
   }
 
-  const comments = data.comments;
-
   return (
     <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
-      <CommentInput onSubmit={content => mutation.mutate({ postId, content })} />
+      <CommentInput onSubmit={(content) => mutation.mutate({ postId, content })} />
 
       {
         comments.length > 0 ? (
@@ -100,7 +99,9 @@ export default function CommentSection({ postId, short = false }) {
                     <div className="mb-2">
                       <UserHeader
                         user={comment.author}
-                        createdAt={comment.createdAt} />
+                        createdAt={comment.createdAt}
+                        size="small"
+                      />
                     </div>
                     <div>
                       {comment.content}

@@ -20,7 +20,7 @@ const fetchPost = async (postId) => {
   return response.json();
 };
 
-const createComment = async ({ postId, content }) => {
+export const createComment = async ({ postId, content }) => {
   const response = await fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
     method: 'POST',
     headers: {

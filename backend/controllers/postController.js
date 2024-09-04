@@ -504,10 +504,40 @@ const createComment = async (req, res) => {
       authorId: req.user.id,
       postId,
       content,
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          username: true,
+          profilePic: true,
+          registeredAt: true,
+        }
+      }
     }
   });
 
-  res.json(post);
+  const isFollowed = await prisma.follow.findUnique({
+    where: {
+      followerId_followedId: {
+        followerId: req.user.id,
+        followedId: post.author.id,
+      }
+    }
+  });
+
+  delete post.authorId;
+
+  res.json({
+    ...post,
+    author: {
+      ...post.author,
+      isFollowed: (isFollowed != null)
+    },
+  });
 }
 
 module.exports = {
