@@ -6,24 +6,36 @@ import { ClipLoader } from 'react-spinners'
 import { debounce } from 'loadsh';
 import { useAuth } from "../auth/authContext";
 
-export const createPost = async ({ request }) => {
-  const formData = await request.formData();
+// export const createPost = async ({ request }) => {
+//   const formData = await request.formData();
 
-  const response = await fetch(`http://localhost:3000/api/posts`, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-    },
-    body: JSON.stringify({ content: formData.get('content') })
-  });
+//   // Prepare the form data for submission
+//   const postFormData = new FormData();
+//   postFormData.append('content', formData.get('content'));
 
-  if (!response.ok) {
-    throw new Error('Could not create post');
-  }
-  console.log('user wants to create post with content:', formData.get('content'));
-  return null;
-};
+//   // Append images to FormData
+//   const images = formData.getAll('images'); // Get all images
+//   images.forEach((image, index) => {
+//     postFormData.append(`images[${index}]`, image);
+//   });
+
+
+//   // Send the request
+//   const response = await fetch(`http://localhost:3000/api/posts`, {
+//     method: "POST",
+//     body: postFormData,
+//     headers: {
+//       'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+//     }
+//   });
+
+//   if (!response.ok) {
+//     throw new Error('Could not create post');
+//   }
+
+//   console.log('User wants to create post with content:', formData.get('content'));
+//   return null;
+// };
 
 export default function PostList({ scrollContainerRef, initialType = "all", initialUserId = null }) {
   const fetchPosts = async ({ pageParam = 1 }) => {

@@ -1,7 +1,6 @@
 import Layout from '../components/layout';
 import ErrorPage from './error-page';
 import PostList, {
-  createPost,
 } from '../components/PostList';
 import Profile, {
   action as followProfile,
@@ -41,7 +40,6 @@ const routes = [
           },
           {
             path: '/post/',
-            action: createPost,
           },
           {
             path: '/profile/:userId',

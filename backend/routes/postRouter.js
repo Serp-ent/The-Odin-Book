@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/postController');
 const passport = require('../config/passport-config');
+const upload = require('../config/multer-config');
 
 router.get('/',
   passport.authenticate('jwt', { session: false }),
@@ -13,7 +14,9 @@ router.get('/followed',
 
 router.post('/',
   passport.authenticate('jwt', { session: false }),
-  controller.createPost);
+  upload.array('images', 12),
+  controller.createPost
+);
 
 router.post('/:id/like',
   passport.authenticate('jwt', { session: false }),

@@ -10,6 +10,7 @@ import { useAuth } from "../auth/authContext";
 // TODO: aria search optimization
 export default function PostListItem({ post }) {
   const auth = useAuth();
+  const baseUrl = 'http://localhost:3000/uploads'
   return (
     <div className='border-2 m-2 border-gray-700 py-4 px-6 rounded-xl text-white flex flex-col gap-2' >
       <UserHeader user={post.author} createdAt={post.createdAt} />
@@ -17,6 +18,18 @@ export default function PostListItem({ post }) {
         <li>
           <div className='flex justify-center text-lg'>
             <h4>{post.title}</h4>
+          </div>
+          {/* Display images if they exist */}
+          {/* // TODO: there should be carousel  that displayed the images */}
+          <div className='flex flex-wrap gap-2'>
+            {post.images.length > 0 && post.images.map((image, index) => (
+              <img
+                key={index}
+                src={`${baseUrl}/${image}`} // Adjust based on your data structure
+                alt={`Post Image ${index + 1}`}
+                className='w-full max-w-xs object-cover rounded-lg'
+              />
+            ))}
           </div>
           <p>{post.content}</p>
         </li>

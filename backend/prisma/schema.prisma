@@ -14,6 +14,8 @@ datasource db {
 }
 
 // TODO: nested comments
+// TODO: handle multiple images for post ? using carousel
+// TODO: handle liking comments
 model User {
   id           Int       @id @default(autoincrement())
   email        String    @unique
@@ -41,6 +43,15 @@ model Post {
   likes     Like[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  images    Image[]
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  url       String
+  Post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  createdAt DateTime @default(now())
 }
 
 model Comment {

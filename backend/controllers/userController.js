@@ -295,11 +295,10 @@ const getUsers = async (req, res) => {
 // TODO: create services because there is a lot of business logic code duplication
 const getPostOfUser = async (req, res) => {
   try {
-    // TODO: add pagination
     const userId = parseInt(req.params.id);
     const currentUserId = req.user.id; // Assuming you have the current user's ID from authentication middleware
 
-    // Fetch posts of the user
+    // Fetch posts of the user with images
     const posts = await prisma.post.findMany({
       where: { authorId: userId },
       include: {
@@ -320,6 +319,14 @@ const getPostOfUser = async (req, res) => {
             likes: true,
           }
         },
+        images: {
+          select: {
+            url: true, // Adjust based on your actual image model fields
+          }
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
       }
     });
 
@@ -364,6 +371,7 @@ const getPostOfUser = async (req, res) => {
           isFollowed: isFollowed,
         },
         commentsCount: commentsCount,
+        images: post.images.map(image => image.url), // Include images
       };
     }));
 
@@ -375,7 +383,6 @@ const getPostOfUser = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch posts' });
   }
 };
-
 module.exports = {
   getUserWithId,
   getFollowedUsers,
