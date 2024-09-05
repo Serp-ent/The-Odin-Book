@@ -29,5 +29,18 @@ router.get('/:id',
   passport.authenticate('jwt', { session: false }),
   controller.getUserWithId);
 
+// TODO: authenticate and authorize
+router.put('/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    const userId = parseInt(req.params.id);
+    if (req.user.id !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    next();
+  },
+  controller.updateUserWithId);
+
 
 module.exports = router;

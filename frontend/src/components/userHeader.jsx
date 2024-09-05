@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PropTypes from 'prop-types';
 import { useAuth } from "../auth/authContext";
 
-// TODO: show something different on failure avatar loading
+// TODO: show something different on failure avatar loading -> use fallback image from gravatar
 export default function UserHeader({ user, createdAt, size = 'medium' }) {
   const auth = useAuth();
   const queryClient = useQueryClient();

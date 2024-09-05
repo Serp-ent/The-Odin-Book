@@ -39,9 +39,6 @@ export async function action({ request, params }) {
 // TODO: add light theme
 // TODO: add tailwind primary color and tailwind config 
 
-// TODO: if its user own allow to modify it
-// TODO: allow user to change profile pic
-
 // TODO: add routes to see which users follow that user and which ones the user is following
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
@@ -74,6 +71,8 @@ const fetchUserPosts = async (userId) => {
 export default function Profile() {
   const { userId } = useParams();
   const container = useRef(null);
+  const auth = useAuth();
+
   // Fetch user profile
   const { data: userProfile, isLoading: isProfileLoading, isError: isProfileError } = useQuery({
     queryKey: ['user', userId],
@@ -94,11 +93,23 @@ export default function Profile() {
     return <div>Error loading data</div>;
   }
 
-
+  const isOwnProfile = auth.userId === parseInt(userId, 10);
   const formattedDate = format(new Date(userProfile.registeredAt), 'PPpp');
   return (
     <main className="p-2 flex flex-col container text-white gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
-      <UserHeader user={userProfile} />
+      {isOwnProfile ? (
+        <div className="flex justify-between">
+          <UserHeader user={userProfile} />
+          <div className="flex justify-end text-sm">
+            <Link to={`/profile/edit`}>
+              <button className="bg-blue-500 text-white px-2 py-1 rounded">Edit Profile</button>
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <UserHeader user={userProfile} />
+      )}
+
       <div className="text-sm">
         <p>Email: {userProfile.email}</p>
         <p>Registered: {formattedDate}</p>

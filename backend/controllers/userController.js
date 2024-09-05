@@ -1,5 +1,42 @@
 const prisma = require("../db/prismaClient");
 
+const updateUserWithId = async (req, res) => {
+  try {
+    const { id } = req.params; // Assuming userId is passed as a URL parameter
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      username,
+      profilePic,
+      bio
+    } = req.body;
+
+    // Update the user in the database
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(id, 10) }, // Ensure userId is an integer
+      data: {
+        email,
+        password, // In practice, you should hash the password before saving it
+        firstName,
+        lastName,
+        username,
+        profilePic,
+        bio,
+      },
+    });
+
+    // Respond with a success message and updated user data
+    res.json({
+      message: 'User updated successfully',
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
 // TODO: make 2 paths if user authenticated return if its followed
 const getUserWithId = async (req, res) => {
   // TODO: handle non int id
@@ -326,4 +363,5 @@ module.exports = {
   followUser,
   getPostOfUser,
   getUsers,
+  updateUserWithId,
 }

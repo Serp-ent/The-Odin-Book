@@ -14,6 +14,7 @@ import FollowedUsers from './followedUsers';
 import ProfileSettings from './profileSettings';
 import FindFriends from './findFriends';
 import Home from './home';
+import EditProfile from './editProfile';
 
 const routes = [
   {
@@ -46,6 +47,10 @@ const routes = [
             path: '/profile/:userId',
             element: <ProtectedRoute element={<Profile />} />,
             action: followProfile,
+          },
+          {
+            path: '/profile/edit',
+            element: <ProtectedRoute element={<EditProfile />} />,
           },
           {
             path: '/login',
