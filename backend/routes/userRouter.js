@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/userController.js');
 const passport = require('../config/passport-config.js');
+const upload = require('../config/multer-config.js');
 
 // router.get('/', controller.getPosts);
 
@@ -32,6 +33,7 @@ router.get('/:id',
 // TODO: authenticate and authorize
 router.put('/:id',
   passport.authenticate('jwt', { session: false }),
+  upload.single('profilePic'),
   (req, res, next) => {
     const userId = parseInt(req.params.id);
     if (req.user.id !== userId) {
@@ -40,7 +42,8 @@ router.put('/:id',
 
     next();
   },
-  controller.updateUserWithId);
+  controller.updateUserWithId
+);
 
 
 module.exports = router;

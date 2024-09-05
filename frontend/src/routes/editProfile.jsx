@@ -18,13 +18,19 @@ const fetchUserProfile = async (userId) => {
 };
 
 const updateProfile = async (data) => {
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== undefined && data[key] !== null) {
+      formData.append(key, data[key]);
+    }
+  });
+
   const response = await fetch(`http://localhost:3000/api/users/${data.userId}`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('authToken')}`,
     },
-    body: JSON.stringify(data),
+    body: formData, // Send FormData including the profile picture
   });
 
   if (!response.ok) {
@@ -44,9 +50,7 @@ export default function EditProfile() {
     lastName: '',
     username: '',
     bio: '',
-    // profilePic: null,
-    password: '',
-    confirmPassword: '',
+    profilePic: null,
   });
   const [error, setError] = useState('');
 
@@ -55,10 +59,9 @@ export default function EditProfile() {
       bioRef.current.style.height = 'auto';
       bioRef.current.style.height = `${bioRef.current.scrollHeight}px`;
     }
-  }, [formData.bio])
+  }, [formData.bio]);
 
-  // TODO: add uploading new file
-  // TODO: add spinner
+  // Fetch user profile data using React Query
   const { data: userProfile } = useQuery({
     queryKey: ['user', auth.userId],
     queryFn: async () => {
@@ -70,15 +73,14 @@ export default function EditProfile() {
         lastName: data.lastName,
         username: data.username,
         bio: data.bio || '',
-        // profilePic: data.profilePic || null,
-        password: '',
-        confirmPassword: '',
+        profilePic: data.profilePic || null,
       });
 
       return data;
     }
   });
 
+  // Use mutation for profile update
   const mutation = useMutation({
     mutationFn: updateProfile,
     onSuccess: () => {
@@ -89,48 +91,32 @@ export default function EditProfile() {
     },
   });
 
+  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle profile picture change
   const handleFileChange = (e) => {
-    setFormData(prev => ({ ...prev, profilePic: e.target.files[0] }));
+    setFormData((prev) => ({ ...prev, profilePic: e.target.files[0] }));
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { profilePic, ...rest } = formData;
 
-    let profilePicUrl = '';
-    if (profilePic) {
-      const formData = new FormData();
-      formData.append('profilePic', profilePic);
-      const uploadResponse = await fetch('http://localhost:3000/api/upload', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-        },
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error('Failed to upload profile picture');
-      }
-
-      const uploadResult = await uploadResponse.json();
-      profilePicUrl = uploadResult.url; // Adjust based on your API response
-    }
-
-    mutation.mutate({ ...rest, userId: auth.userId, profilePic: profilePicUrl });
+    mutation.mutate({
+      ...formData,
+      userId: auth.userId,
+    });
   };
 
   return (
-    <main className='text-white p-4 flex flex-col items-center'>
+    <main className="text-white p-4 flex flex-col items-center">
       <form
         onSubmit={handleSubmit}
-        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700'
-        method="POST"
+        className="border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700"
         encType="multipart/form-data"
       >
         <div className="flex flex-col">
@@ -170,8 +156,7 @@ export default function EditProfile() {
           />
         </div>
 
-        {/* // TODO */}
-        {/* <div className="flex flex-col">
+        <div className="flex flex-col">
           <label>Profile Picture</label>
           <input
             className="text-xs border bg-gray-800 p-1 rounded"
@@ -179,9 +164,9 @@ export default function EditProfile() {
             type="file"
             onChange={handleFileChange}
           />
-        </div> */}
+        </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col text-sm">
           <label>Bio</label>
           <textarea
             ref={bioRef}
@@ -193,49 +178,22 @@ export default function EditProfile() {
           />
         </div>
 
-        {/* // TODO: add ability to change password
-        <div className="flex flex-col">
-          <label>Password</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Confirm Password</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="confirmPassword"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-        </div> */}
-
-        {error &&
-          <p className="text-red-500">
-            {error}
-          </p>
-        }
+        {error && <p className="text-red-500">{error}</p>}
 
         <div className="flex justify-end">
           <button
-            className="border px-2 py-1 rounded bg-blue-500 text-white"
+            className="border px-2 py-1 rounded bg-blue-500 text-white text-xs"
             type="submit"
           >
             Save Changes
           </button>
         </div>
-
       </form>
 
       <div className="flex justify-center mt-4 text-sm">
         <p>
           <button
-            className="text-blue-400 underline"
+            className="border px-2 py-1 rounded bg-blue-500 text-white text-xs"
             onClick={() => navigate(-1)}
           >
             Back

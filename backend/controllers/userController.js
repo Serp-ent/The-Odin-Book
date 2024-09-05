@@ -13,21 +13,39 @@ const updateUserWithId = async (req, res) => {
       bio
     } = req.body;
 
+    // Check if profilePic is undefined, then use the old one
+    const existingUser = await prisma.user.findUnique({ where: { id: parseInt(id, 10) } });
+
+    console.log('profilePic:', profilePic);
+    console.log('file', req.file);
+
     // Update the user in the database
     const updatedUser = await prisma.user.update({
       where: { id: parseInt(id, 10) }, // Ensure userId is an integer
       data: {
         email,
-        password, // In practice, you should hash the password before saving it
         firstName,
         lastName,
         username,
         profilePic,
         bio,
+        profilePic: req.file ? req.file.filename : existingUser.profilePic,
       },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        profilePic: true,
+        bio: true,
+        registeredAt: true,
+        updatedAt: true,
+      }
     });
 
     // Respond with a success message and updated user data
+    console.log(updatedUser);
     res.json({
       message: 'User updated successfully',
       user: updatedUser,
@@ -37,6 +55,7 @@ const updateUserWithId = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
 // TODO: make 2 paths if user authenticated return if its followed
 const getUserWithId = async (req, res) => {
   // TODO: handle non int id

@@ -27,7 +27,6 @@ export default function Register() {
     formDataToSend.append('lastName', formData.lastName);
     formDataToSend.append('profilePic', formData.profilePic); // This is the file
 
-
     try {
       const response = await fetch('http://localhost:3000/register', {
         method: "POST",
