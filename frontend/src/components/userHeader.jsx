@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PropTypes from 'prop-types';
 import { useAuth } from "../auth/authContext";
 
+// TODO: show something different on failure avatar loading
 export default function UserHeader({ user, createdAt, size = 'medium' }) {
   const auth = useAuth();
   const queryClient = useQueryClient();
@@ -62,10 +63,13 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
 
   const selectedSize = sizes[size] || sizes.medium;
 
+  // Construct the full URL for the profile picture
+  const profilePicUrl = `http://localhost:3000/uploads/${user.profilePic}`;
+
   return (
     <div className="flex justify-between items-center">
       <Link className="flex items-center gap-1" to={`/profile/${user.id}`}>
-        <img src={user.profilePic} className={`${selectedSize.profilePicSize} rounded-full`} />
+        <img src={profilePicUrl} className={`${selectedSize.profilePicSize} rounded-full`} />
         <div className="flex flex-col">
           <h4 className={selectedSize.textSize}>
             {user.firstName} {user.lastName}
