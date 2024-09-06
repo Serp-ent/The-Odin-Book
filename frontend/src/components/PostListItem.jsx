@@ -4,6 +4,7 @@ import UserHeader from "./userHeader";
 import PostFooter from "./postFooter";
 import CommentSection from "./commentSection";
 import { useAuth } from "../auth/authContext";
+import ImageCarousel from "./ImageCarousel";
 
 // TODO: dark/white color theme
 // TODO: language localization
@@ -21,16 +22,9 @@ export default function PostListItem({ post }) {
           </div>
           {/* Display images if they exist */}
           {/* // TODO: there should be carousel  that displayed the images */}
-          <div className='flex flex-wrap gap-2'>
-            {post.images.length > 0 && post.images.map((image, index) => (
-              <img
-                key={index}
-                src={`${baseUrl}/${image}`} // Adjust based on your data structure
-                alt={`Post Image ${index + 1}`}
-                className='w-full max-w-xs object-cover rounded-lg'
-              />
-            ))}
-          </div>
+          {post.images.length > 0 && (
+            <ImageCarousel images={post.images} />
+          )}
           <p>{post.content}</p>
         </li>
       </Link>
