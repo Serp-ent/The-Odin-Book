@@ -284,6 +284,11 @@ const getPostWithId = async (req, res) => {
             comments: true,
           },
         },
+        images: {
+          select: {
+            url: true,
+          }
+        }
       },
     });
 
@@ -301,6 +306,7 @@ const getPostWithId = async (req, res) => {
         ...post.author,
         isFollowed: post.author.followedBy.length > 0, // Determine if the current user follows the author
       },
+      images: post.images.map(image => image.url), // Assuming image has a `url` field
     };
 
 

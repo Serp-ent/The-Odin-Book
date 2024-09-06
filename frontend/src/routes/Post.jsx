@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import PostFooter from "../components/postFooter";
 import CommentSection from "../components/commentSection";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import ImageCarousel from "../components/ImageCarousel";
 
 const fetchPost = async (postId) => {
   const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
@@ -71,9 +72,15 @@ export default function Post() {
     <main className="p-4 container bg-gray-800 text-white overflow-y-auto flex flex-col gap-2">
       <UserHeader user={postData.author} createdAt={postData.createdAt} />
 
-      <div className="mt-4">
+      {postData.images.length > 0 && (
+        <div className="px-3">
+          <ImageCarousel images={postData.images} />
+        </div>
+      )}
+
+      <p>
         {postData.content}
-      </div>
+      </p>
 
       <PostFooter post={postData} />
 
