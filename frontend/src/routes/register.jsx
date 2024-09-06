@@ -1,22 +1,104 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../auth/authContext";
 import { Link, useNavigate } from "react-router-dom";
 
-// TODO: user should be able to provide image that he want to use
-// TODO: fix registration
-// TODO: add live form validation with red/green borders
-
 export default function Register() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: '', email: '', password: '',
     firstName: '', lastName: '', confirmPassword: '',
     profilePic: null,
   });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
-  const [error, setError] = useState('');
+  const requiredFields = ['username', 'email', 'password', 'confirmPassword'];
+
+  const validateField = (name, value) => {
+    let error = '';
+
+    switch (name) {
+      case 'username':
+        if (!value) error = 'Username is required';
+        break;
+      case 'email':
+        if (!value || !value.includes('@')) error = 'Invalid email address';
+        break;
+      case 'password':
+        if (!value) error = 'Password is required';
+        else if (value.length < 6) error = 'Password must be at least 6 characters';
+        break;
+      case 'confirmPassword':
+        if (!value) error = 'Please confirm your password';
+        else if (value !== formData.password) error = 'Passwords do not match';
+        break;
+      default:
+        break;
+    }
+
+    return error;
+  };
+
+  // Validate all required fields
+  const validateForm = () => {
+    const tempErrors = {};
+
+    requiredFields.forEach(name => {
+      const error = validateField(name, formData[name]);
+      if (error) tempErrors[name] = error;
+    });
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0; // Return true if no errors
+  };
+
+  useEffect(() => {
+    // Perform live validation on touched fields
+    const tempErrors = {};
+    Object.keys(formData).forEach(name => {
+      if (touched[name]) {
+        const error = validateField(name, formData[name]);
+        if (error) tempErrors[name] = error;
+      }
+    });
+    setErrors(tempErrors);
+  }, [formData, touched]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+
+    // Mark the field as touched
+    setTouched(prevTouched => ({
+      ...prevTouched,
+      [name]: true,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      profilePic: file,
+    }));
+
+    // Mark the file input as touched
+    setTouched(prevTouched => ({
+      ...prevTouched,
+      profilePic: true,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate all required fields
+    const isValid = validateForm();
+    if (!isValid) return;
 
     const formDataToSend = new FormData();
     formDataToSend.append('username', formData.username);
@@ -31,81 +113,55 @@ export default function Register() {
       const response = await fetch('http://localhost:3000/register', {
         method: "POST",
         body: formDataToSend,
-      })
+      });
 
       const result = await response.json();
-      console.log('response:', result);
+      console.log("register response:", result);
+      navigate('/login');
     } catch (err) {
       console.error(err);
     }
-
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  }
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    console.log('file:', file);
-
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      profilePic: file,
-    }));
   };
 
+  const getInputBorderClass = (field) => {
+    if (errors[field]) return 'border-red-500';
+    if (formData[field] || field === 'profilePic') return 'border-green-500';
+    return 'border-gray-500';
+  };
+
+  const fields = [
+    { name: 'firstName', label: 'First Name', type: 'text' },
+    { name: 'lastName', label: 'Last Name', type: 'text' },
+    { name: 'username', label: 'Username', type: 'text' },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'password', label: 'Password', type: 'password' },
+    { name: 'confirmPassword', label: 'Confirm Password', type: 'password' },
+  ];
 
   return (
-    <main
-      className='text-white p-4 flex flex-col items-center'
-    >
+    <main className='text-white p-4 flex flex-col items-center'>
       <form
         onSubmit={handleSubmit}
         className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700'
         method="POST"
         encType="multipart/form-data"
       >
-        <div className="flex flex-col">
-          <label>First Name</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Last Name</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Username</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Email</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
+        {fields.map((field) => (
+          <div key={field.name} className="flex flex-col">
+            <label>
+              {field.label} {requiredFields.includes(field.name) && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              className={`border bg-gray-800 p-1 rounded ${getInputBorderClass(field.name)}`}
+              name={field.name}
+              type={field.type}
+              value={formData[field.name]}
+              onChange={handleChange}
+              onBlur={() => setTouched(prevTouched => ({ ...prevTouched, [field.name]: true }))}
+            />
+            {errors[field.name] && <p className="text-red-500 text-xs">{errors[field.name]}</p>}
+          </div>
+        ))}
 
         <div className="flex flex-col">
           <label>Profile Picture</label>
@@ -114,41 +170,18 @@ export default function Register() {
             name="profilePic"
             type="file"
             onChange={handleFileChange}
+            onBlur={() => setTouched(prevTouched => ({ ...prevTouched, profilePic: true }))}
           />
         </div>
-
-
-        <div className="flex flex-col">
-          <label>Password</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Confirm Password</label>
-          <input
-            className="border bg-gray-800 p-1 rounded"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-        </div>
-
-        {error &&
-          <p
-            className="text-red-500">
-            {error}
-          </p>
-        }
 
         <div className="flex justify-end">
           <button
-            className="border px-2 py-1 rounded"
+            className={`border px-2 py-1 rounded text-sm ${Object.keys(errors).length > 0 ? 'bg-gray-500 text-gray-300 cursor-not-allowed' : 'bg-gray-800 cursor-pointer text-white hover:bg-gray-900'}`}
             type="submit"
-          >Register</button>
+            disabled={Object.keys(errors).length > 0}
+          >
+            Register
+          </button>
         </div>
 
       </form>

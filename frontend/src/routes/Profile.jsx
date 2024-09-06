@@ -6,7 +6,6 @@ import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../auth/authContext";
 
-// TODO: generate avatar using Gravatar API
 export async function action({ request, params }) {
   const formData = await request.formData();
   if (!['true', 'false'].includes(formData.get('follow'))) {
@@ -33,13 +32,9 @@ export async function action({ request, params }) {
 }
 
 // TODO: add pipeline that automatically formats 
-// TODO: add fetching latest comments
 
-// TODO: if its own profile show settings button or edit
 // TODO: add light theme
 // TODO: add tailwind primary color and tailwind config 
-
-// TODO: add routes to see which users follow that user and which ones the user is following
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
     headers: {
@@ -77,6 +72,7 @@ export default function Profile() {
   const { data: userProfile, isLoading: isProfileLoading, isError: isProfileError } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => fetchUserProfile(userId),
+    // TODO: after changing profile it should invalidate that query
   });
 
   // Fetch user posts
