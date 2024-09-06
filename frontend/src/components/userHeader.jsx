@@ -1,14 +1,18 @@
-import { Link, useFetcher } from "react-router-dom";
-import { format } from 'date-fns';
-import { FaRegEye } from "react-icons/fa";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useAuth } from "../auth/authContext";
+import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
+import { FaRegEye } from 'react-icons/fa';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../auth/authContext';
 
-// TODO: show something different on failure avatar loading -> use fallback image from gravatar
+// URL for the fallback avatar
+const fallbackAvatarUrl = 'https://www.gravatar.com/avatar/?d=mp';
+
 export default function UserHeader({ user, createdAt, size = 'medium' }) {
   const auth = useAuth();
   const queryClient = useQueryClient();
+  const [imgSrc, setImgSrc] = useState(`http://localhost:3000/uploads/${user.profilePic}`);
 
   const followMutation = useMutation({
     mutationFn: async (follow) => {
@@ -39,17 +43,16 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
 
   const formattedDate = createdAt ? format(new Date(createdAt), 'PPpp') : null;
 
-  // Define sizes based on the provided size prop
   const sizes = {
     small: {
       profilePicSize: 'w-6',
-      textSize: 'text-sm',
+      textSize: 'text-xs',
       buttonSize: 'px-1 py-0.5',
       iconSize: 'text-sm',
     },
     medium: {
       profilePicSize: 'w-8',
-      textSize: 'text-md',
+      textSize: 'text-sm',
       buttonSize: 'px-2 py-1',
       iconSize: 'text-lg',
     },
@@ -63,13 +66,19 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
 
   const selectedSize = sizes[size] || sizes.medium;
 
-  // Construct the full URL for the profile picture
-  const profilePicUrl = `http://localhost:3000/uploads/${user.profilePic}`;
+  const handleError = () => {
+    setImgSrc(fallbackAvatarUrl);
+  };
 
   return (
     <div className="flex justify-between items-center">
-      <Link className="flex items-center gap-1" to={`/profile/${user.id}`}>
-        <img src={profilePicUrl} className={`${selectedSize.profilePicSize} rounded-full`} />
+      <Link className="flex items-center gap-2" to={`/profile/${user.id}`}>
+        <img
+          src={imgSrc}
+          onError={handleError}
+          className={`${selectedSize.profilePicSize} rounded-full`}
+          alt={`${user.firstName} ${user.lastName}`}
+        />
         <div className="flex flex-col">
           <h4 className={selectedSize.textSize}>
             {user.firstName} {user.lastName}
@@ -78,18 +87,16 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
         </div>
       </Link>
 
-      {
-        auth.userId !== user.id && (
-          <button
-            className={selectedSize.buttonSize}
-            name="follow"
-            value={user.isFollowed ? "false" : "true"}
-            onClick={handleFollowClick}
-          >
-            {user.isFollowed ? <FaRegEye className={selectedSize.iconSize} /> : 'Follow'}
-          </button>
-        )
-      }
+      {auth.userId !== user.id && (
+        <button
+          className={selectedSize.buttonSize}
+          name="follow"
+          value={user.isFollowed ? "false" : "true"}
+          onClick={handleFollowClick}
+        >
+          {user.isFollowed ? <FaRegEye className={selectedSize.iconSize} /> : 'Follow'}
+        </button>
+      )}
     </div>
   );
 }
