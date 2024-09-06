@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/authContext';
 
@@ -44,6 +44,7 @@ export default function EditProfile() {
   const auth = useAuth();
   const navigate = useNavigate();
   const bioRef = useRef(null);
+  const queryClient = useQueryClient(); // Initialize queryClient
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -84,6 +85,10 @@ export default function EditProfile() {
   const mutation = useMutation({
     mutationFn: updateProfile,
     onSuccess: () => {
+      // Invalidate profile and posts queries to trigger a refetch
+      queryClient.invalidateQueries(['user', auth.userId]);  // Invalidate user profile query
+      queryClient.invalidateQueries(['userPosts', auth.userId]); // Invalidate user posts query
+
       navigate(`/profile/${auth.userId}`);
     },
     onError: (error) => {
@@ -119,6 +124,7 @@ export default function EditProfile() {
         className="border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700"
         encType="multipart/form-data"
       >
+        {/* Input fields for first name, last name, username, etc. */}
         <div className="flex flex-col">
           <label>First Name</label>
           <input
