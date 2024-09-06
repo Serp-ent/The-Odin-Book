@@ -20,8 +20,7 @@ export default function PostListItem({ post }) {
           <div className='flex justify-center text-lg'>
             <h4>{post.title}</h4>
           </div>
-          {/* Display images if they exist */}
-          {/* // TODO: there should be carousel  that displayed the images */}
+
           {post.images.length > 0 && (
             <ImageCarousel images={post.images} />
           )}

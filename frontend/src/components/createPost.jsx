@@ -1,8 +1,9 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useFetcher } from "react-router-dom";
 
-// TODO: invoke refetch of posts
 export default function CreatePost() {
+  const queryClient = useQueryClient();
   // State to manage form data including content and images
   const [formData, setFormData] = useState({
     content: '',
@@ -52,22 +53,6 @@ export default function CreatePost() {
       }
     }, 0);
 
-    const formDataToObject = (formData) => {
-      const obj = {};
-      formData.forEach((value, key) => {
-        if (obj[key]) {
-          // If the key already exists in the object, convert it to an array and add the new value
-          obj[key] = [].concat(obj[key], value);
-        } else {
-          // Otherwise, just set the value
-          obj[key] = value;
-        }
-      });
-      return obj;
-    };
-
-    console.log(formDataToObject(submissionData));
-
     try {
       // Send the request
       const response = await fetch('http://localhost:3000/api/posts', {
@@ -82,8 +67,7 @@ export default function CreatePost() {
         throw new Error('Failed to create post');
       }
 
-      // Handle successful post creation (e.g., notify user or redirect)
-      console.log('Post created successfully');
+      queryClient.invalidateQueries('posts');
     } catch (error) {
       console.error('Error creating post:', error);
     }
