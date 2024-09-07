@@ -70,7 +70,7 @@ export default function Post() {
   if (error) return <div>Error loading post</div>;
 
   return (
-    <main className="p-4 container bg-gray-800 text-white overflow-y-auto flex flex-col gap-2">
+    <main className="p-4 container bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark overflow-y-auto flex flex-col gap-2">
       <UserHeader user={postData.author} createdAt={postData.createdAt} />
 
       {postData.images.length > 0 && (
