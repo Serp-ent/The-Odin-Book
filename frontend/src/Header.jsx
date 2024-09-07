@@ -29,7 +29,6 @@ export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { t, ready } = useTranslation();
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -72,7 +71,7 @@ export default function Header() {
     }
   }, [isDarkMode])
 
-  if (isLoading || !ready) {
+  if (isLoading) {
     return <div>Loading...</div>
   }
 
@@ -87,7 +86,7 @@ export default function Header() {
           <img src={odinIcon}
             className='w-1/6 h-auto' />
           <h1 className='font-bold'>
-            {t('welcome')}
+            The Odin Book
           </h1>
         </Link>
       </div>

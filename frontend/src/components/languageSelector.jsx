@@ -7,8 +7,11 @@ const languages = [
   { code: 'pl', name: 'Polski', flag: <PL title="Polish" className="w-6 h-4" /> },
 ];
 
+
+// TODO: should save currently preffered language to local storage
+// after refresh the page returns to default english language
 export default function LanguageSelector({ size = 'default' }) {
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedLanguage, setSelectedLanguage] = useState(localStorage.getItem('i18nextLng') || 'en');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { i18n } = useTranslation();
@@ -16,6 +19,7 @@ export default function LanguageSelector({ size = 'default' }) {
   const handleSelect = (lng) => {
     setSelectedLanguage(lng);
     i18n.changeLanguage(lng);
+    localStorage.setItem('i18nextLng', lng); // Save language selection to localStorage
     setIsDropdownOpen(false);
   };
 

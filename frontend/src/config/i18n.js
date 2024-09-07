@@ -16,8 +16,9 @@ i18n
       caches: ['localStorage', 'cookie'], // Where to store the user's language choice
     },
     backend: {
-      loadPath: '/locales/{{lng}}/translation.json', // Path to translation files
+      loadPath: '/locales/{{lng}}/{{ns}}.json', // Path to translation files
     },
+    ns: ['auth'],
     react: {
       useSuspense: false, // Disable suspense for SSR or if you prefer manual loading
     },

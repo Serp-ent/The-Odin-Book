@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/authContext";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { t, ready } = useTranslation('auth');
 
   const auth = useAuth();
   const navigate = useNavigate();
@@ -36,6 +38,10 @@ export default function Login() {
     navigate('/');
   }
 
+  if (!ready) {
+    return <div>Loading Translation...</div>
+  }
+
   return (
     <main
       className='p-4 flex flex-col items-center'
@@ -46,7 +52,7 @@ export default function Login() {
         method="POST"
       >
         <div className="flex flex-col">
-          <label>Username</label>
+          <label>{t('username')}</label>
           <input
             className='border border-gray-900 dark:border-background-light dark:bg-gray-800 p-1 rounded'
             name="username"
@@ -55,7 +61,7 @@ export default function Login() {
           />
         </div>
         <div className="flex flex-col">
-          <label>Password</label>
+          <label>{t('password')}</label>
           <input
             className='border border-gray-900 dark:border-background-light dark:bg-gray-800 p-1 rounded'
             name="password"
@@ -75,19 +81,19 @@ export default function Login() {
           <button
             className="border px-4 py-2 rounded"
             type="submit"
-          >Login</button>
+          >{t('login')}</button>
         </div>
 
       </form>
 
       <div className="flex justify-center mt-4 text-sm">
         <p>
-          Don&apos;t have an account?{' '}
+          {t('noAccountQuestion')}{' '}
           <Link
             to='/register'
             className="text-accent-light dark:text-accent-dark underline"
           >
-            Register here
+            {t('registerHere')}
           </Link>
         </p>
       </div>
