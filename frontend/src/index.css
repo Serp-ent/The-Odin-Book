@@ -1,12 +1,12 @@
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "~slick-carousel/slick/slick.css";
-@import "~slick-carousel/slick/slick-theme.css";
-
 @layer base {
   body {
-    @apply bg-gray-800 text-white min-h-screen
+    @apply bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark min-h-screen
   }
 }

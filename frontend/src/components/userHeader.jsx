@@ -76,7 +76,7 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
         <img
           src={imgSrc}
           onError={handleError}
-          className={`${selectedSize.profilePicSize} rounded-full`}
+          className={`${selectedSize.profilePicSize} rounded-full border border-secondary-light dark:border-secondary-dark`}
           alt={`${user.firstName} ${user.lastName}`}
         />
         <div className="flex flex-col">

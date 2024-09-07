@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div
       ref={scrollContainerRef}
-      className="overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 h-screen"
+      className="overflow-auto scrollbar-thin scrollbar-thumb-600 scrollbar-track-gray-400 h-screen"
     >
       <CreatePost />
       <PostList

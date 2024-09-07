@@ -3,7 +3,7 @@ import odinIcon from './assets/odin-icon.svg';
 import './index.css'
 import { useAuth } from './auth/authContext';
 import { useEffect, useRef, useState } from 'react';
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaMoon, FaSun } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import UserHeader from './components/userHeader';
 
@@ -21,10 +21,17 @@ const fetchUserInfo = async (userId) => {
   return response.json();
 };
 
+// TODO: highlight current route in popup
+// TODO: on very narrow screens hide The Odin Book title
 export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem('theme');
+    return storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  })
 
   const { data: userInfo, isLoading, isError } = useQuery({
     queryKey: ['userInfo', auth.userId],
@@ -34,6 +41,11 @@ export default function Header() {
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const closeDropdown = () => setIsDropdownOpen(false);
+  const toggleDarkMode = () => {
+    const newTheme = isDarkMode ? 'light' : 'dark';
+    setIsDarkMode(!isDarkMode);
+    localStorage.setItem('theme', newTheme);
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -49,19 +61,28 @@ export default function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode])
+
   if (isLoading) {
     return <div>Loading...</div>
   }
 
   return (
     <header
-      className='p-2 bg-gray-900 flex items-center justify-between text-white'
+      className='p-2 bg-background-light text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark flex items-center justify-between'
     >
       <div>
         <Link
           className='flex justify-start items-center gap-1'
           href='/'>
-          <img src={odinIcon} className='w-1/6 h-auto' />
+          <img src={odinIcon}
+            className='w-1/6 h-auto' />
           <h1 className='font-bold'>The Odin Book</h1>
         </Link>
       </div>
@@ -79,11 +100,11 @@ export default function Header() {
               </button>
 
               {isDropdownOpen && (
-                <div className='border p-2 absolute right-0 mt-2 w-48 bg-gray-900 rounded-lg shadow-lg z-50'>
+                <div className='border p-2 absolute right-0 mt-2 w-48 bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark rounded-lg shadow-lg z-50'>
                   <ul className='py-2 flex flex-col gap-2'>
                     <li>
                       <Link
-                        className='block p-1 test-white hover:bg-gray-800'
+                        className='block p-1 test-white dark:hover:bg-gray-800 hover:bg-gray-200'
                         onClick={closeDropdown}
                         to={`/profile/${auth.userId}`}
                       >
@@ -91,26 +112,26 @@ export default function Header() {
                     </li>
                     <hr></hr>
                     <Link to={'/users'}
-                      className='block p-1 test-white hover:bg-gray-800'>
+                      className='block p-1 test-white dark:hover:bg-gray-800 hover:bg-gray-200'>
                       Find Friends
                     </Link>
                     <hr></hr>
                     <Link to={'/users/followed'}
-                      className='block p-1 test-white hover:bg-gray-800'>
+                      className='block p-1 test-white dark:hover:bg-gray-800 hover:bg-gray-200'>
                       Following
                     </Link>
                     <hr></hr>
                     <li>
                       <Link
-                        className='block p-1 test-white hover:bg-gray-800'
+                        className='block p-1 test-white hover:bg-gray-200 dark:hover:bg-gray-800'
                         to={`/profile/settings`}
                       >
                         Settings</Link>
                     </li>
                     <hr></hr>
-                    <li>
+                    <li className='hover:bg-gray-200 dark:hover:bg-gray-800'>
                       <button
-                        className='block p-1 test-white hover:bg-gray-800'
+                        className='block p-1 test-white '
                         onClick={() => {
                           auth.logout()
                           closeDropdown();
@@ -121,16 +142,27 @@ export default function Header() {
                     </li>
                   </ul>
 
+                  {/* // TODO: add on off button */}
+                  <div className='flex justify-end'>
+                    <button onClick={toggleDarkMode} className="ml-4 p-2 rounded">
+                      {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </>
         ) : (
-          <div className='flex gap-4'>
+          <div className='flex gap-2 items-center justify-end text-sm'>
             <Link to={'/login'}>Login</Link>
             <Link to={'/register'}>Register</Link>
+            <button onClick={toggleDarkMode} className="rounded">
+              {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+            </button>
           </div>
         )}
+
       </div>
-    </header >);
+    </header >
+  );
 }

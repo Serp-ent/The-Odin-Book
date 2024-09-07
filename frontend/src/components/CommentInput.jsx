@@ -42,7 +42,7 @@ export default function CommentInput({ onSubmit }) {
         onSubmit={handleSubmit}
       >
         <textarea
-          className="border text-xs bg-gray-800 p-1 rounded grow overflow-y-hidden resize-none"
+          className="border text-xs dark:bg-gray-800 p-1 rounded grow overflow-y-hidden resize-none"
           name="content"
           placeholder="comment now..."
           value={content}
@@ -50,8 +50,8 @@ export default function CommentInput({ onSubmit }) {
           rows={1}
         />
 
-        <button className="rounded border bg-gray-900 p-1">
-          <FaRegPaperPlane color="white" />
+        <button className="rounded border dark:bg-gray-900 p-1">
+          <FaRegPaperPlane />
         </button>
       </fetcher.Form>
 

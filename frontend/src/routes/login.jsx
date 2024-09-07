@@ -38,7 +38,7 @@ export default function Login() {
 
   return (
     <main
-      className='text-white p-4 flex flex-col items-center'
+      className='p-4 flex flex-col items-center'
     >
       <form
         onSubmit={handleSubmit}
@@ -48,7 +48,7 @@ export default function Login() {
         <div className="flex flex-col">
           <label>Username</label>
           <input
-            className="border bg-gray-800 p-1 rounded"
+            className='border border-gray-900 dark:border-background-light dark:bg-gray-800 p-1 rounded'
             name="username"
             value={username}
             onChange={e => setUsername(e.target.value)}
@@ -57,7 +57,7 @@ export default function Login() {
         <div className="flex flex-col">
           <label>Password</label>
           <input
-            className="border bg-gray-800 p-1 rounded"
+            className='border border-gray-900 dark:border-background-light dark:bg-gray-800 p-1 rounded'
             name="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -85,7 +85,7 @@ export default function Login() {
           Don&apos;t have an account?{' '}
           <Link
             to='/register'
-            className="text-blue-400 underline"
+            className="text-accent-light dark:text-accent-dark underline"
           >
             Register here
           </Link>

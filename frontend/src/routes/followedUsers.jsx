@@ -30,7 +30,7 @@ export default function FollowedUsers() {
   if (isLoading) {
     return (
       <div className='flex justify-center items-center h-full'>
-        <ClipLoader color="white" />
+        <ClipLoader/>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export default function FollowedUsers() {
   }
 
   return (
-    <aside className='bg-gray-800 shadow flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 text-white container'>
+    <aside className='dark:bg-gray-800 bg-background-light text-text-primary-light dark:text-text-primary-dark shadow flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 container'>
       {followedUsers.length === 0 ? (
         <div className='flex justify-center flex-col items-center h-full gap-2'>
           <h2>You don&apos;t follow any users</h2>
@@ -57,7 +57,7 @@ export default function FollowedUsers() {
           <p className='flex justify-center align-center pt-2 text-xl font-bold'>Followed</p>
           <ul>
             {followedUsers.map((u) => (
-              <li className='text-white border-2 rounded-lg p-4 m-2' key={u.id}>
+              <li className='border-2 rounded-lg p-4 m-2' key={u.id}>
                 <UserHeader user={u} />
               </li>
             ))}

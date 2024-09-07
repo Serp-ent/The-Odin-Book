@@ -116,21 +116,21 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
   }
 
   return (
-    <div className="flex flex-col gap-2 bg-gray-700 p-2 border rounded text-sm">
+    <div className="flex flex-col gap-2 bg-gray-200 text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark p-2 border rounded text-sm">
       <CommentInput onSubmit={(content) => mutation.mutate({ postId, content })} />
 
       {
         data?.pages?.length ? (
           <div>
             <div className="mb-1 text-xs flex justify-end items-center">
-              <label htmlFor="sort" className="text-sm font-medium text-white">
+              <label htmlFor="sort" className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
                 Sort by:
               </label>
               <select
                 id="sort"
                 value={sortOption}
                 onChange={handleSortChange}
-                className="ml-2 bg-gray-800 text-white border border-gray-500 rounded p-1"
+                className="ml-1 text-text-primary-light dark:text-text-primary-dark dark:bg-gray-800 border border-gray-500 rounded p-1"
               >
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
@@ -139,7 +139,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
             </div>
             <ul className="flex flex-col gap-2">
               {data.pages.flatMap(page => page.comments).map(comment => (
-                <li key={comment.id} className="border bg-gray-800 p-2 rounded">
+                <li key={comment.id} className="border border-gray-300 dark:bg-gray-800 p-2 rounded">
                   <div className="mb-2">
                     <UserHeader
                       user={comment.author}
@@ -151,20 +151,20 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                   <div className="flex justify-end text-xs gap-1">
                     {(isPostAuthor || (auth.userId === comment.author.id)) && (
                       <button
-                        className="border rounded px-2 py-1"
+                        className="border border-gray-400 rounded px-2 py-1"
                         onClick={() => deleteCommentMutation.mutate(comment.id)}
                       >
                         Delete
                       </button>
                     )}
                     <button
-                      className="border rounded px-2 py-1"
+                      className="border border-gray-400 rounded px-2 py-1"
                       onClick={() => console.log("Replying to comment with id", comment.id)}
                     >
                       Reply
                     </button>
                     <button
-                      className="rounded border px-2 py-1"
+                      className="border border-gray-400 rounded px-2 py-1"
                       onClick={() => console.log("Liking comment with id", comment.id)}
                     >
                       Like

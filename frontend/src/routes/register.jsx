@@ -139,7 +139,7 @@ export default function Register() {
   ];
 
   return (
-    <main className='text-white p-4 flex flex-col items-center'>
+    <main className='p-4 flex flex-col items-center'>
       <form
         onSubmit={handleSubmit}
         className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700'
@@ -152,7 +152,7 @@ export default function Register() {
               {field.label} {requiredFields.includes(field.name) && <span className="text-red-500">*</span>}
             </label>
             <input
-              className={`border bg-gray-800 p-1 rounded ${getInputBorderClass(field.name)}`}
+              className={`border dark:bg-gray-800 p-1 rounded ${getInputBorderClass(field.name)}`}
               name={field.name}
               type={field.type}
               value={formData[field.name]}
@@ -166,7 +166,7 @@ export default function Register() {
         <div className="flex flex-col">
           <label>Profile Picture</label>
           <input
-            className="text-xs border bg-gray-800 p-1 rounded"
+            className="text-xs border dark:bg-gray-800 p-1 rounded"
             name="profilePic"
             type="file"
             onChange={handleFileChange}
@@ -176,7 +176,7 @@ export default function Register() {
 
         <div className="flex justify-end">
           <button
-            className={`border px-2 py-1 rounded text-sm ${Object.keys(errors).length > 0 ? 'bg-gray-500 text-gray-300 cursor-not-allowed' : 'bg-gray-800 cursor-pointer text-white hover:bg-gray-900'}`}
+            className={`border px-2 py-1 rounded text-sm ${Object.keys(errors).length > 0 ? 'bg-gray-500 text-gray-300 cursor-not-allowed' : 'bg-background-light dark:bg-background-dark cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-800'}`}
             type="submit"
             disabled={Object.keys(errors).length > 0}
           >
@@ -191,7 +191,7 @@ export default function Register() {
           Already have an account?{' '}
           <Link
             to='/login'
-            className="text-blue-400 underline"
+            className="text-accent-light dark:text-accent-dark underline"
           >
             Login here
           </Link>.

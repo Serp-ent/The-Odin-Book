@@ -32,8 +32,6 @@ export async function action({ request, params }) {
 }
 
 // TODO: add pipeline that automatically formats 
-
-// TODO: add light theme
 // TODO: add tailwind primary color and tailwind config 
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
@@ -72,7 +70,6 @@ export default function Profile() {
   const { data: userProfile, isLoading: isProfileLoading, isError: isProfileError } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => fetchUserProfile(userId),
-    // TODO: after changing profile it should invalidate that query
   });
 
   // Fetch user posts
@@ -92,7 +89,7 @@ export default function Profile() {
   const isOwnProfile = auth.userId === parseInt(userId, 10);
   const formattedDate = format(new Date(userProfile.registeredAt), 'PPpp');
   return (
-    <main className="p-2 flex flex-col container text-white gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
+    <main className="p-2 flex flex-col container text-text-primary-light dark:text-text-primary-dark  gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
       {isOwnProfile ? (
         <div className="flex justify-between">
           <UserHeader user={userProfile} />

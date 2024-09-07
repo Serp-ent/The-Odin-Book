@@ -22,6 +22,8 @@ const likePost = async (postId, isLiked) => {
 };
 
 export default function PostFooter({ post }) {
+  // TODO: the heart should be red
+  // TDOO: add animation when post is hearted
   const queryClient = useQueryClient();
 
   const { mutate: likePostMutation } = useMutation({
@@ -48,7 +50,7 @@ export default function PostFooter({ post }) {
   };
 
   return (
-    <div className="flex justify-end text-xl gap-4 border rounded p-2">
+    <div className="flex justify-end text-xl gap-4 border rounded p-2 border-text-secondary-light bg:border-text-secondary-dark">
       <div className="flex items-center gap-4 text-xl">
         <div className="flex items-center gap-1">
           <p className="text-xs items-center">

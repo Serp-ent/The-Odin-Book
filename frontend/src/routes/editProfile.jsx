@@ -118,7 +118,7 @@ export default function EditProfile() {
   };
 
   return (
-    <main className="text-white p-4 flex flex-col items-center">
+    <main className="p-4 flex flex-col items-center">
       <form
         onSubmit={handleSubmit}
         className="border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700"
@@ -128,7 +128,7 @@ export default function EditProfile() {
         <div className="flex flex-col">
           <label>First Name</label>
           <input
-            className="border bg-gray-800 p-1 rounded"
+            className='border dark:bg-gray-800 p-1 rounded'
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
@@ -137,7 +137,7 @@ export default function EditProfile() {
         <div className="flex flex-col">
           <label>Last Name</label>
           <input
-            className="border bg-gray-800 p-1 rounded"
+            className='border dark:bg-gray-800 p-1 rounded'
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
@@ -146,7 +146,7 @@ export default function EditProfile() {
         <div className="flex flex-col">
           <label>Username</label>
           <input
-            className="border bg-gray-800 p-1 rounded"
+            className='border dark:bg-gray-800 p-1 rounded'
             name="username"
             value={formData.username}
             onChange={handleChange}
@@ -155,7 +155,7 @@ export default function EditProfile() {
         <div className="flex flex-col">
           <label>Email</label>
           <input
-            className="border bg-gray-800 p-1 rounded"
+            className='border dark:bg-gray-800 p-1 rounded'
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -165,7 +165,7 @@ export default function EditProfile() {
         <div className="flex flex-col">
           <label>Profile Picture</label>
           <input
-            className="text-xs border bg-gray-800 p-1 rounded"
+            className="text-xs border dark:bg-gray-800 p-1 rounded"
             name="profilePic"
             type="file"
             onChange={handleFileChange}
@@ -176,7 +176,7 @@ export default function EditProfile() {
           <label>Bio</label>
           <textarea
             ref={bioRef}
-            className="border bg-gray-800 p-1 rounded overflow-hidden resize-none"
+            className="border dark:bg-gray-800 p-1 rounded overflow-hidden resize-none"
             name="bio"
             value={formData.bio}
             onChange={handleChange}
