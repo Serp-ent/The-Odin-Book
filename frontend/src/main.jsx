@@ -8,6 +8,7 @@ import routes from './routes/routes';
 import { AuthProvider } from './auth/authContext';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import './config/i18n'
 
 const router = createBrowserRouter(routes);
 

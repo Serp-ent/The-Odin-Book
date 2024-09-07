@@ -7,6 +7,7 @@ import { FaBars, FaMoon, FaSun } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import UserHeader from './components/userHeader';
 import LanguageSelector from './components/languageSelector';
+import { useTranslation } from 'react-i18next';
 
 const fetchUserInfo = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
@@ -28,6 +29,7 @@ export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { t, ready } = useTranslation();
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -70,7 +72,7 @@ export default function Header() {
     }
   }, [isDarkMode])
 
-  if (isLoading) {
+  if (isLoading || !ready) {
     return <div>Loading...</div>
   }
 
@@ -84,7 +86,9 @@ export default function Header() {
           href='/'>
           <img src={odinIcon}
             className='w-1/6 h-auto' />
-          <h1 className='font-bold'>The Odin Book</h1>
+          <h1 className='font-bold'>
+            {t('welcome')}
+          </h1>
         </Link>
       </div>
 
@@ -160,7 +164,7 @@ export default function Header() {
           <div className='flex gap-2 items-center justify-end text-sm'>
             <Link to={'/login'}>Login</Link>
             <Link to={'/register'}>Register</Link>
-            <LanguageSelector size='small'/>
+            <LanguageSelector size='small' />
             <button onClick={toggleDarkMode} className="rounded">
               {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>

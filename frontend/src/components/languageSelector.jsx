@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PL, US } from 'country-flag-icons/react/3x2'
+import { useTranslation } from "react-i18next";
 
 const languages = [
   { code: 'en', name: 'English', flag: <US title="English" className="w-6 h-4" /> },
@@ -10,9 +11,11 @@ export default function LanguageSelector({ size = 'default' }) {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { i18n } = useTranslation();
 
-  const handleSelect = (value) => {
-    setSelectedLanguage(value);
+  const handleSelect = (lng) => {
+    setSelectedLanguage(lng);
+    i18n.changeLanguage(lng);
     setIsDropdownOpen(false);
   };
 
