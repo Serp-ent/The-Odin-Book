@@ -38,6 +38,7 @@ export const createComment = async ({ postId, content }) => {
   return response.json();
 };
 
+// TODO: handle dark/white mode
 export default function Post() {
   const { postId } = useParams();
   const queryClient = useQueryClient();

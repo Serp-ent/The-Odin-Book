@@ -7,6 +7,7 @@ import { useAuth } from "../auth/authContext";
 import ImageCarousel from "./ImageCarousel";
 
 // TODO: language localization
+// TODO: add ability to remove posts
 // TODO: aria search optimization
 // TODO: show more comments should be shown only if there are more comments than shown
 export default function PostListItem({ post }) {

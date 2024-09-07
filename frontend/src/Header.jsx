@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaBars, FaMoon, FaSun } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import UserHeader from './components/userHeader';
+import LanguageSelector from './components/languageSelector';
 
 const fetchUserInfo = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
@@ -142,11 +143,14 @@ export default function Header() {
                     </li>
                   </ul>
 
-                  {/* // TODO: add on off button */}
-                  <div className='flex justify-end'>
-                    <button onClick={toggleDarkMode} className="ml-4 p-2 rounded">
-                      {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
-                    </button>
+                  <div className='flex justify-between items-center bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark'>
+                    <LanguageSelector />
+
+                    <div className='flex justify-end'>
+                      <button onClick={toggleDarkMode} className="ml-4 p-2 rounded">
+                        {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -156,6 +160,7 @@ export default function Header() {
           <div className='flex gap-2 items-center justify-end text-sm'>
             <Link to={'/login'}>Login</Link>
             <Link to={'/register'}>Register</Link>
+            <LanguageSelector size='small'/>
             <button onClick={toggleDarkMode} className="rounded">
               {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
