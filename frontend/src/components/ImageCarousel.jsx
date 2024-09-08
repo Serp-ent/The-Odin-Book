@@ -22,12 +22,14 @@ const ImageCarousel = ({ images }) => {
     <div className='relative'>
       <Slider {...settings}>
         {images.map((image, index) => (
-          <div key={index} className="flex justify-center items-center">
-            <img
-              src={`http://localhost:3000/uploads/${image}`}
-              alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
+          <div key={index} >
+            <div className="flex justify-center items-center">
+              <img
+                src={`http://localhost:3000/uploads/${image}`}
+                alt={`Slide ${index + 1}`}
+                className="block h-full w-full sm:w-auto sm:h-[40vh]"
+              />
+            </div>
           </div>
         ))}
       </Slider>

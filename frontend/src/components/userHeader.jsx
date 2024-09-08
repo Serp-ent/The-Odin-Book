@@ -48,7 +48,7 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
   const sizes = {
     small: {
       profilePicSize: 'w-6',
-      textSize: 'text-xs',
+      textSize: 'text-xs sm:text-base',
       buttonSize: 'px-1 py-0.5',
       iconSize: 'text-sm',
     },

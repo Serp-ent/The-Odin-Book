@@ -63,15 +63,15 @@ export default function PostFooter({ post }) {
   }
 
   return (
-    <div className="flex justify-end text-xl gap-4 border rounded p-2 border-text-secondary-light bg:border-text-secondary-dark">
+    <div className="flex justify-end gap-4 border rounded p-2 border-text-secondary-light bg:border-text-secondary-dark">
       <div className="flex items-center gap-4 text-xl">
         <div className="flex items-center gap-1">
           <p className="text-xs items-center">
             {post.likes}
           </p>
           <button
-            className='text-xl'
             onClick={handleLikeClick}
+            className="text-xl sm:text-2xl"
           >
             <animated.div style={props}>
               {post.isLiked ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
@@ -85,6 +85,7 @@ export default function PostFooter({ post }) {
         </p>
         <button
           onClick={() => console.log("add comment to", post.id)}
+          className="text-xl sm:text-2xl"
         >
           <FaRegComment />
         </button>

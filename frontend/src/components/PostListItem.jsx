@@ -18,7 +18,7 @@ export default function PostListItem({ post }) {
   }
 
   return (
-    <div className='border-2 m-2 text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark bg-background-light border-gray-700 py-4 px-2 rounded-xl flex flex-col gap-2' >
+    <div className='border m-2 sm:px-5 text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark bg-background-light border-gray-700 py-4 px-2 rounded flex flex-col gap-2' >
       <UserHeader user={post.author} createdAt={post.createdAt} />
       <Link to={`/post/${post.id}`}>
         <li>

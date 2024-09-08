@@ -11,5 +11,8 @@
   "newest": "Newest",
   "top": "Top",
   "oldest": "Oldest",
-  "commentNow": "Comment now..."
+  "commentNow": "Comment now...",
+  "noComments": "No comments be first!",
+  "commentCreated": "Comment created",
+  "postCreated": "Post created"
 }

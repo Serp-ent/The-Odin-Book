@@ -25,8 +25,8 @@ const fetchUserInfo = async (userId) => {
 
 const menuOptions = [
   { path: (userId) => `/profile/${userId}`, label: 'profile' },
-  { path: '/users', label: 'findFriends' },
-  { path: '/users/followed', label: 'following' },
+  { path: '/users', label: 'findFriends', style: 'xl:hidden' },
+  { path: '/users/followed', label: 'following', style: 'lg:hidden' },
   { path: '/profile/settings', label: 'settings' },
 ];
 
@@ -79,7 +79,7 @@ export default function Header() {
   }
 
   return (
-    <header className='p-2 bg-background-light text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark flex items-center justify-between'>
+    <header className='p-2 bg-background-light lg:col-span-2 xl:col-span-3 text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark flex items-center justify-between'>
       <div>
         <Link className='flex justify-start items-center gap-1' to='/'>
           <img src={odinIcon} className='h-10' alt="The Odin Project" />
@@ -105,7 +105,7 @@ export default function Header() {
                       <li key={index}>
                         <NavLink
                           className={({ isActive }) =>
-                            `block p-1 rounded px-2 dark:hover:bg-gray-800 hover:bg-gray-200 ${isActive ? 'bg-gray-200 dark:bg-gray-800' : ''}`
+                            `${option.style} block p-1 rounded px-2 dark:hover:bg-gray-800 hover:bg-gray-200 ${isActive ? 'bg-gray-200 dark:bg-gray-800' : ''}`
                           }
                           onClick={closeDropdown}
                           to={typeof option.path === 'function' ? option.path(auth.userId) : option.path}

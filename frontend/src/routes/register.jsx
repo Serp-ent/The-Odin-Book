@@ -145,10 +145,10 @@ export default function Register() {
   }
 
   return (
-    <main className='p-4 flex flex-col items-center'>
+    <main className='p-4 flex flex-col items-center container mx-auto sm:w-[500px]'>
       <form
         onSubmit={handleSubmit}
-        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700'
+        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700 w-full'
         method="POST"
         encType="multipart/form-data"
       >

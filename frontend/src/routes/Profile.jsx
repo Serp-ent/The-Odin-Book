@@ -89,40 +89,42 @@ export default function Profile() {
   const isOwnProfile = auth.userId === parseInt(userId, 10);
   const formattedDate = format(new Date(userProfile.registeredAt), 'PPpp');
   return (
-    <main className="p-2 flex flex-col container text-text-primary-light dark:text-text-primary-dark  gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
-      {isOwnProfile ? (
-        <div className="flex justify-between ">
-          <UserHeader user={userProfile} />
-          <div className="flex justify-end text-sm">
-            <Link to={`/profile/edit`}>
-              <button className="bg-blue-500 text-white px-2 py-1 rounded">{t('editProfile')}</button>
-            </Link>
-          </div>
-        </div>
-      ) : (
-        <UserHeader user={userProfile} />
-      )}
-
-      <div className="text-sm">
-        <p>{t('email')}: {userProfile.email}</p>
-        <p>{t('registeredAt')}: {formattedDate}</p>
-        {
-          userProfile.bio && (
-            <div className="flex flex-col justify-center items-center mt-2">
-              <p>{userProfile.bio}</p>
+    <main className="flex flex-col container px-4 mx-auto lg:w-[768px] text-text-primary-light dark:text-text-primary-dark  gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
+      <div className="p-3 flex flex-col gap-4">
+        {isOwnProfile ? (
+          <div className="flex justify-between ">
+            <UserHeader user={userProfile} />
+            <div className="flex justify-end text-sm">
+              <Link to={`/profile/edit`}>
+                <button className="bg-blue-500 text-white px-2 py-1 rounded">{t('editProfile')}</button>
+              </Link>
             </div>
-          )
-        }
-      </div>
+          </div>
+        ) : (
+          <UserHeader user={userProfile} />
+        )}
 
-      <div className="flex justify-center gap-5 text-sm">
-        <div className="rounded border py-1 px-2">
-          <h4>{t('followers')}</h4>
-          <p className="text-center text-xl">{userProfile.followerCount}</p>
+        <div className="text-sm">
+          <p>{t('email')}: {userProfile.email}</p>
+          <p>{t('registeredAt')}: {formattedDate}</p>
+          {
+            userProfile.bio && (
+              <div className="flex flex-col justify-center items-center mt-2">
+                <p>{userProfile.bio}</p>
+              </div>
+            )
+          }
         </div>
-        <div className="rounded border py-1 px-2">
-          <h4>{t('followed')}</h4>
-          <p className="text-center text-xl">{userProfile.followedCount}</p>
+
+        <div className="flex justify-around gap-5 text-sm">
+          <div className="rounded border py-1 px-2">
+            <h4>{t('followers')}</h4>
+            <p className="text-center text-xl">{userProfile.followerCount}</p>
+          </div>
+          <div className="rounded border py-1 px-2">
+            <h4>{t('followed')}</h4>
+            <p className="text-center text-xl">{userProfile.followedCount}</p>
+          </div>
         </div>
       </div>
 

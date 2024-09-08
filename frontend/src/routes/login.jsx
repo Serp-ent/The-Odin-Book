@@ -44,11 +44,11 @@ export default function Login() {
 
   return (
     <main
-      className='p-4 flex flex-col items-center'
+      className='p-4 flex flex-col items-center container mx-auto sm:w-[500px] '
     >
       <form
         onSubmit={handleSubmit}
-        className='border-2 p-4 flex flex-col gap-2 rounded shadow border-gray-700'
+        className='border-2 p-4 w-full flex flex-col gap-2 rounded shadow border-gray-700'
         method="POST"
       >
         <div className="flex flex-col">

@@ -70,7 +70,7 @@ export default function FindFriends() {
   }
 
   return (
-    <div className="flex flex-col text-text-primary-light dark:text-text-primary-dark p-2 gap-2 grow">
+    <div className="flex h-full flex-col container mx-auto px-4 lg:max-w-[768px] text-text-primary-light dark:text-text-primary-dark p-2 gap-2 grow">
       <input
         className="border bg-gray-300 dark:bg-gray-800 p-1 rounded"
         name="firstName"

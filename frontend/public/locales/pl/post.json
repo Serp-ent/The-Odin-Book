@@ -12,5 +12,7 @@
   "top": "Popularne",
   "oldest": "Najstarsze",
   "commentNow": "Skomentuj...",
-  "noComments": "Brak komentarzy. Badz pierwszy!"
+  "noComments": "Brak komentarzy. Badz pierwszy!",
+  "commentCreated": "Dodano Komentarz",
+  "postCreated": "Utworzono Post"
 }

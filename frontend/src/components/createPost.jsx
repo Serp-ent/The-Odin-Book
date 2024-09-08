@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router-dom";
 
+// TODO: there should be popup that says the post was created
 export default function CreatePost() {
   const queryClient = useQueryClient();
   const { t, ready } = useTranslation('post');
@@ -11,6 +12,11 @@ export default function CreatePost() {
     content: '',
     images: [], // To store selected images
   });
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  }
 
   const handleChange = (e) => {
     // Update content in formData
@@ -70,6 +76,14 @@ export default function CreatePost() {
       }
 
       queryClient.invalidateQueries('posts');
+
+
+      setShowPopup(true);
+
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 3000)
+
     } catch (error) {
       console.error('Error creating post:', error);
     }
@@ -80,31 +94,46 @@ export default function CreatePost() {
   }
 
   return (
-    <form
-      className="bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
-      onSubmit={handleSubmit}
-      encType="multipart/form-data"
-    >
-      <textarea
-        className="bg-gray-200 dark:text-white dark:bg-gray-800 border p-1 rounded text-sm overflow-y-hidden resize-none"
-        placeholder={t('moodQuestion')}
-        name="content"
-        value={formData.content}
-        onChange={handleChange}
-        rows={1}
-      />
-      <input
-        className="text-xs"
-        type="file"
-        name="images"
-        multiple
-        onChange={handleFileChange}
-      />
-      <div className="flex justify-end">
-        <button className="border border-gray-500 rounded text-sm py-1 px-2" type="submit">
-          {t('createPost')}
-        </button>
-      </div>
-    </form>
+    <>
+      <form
+        className="bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+      >
+        <textarea
+          className="bg-gray-200 dark:text-white dark:bg-gray-800 border p-1 rounded text-sm overflow-y-hidden resize-none"
+          placeholder={t('moodQuestion')}
+          name="content"
+          value={formData.content}
+          onChange={handleChange}
+          rows={1}
+        />
+        <input
+          className="text-xs"
+          type="file"
+          name="images"
+          multiple
+          onChange={handleFileChange}
+        />
+        <div className="flex justify-end">
+          <button className="border border-gray-500 rounded text-sm py-1 px-2" type="submit">
+            {t('createPost')}
+          </button>
+        </div>
+      </form>
+
+
+      {showPopup && (
+        <div className="fixed bottom-5 right-5 p-2 bg-green-500 text-white rounded shadow-lg flex items-center">
+          <span className="mr-2 text-xs">{t('postCreated')}</span>
+          <button
+            className="bg-transparent text-white border-0 font-semibold cursor-pointer font-xl"
+            onClick={handleClosePopup}
+          >
+            &times;
+          </button>
+        </div>
+      )}
+    </>
   );
 }

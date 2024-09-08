@@ -170,7 +170,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                         onClick={() => button.onClick(comment.id, deleteCommentMutation.mutate)}
                         className='border-gray-400 rounded px-2 py-1'
                       >
-                        <span className="text-[14px]">
+                        <span className="text-sm sm:text-base">
                           {button.icon}
                         </span>
                       </button>
