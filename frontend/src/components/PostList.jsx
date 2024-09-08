@@ -103,7 +103,7 @@ export default function PostList({ scrollContainerRef, initialType = "all", init
           <ClipLoader color="white" />
         </div>
       }
-      {!(hasNextPage) && <div className="text-white text-center py-4">{t('noMorePostsAvailable')}</div>}
+      {!(hasNextPage) && <div className="text-text-primary-light dark:text-text-primary-dark text-center py-4">{t('noMorePostsAvailable')}</div>}
 
     </main>
   );

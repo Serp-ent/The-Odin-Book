@@ -42,7 +42,6 @@ export default function Login() {
     return <div>Loading Translation...</div>
   }
 
-  // TODO: login password input form should be type password
   return (
     <main
       className='p-4 flex flex-col items-center container mx-auto sm:w-[500px] '
@@ -65,6 +64,7 @@ export default function Login() {
           <label>{t('password')}</label>
           <input
             className='border border-gray-900 dark:border-background-light dark:bg-gray-800 p-1 rounded'
+            type="password"
             name="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
