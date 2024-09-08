@@ -5,8 +5,10 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { ClipLoader } from 'react-spinners'
 import { debounce } from 'loadsh';
 import { useAuth } from "../auth/authContext";
+import { useTranslation } from "react-i18next";
 
 export default function PostList({ scrollContainerRef, initialType = "all", initialUserId = null }) {
+  const { t, ready } = useTranslation('post');
   const fetchPosts = async ({ pageParam = 1 }) => {
     const getEndPoint = (type, userId, page) => {
       switch (type) {
@@ -79,6 +81,10 @@ export default function PostList({ scrollContainerRef, initialType = "all", init
     }
   }, [fetchNextPage, scrollContainerRef]);
 
+  if (!ready) {
+    return <div>Loading Translation...</div>
+  }
+
   const posts = data?.pages?.flatMap(page => page.posts) || [];
   return (
     <main className="flex flex-col gap-2">
@@ -91,13 +97,13 @@ export default function PostList({ scrollContainerRef, initialType = "all", init
         </ul>
       )}
 
-      {isError && <div className="text-center text-red-500">Error loading posts.</div>}
+      {isError && <div className="text-center text-red-500">{t('errorPostLoading')}</div>}
       {
         isFetchingNextPage && <div className="flex justify-center m-1">
           <ClipLoader color="white" />
         </div>
       }
-      {!(hasNextPage) && <div className="text-white text-center py-4">No more posts available</div>}
+      {!(hasNextPage) && <div className="text-white text-center py-4">{t('noMorePostsAvailable')}</div>}
 
     </main>
   );

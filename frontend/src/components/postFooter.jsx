@@ -3,6 +3,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import PropTypes from 'prop-types'
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 const likePost = async (postId, isLiked) => {
   const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
@@ -25,6 +26,7 @@ export default function PostFooter({ post }) {
   // TODO: the heart should be red
   // TDOO: add animation when post is hearted
   const queryClient = useQueryClient();
+  const { t, ready } = useTranslation('post');
 
   const { mutate: likePostMutation } = useMutation({
     mutationFn: () => likePost(post.id, post.isLiked),
@@ -48,6 +50,10 @@ export default function PostFooter({ post }) {
   const handleLikeClick = () => {
     likePostMutation();
   };
+
+  if (!ready) {
+    return <div>Loading Translation...</div>
+  }
 
   return (
     <div className="flex justify-end text-xl gap-4 border rounded p-2 border-text-secondary-light bg:border-text-secondary-dark">

@@ -1,7 +1,12 @@
 {
+  "profile": "Profile",
+  "findFriends": "Find Friends",
+  "following": "Following",
+  "settings": "Settings",
+  "logout": "Logout",
   "username": "Username",
   "password": "Password",
-  "login": "Log in",
+  "login": "Login",
   "noAccountQuestion": "Don't have an account?",
   "alreadyRegisteredQuestion": "Already have an account?",
   "register": "Register",
@@ -13,7 +18,11 @@
   "usernameRequired": "Username is required",
   "invalidEmail": "Invalid email address",
   "passwordRequired": "Password is required",
-  "confirmPasswordRequired": "Confirming the password is required",
-  "passwordTooShort": "Password must be at least 6 characters long",
-  "passwordDoNotMatch": "Passwords must match"
+  "confirmPasswordRequired": "Confirming password is required",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "passwordDoNotMatch": "Passwords must match",
+  "bio": "Bio",
+  "saveChanges": "Save Changes",
+  "back": "Back",
+  "follow": "follow"
 }

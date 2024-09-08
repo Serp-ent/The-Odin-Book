@@ -1,9 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router-dom";
 
 export default function CreatePost() {
   const queryClient = useQueryClient();
+  const { t, ready } = useTranslation('post');
   // State to manage form data including content and images
   const [formData, setFormData] = useState({
     content: '',
@@ -73,6 +75,10 @@ export default function CreatePost() {
     }
   };
 
+  if (!ready) {
+    return <div>Loading Translation...</div>
+  }
+
   return (
     <form
       className="bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark border-2 rounded m-2 p-2 border-gray-500 flex flex-col gap-1"
@@ -81,7 +87,7 @@ export default function CreatePost() {
     >
       <textarea
         className="bg-gray-200 dark:text-white dark:bg-gray-800 border p-1 rounded text-sm overflow-y-hidden resize-none"
-        placeholder="How do you feel?"
+        placeholder={t('moodQuestion')}
         name="content"
         value={formData.content}
         onChange={handleChange}
@@ -96,7 +102,7 @@ export default function CreatePost() {
       />
       <div className="flex justify-end">
         <button className="border border-gray-500 rounded text-sm py-1 px-2" type="submit">
-          Publish
+          {t('createPost')}
         </button>
       </div>
     </form>

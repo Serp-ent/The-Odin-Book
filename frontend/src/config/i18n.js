@@ -18,7 +18,7 @@ i18n
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json', // Path to translation files
     },
-    ns: ['auth'],
+    ns: ['post', 'header'],
     react: {
       useSuspense: false, // Disable suspense for SSR or if you prefer manual loading
     },

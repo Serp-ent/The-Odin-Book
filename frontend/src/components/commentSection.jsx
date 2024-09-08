@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import queryString from 'query-string'
 import UserHeader from "./userHeader";
 import { useAuth } from "../auth/authContext";
+import { useTranslation } from "react-i18next";
 
 const fetchComments = async ({ postId, pageParam = 1, short = false, sort = 'newest' }) => {
   const queryParams = queryString.stringify({
@@ -54,6 +55,11 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
   const [sortOption, setSortOption] = useState('newest');
   const auth = useAuth();
 
+  const { t, ready } = useTranslation('post');
+
+
+  // TODO: liking comment should have heart
+  // TODO: add liking comments
   const fetchCommentsFn = useCallback(({ pageParam = 1 }) => {
     return fetchComments({ postId, pageParam, short, sort: sortOption });
   }, [postId, short, sortOption]);
@@ -103,7 +109,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
     queryClient.invalidateQueries(['comments', postId, short, newSortOption]); // Invalidate query with new sort option
   };
 
-  if (isLoading) {
+  if (isLoading || !ready) {
     return (
       <div className="flex justify-center">
         <ClipLoader color="white" />
@@ -124,7 +130,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
           <div>
             <div className="mb-1 text-xs flex justify-end items-center">
               <label htmlFor="sort" className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
-                Sort by:
+                {t('sortBy')}:
               </label>
               <select
                 id="sort"
@@ -132,9 +138,9 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                 onChange={handleSortChange}
                 className="ml-1 text-text-primary-light dark:text-text-primary-dark dark:bg-gray-800 border border-gray-500 rounded p-1"
               >
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="top_likes">Top Likes</option>
+                <option value="newest">{t('newest')}</option>
+                <option value="oldest">{t('oldest')}</option>
+                <option value="top_likes">{t('top')}</option>
               </select>
             </div>
             <ul className="flex flex-col gap-2">
@@ -154,20 +160,21 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                         className="border border-gray-400 rounded px-2 py-1"
                         onClick={() => deleteCommentMutation.mutate(comment.id)}
                       >
-                        Delete
+                        {/* // TODO: add icons */}
+                        {t('delete')}
                       </button>
                     )}
                     <button
                       className="border border-gray-400 rounded px-2 py-1"
                       onClick={() => console.log("Replying to comment with id", comment.id)}
                     >
-                      Reply
+                      {t('reply')}
                     </button>
                     <button
                       className="border border-gray-400 rounded px-2 py-1"
                       onClick={() => console.log("Liking comment with id", comment.id)}
                     >
-                      Like
+                    {t('like')}
                     </button>
                   </div>
                 </li>

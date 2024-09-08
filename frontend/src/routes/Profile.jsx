@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../auth/authContext";
+import { useTranslation } from "react-i18next";
 
 export async function action({ request, params }) {
   const formData = await request.formData();
@@ -65,6 +66,7 @@ export default function Profile() {
   const { userId } = useParams();
   const container = useRef(null);
   const auth = useAuth();
+  const { t, ready } = useTranslation('profile');
 
   // Fetch user profile
   const { data: userProfile, isLoading: isProfileLoading, isError: isProfileError } = useQuery({
@@ -78,7 +80,7 @@ export default function Profile() {
     queryFn: () => fetchUserPosts(userId),
   });
 
-  if (isProfileLoading || isPostsLoading) {
+  if (isProfileLoading || isPostsLoading || !ready) {
     return <div>Loading...</div>;
   }
 
@@ -95,7 +97,7 @@ export default function Profile() {
           <UserHeader user={userProfile} />
           <div className="flex justify-end text-sm">
             <Link to={`/profile/edit`}>
-              <button className="bg-blue-500 text-white px-2 py-1 rounded">Edit Profile</button>
+              <button className="bg-blue-500 text-white px-2 py-1 rounded">{t('editProfile')}</button>
             </Link>
           </div>
         </div>
@@ -104,8 +106,8 @@ export default function Profile() {
       )}
 
       <div className="text-sm">
-        <p>Email: {userProfile.email}</p>
-        <p>Registered: {formattedDate}</p>
+        <p>{t('email')}: {userProfile.email}</p>
+        <p>{t('registeredAt')}: {formattedDate}</p>
         {
           userProfile.bio && (
             <div className="flex flex-col justify-center items-center mt-2">
@@ -118,18 +120,18 @@ export default function Profile() {
       <div className="flex justify-center gap-5 text-sm">
         <div className="rounded border py-1 px-2">
           {/* TODO: these should be buttons that list followed users and followers */}
-          <h4>Followers</h4>
+          <h4>{t('followers')}</h4>
           <p className="text-center text-xl">{userProfile.followerCount}</p>
         </div>
         <div className="rounded border py-1 px-2">
-          <h4>Followed</h4>
+          <h4>{t('followed')}</h4>
           <p className="text-center text-xl">{userProfile.followedCount}</p>
         </div>
       </div>
 
       <div>
         <h3 className="flex justify-center text-xl p-1 border rounded">
-          Latest Posts
+          {t('latestPosts')}
         </h3>
         <PostList
           scrollContainerRef={container}

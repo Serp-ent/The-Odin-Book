@@ -1,0 +1,15 @@
+{
+  "createPost": "Utworz",
+  "moodQuestion": "Jak sie czujesz?",
+  "errorPostLoading": "Blad przy ladowaniu postow",
+  "noMorePostsAvailable": "Brak postow do zaladowania",
+  "seeMoreComments": "Zobacz wiecej komentarzy",
+  "reply": "Odpowiedz",
+  "like": "Polub",
+  "delete": "Usun",
+  "sortBy": "sortuj",
+  "newest": "najnowsze",
+  "top": "Popularne",
+  "oldest": "Najstarsze",
+  "commentNow": "Skomentuj..."
+}

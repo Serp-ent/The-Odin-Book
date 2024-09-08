@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useFetcher } from "react-router-dom";
 import { FaRegPaperPlane } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function CommentInput({ onSubmit }) {
   const fetcher = useFetcher();
+  const { t, ready } = useTranslation('post');
 
   const [content, setContent] = useState('');
   const [showPopup, setShowPopup] = useState(false);
@@ -33,6 +35,10 @@ export default function CommentInput({ onSubmit }) {
     e.target.style.height = `${e.target.scrollHeight}px`;
   }
 
+  if (!ready) {
+    return <div>Loading Translation...</div>
+  }
+
   return (
     <>
       <fetcher.Form
@@ -44,7 +50,7 @@ export default function CommentInput({ onSubmit }) {
         <textarea
           className="border text-xs dark:bg-gray-800 p-1 rounded grow overflow-y-hidden resize-none"
           name="content"
-          placeholder="comment now..."
+          placeholder={t('commentNow')}
           value={content}
           onChange={handleInputChange}
           rows={1}

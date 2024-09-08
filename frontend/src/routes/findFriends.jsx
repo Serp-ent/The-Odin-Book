@@ -3,6 +3,7 @@ import UserHeader from "../components/userHeader";
 import { useQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useTranslation } from "react-i18next";
 
 export const fetchUsers = async (query) => {
   const endpoint = query
@@ -27,6 +28,7 @@ export const fetchUsers = async (query) => {
 export default function FindFriends() {
   const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const { t, ready } = useTranslation('followed')
 
   const inputRef = useRef(null);
 
@@ -59,7 +61,7 @@ export default function FindFriends() {
     }
   }, [inputRef, isLoading, isError]);
 
-  if (isLoading) {
+  if (isLoading || !ready) {
     return <div>Loading...</div>;
   }
 
@@ -72,7 +74,7 @@ export default function FindFriends() {
       <input
         className="border bg-gray-300 dark:bg-gray-800 p-1 rounded"
         name="firstName"
-        placeholder="Find friends"
+        placeholder={t('findFriends')}
         value={inputValue} // Controlled input value
         onChange={handleInputChange}
         ref={inputRef}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import UserHeader from '../components/userHeader';
 import { ClipLoader } from 'react-spinners';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 export const fetchFollowedUsers = async () => {
   const response = await fetch('http://localhost:3000/api/users/followed', {
@@ -26,11 +27,12 @@ export default function FollowedUsers() {
     queryFn: fetchFollowedUsers,
     staleTime: 60000, // Cache data for 1 minute
   });
+  const { t, ready } = useTranslation('followed');
 
-  if (isLoading) {
+  if (isLoading || !ready) {
     return (
       <div className='flex justify-center items-center h-full'>
-        <ClipLoader/>
+        <ClipLoader />
       </div>
     );
   }
@@ -47,14 +49,16 @@ export default function FollowedUsers() {
     <aside className='dark:bg-gray-800 bg-background-light text-text-primary-light dark:text-text-primary-dark shadow flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 container'>
       {followedUsers.length === 0 ? (
         <div className='flex justify-center flex-col items-center h-full gap-2'>
-          <h2>You don&apos;t follow any users</h2>
+          <h2>{t('noUsersFollowed')}</h2>
           <Link to={`/users/`} className='border rounded py-1 px-2'>
-            Find friends
+            {t('findFriends')}
           </Link>
         </div>
       ) : (
         <>
-          <p className='flex justify-center align-center pt-2 text-xl font-bold'>Followed</p>
+          <p className='flex justify-center align-center pt-2 text-xl font-bold'>
+            {t('followed')}
+          </p>
           <ul>
             {followedUsers.map((u) => (
               <li className='border-2 rounded-lg p-4 m-2' key={u.id}>

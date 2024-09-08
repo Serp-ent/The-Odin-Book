@@ -1,0 +1,15 @@
+{
+  "createPost": "Create",
+  "moodQuestion": "How are you feeling?",
+  "errorPostLoading": "Error loading posts",
+  "noMorePostsAvailable": "No more posts to load",
+  "seeMoreComments": "See more comments",
+  "reply": "Reply",
+  "like": "Like",
+  "delete": "Delete",
+  "sortBy": "Sort by",
+  "newest": "Newest",
+  "top": "Top",
+  "oldest": "Oldest",
+  "commentNow": "Comment now..."
+}

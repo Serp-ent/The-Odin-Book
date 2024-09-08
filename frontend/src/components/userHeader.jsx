@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { FaRegEye } from 'react-icons/fa';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/authContext';
+import { useTranslation } from 'react-i18next';
 
 // URL for the fallback avatar
 const fallbackAvatarUrl = 'https://www.gravatar.com/avatar/?d=mp';
@@ -13,6 +14,7 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
   const auth = useAuth();
   const queryClient = useQueryClient();
   const [imgSrc, setImgSrc] = useState(`http://localhost:3000/uploads/${user.profilePic}`);
+  const { t, ready } = useTranslation('header');
 
   const followMutation = useMutation({
     mutationFn: async (follow) => {
@@ -70,6 +72,9 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
     setImgSrc(fallbackAvatarUrl);
   };
 
+  if (!ready) {
+    return <div>Loading Translation...</div>
+  }
   return (
     <div className="flex justify-between items-center">
       <Link className="flex items-center gap-2" to={`/profile/${user.id}`}>
@@ -94,7 +99,7 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
           value={user.isFollowed ? "false" : "true"}
           onClick={handleFollowClick}
         >
-          {user.isFollowed ? <FaRegEye className={selectedSize.iconSize} /> : 'Follow'}
+          {user.isFollowed ? <FaRegEye className={selectedSize.iconSize} /> : t('follow')}
         </button>
       )}
     </div>

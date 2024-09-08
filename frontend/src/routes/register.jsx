@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 // TODO: add spinner for all components that require loading
 export default function Register() {
   const navigate = useNavigate();
-  const { t, ready } = useTranslation();
+  const { t, ready } = useTranslation('header');
 
   const [formData, setFormData] = useState({
     username: '', email: '', password: '',

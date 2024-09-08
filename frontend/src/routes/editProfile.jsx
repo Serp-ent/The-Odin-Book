@@ -2,6 +2,7 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/authContext';
+import { useTranslation } from 'react-i18next';
 
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
@@ -45,6 +46,7 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const bioRef = useRef(null);
   const queryClient = useQueryClient(); // Initialize queryClient
+  const { t, ready } = useTranslation('header');
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -117,6 +119,10 @@ export default function EditProfile() {
     });
   };
 
+  if (!ready) {
+    return <div>Loading Translation...</div>
+  }
+
   return (
     <main className="p-4 flex flex-col items-center">
       <form
@@ -126,7 +132,7 @@ export default function EditProfile() {
       >
         {/* Input fields for first name, last name, username, etc. */}
         <div className="flex flex-col">
-          <label>First Name</label>
+          <label>{t('firstName')}</label>
           <input
             className='border dark:bg-gray-800 p-1 rounded'
             name="firstName"
@@ -135,7 +141,7 @@ export default function EditProfile() {
           />
         </div>
         <div className="flex flex-col">
-          <label>Last Name</label>
+          <label>{t('lastName')}</label>
           <input
             className='border dark:bg-gray-800 p-1 rounded'
             name="lastName"
@@ -144,7 +150,7 @@ export default function EditProfile() {
           />
         </div>
         <div className="flex flex-col">
-          <label>Username</label>
+          <label>{t('username')}</label>
           <input
             className='border dark:bg-gray-800 p-1 rounded'
             name="username"
@@ -153,7 +159,7 @@ export default function EditProfile() {
           />
         </div>
         <div className="flex flex-col">
-          <label>Email</label>
+          <label>{t('email')}</label>
           <input
             className='border dark:bg-gray-800 p-1 rounded'
             name="email"
@@ -163,7 +169,7 @@ export default function EditProfile() {
         </div>
 
         <div className="flex flex-col">
-          <label>Profile Picture</label>
+          <label>{t('profilePic')}</label>
           <input
             className="text-xs border dark:bg-gray-800 p-1 rounded"
             name="profilePic"
@@ -173,7 +179,7 @@ export default function EditProfile() {
         </div>
 
         <div className="flex flex-col text-sm">
-          <label>Bio</label>
+          <label>{t('bio')}</label>
           <textarea
             ref={bioRef}
             className="border dark:bg-gray-800 p-1 rounded overflow-hidden resize-none"
@@ -191,7 +197,7 @@ export default function EditProfile() {
             className="border px-2 py-1 rounded bg-blue-500 text-white text-xs"
             type="submit"
           >
-            Save Changes
+            {t('saveChanges')}
           </button>
         </div>
       </form>
@@ -202,7 +208,7 @@ export default function EditProfile() {
             className="border px-2 py-1 rounded bg-blue-500 text-white text-xs"
             onClick={() => navigate(-1)}
           >
-            Back
+            {t('back')}
           </button>
         </p>
       </div>

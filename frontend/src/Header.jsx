@@ -29,6 +29,7 @@ export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { t, ready } = useTranslation('header');
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -71,7 +72,7 @@ export default function Header() {
     }
   }, [isDarkMode])
 
-  if (isLoading) {
+  if (isLoading || !ready) {
     return <div>Loading...</div>
   }
 
@@ -112,17 +113,18 @@ export default function Header() {
                         onClick={closeDropdown}
                         to={`/profile/${auth.userId}`}
                       >
-                        Profile</Link>
+                        {t('profile')}
+                      </Link>
                     </li>
                     <hr></hr>
                     <Link to={'/users'}
                       className='block p-1 test-white dark:hover:bg-gray-800 hover:bg-gray-200'>
-                      Find Friends
+                      {t('findFriends')}
                     </Link>
                     <hr></hr>
                     <Link to={'/users/followed'}
                       className='block p-1 test-white dark:hover:bg-gray-800 hover:bg-gray-200'>
-                      Following
+                      {t('following')}
                     </Link>
                     <hr></hr>
                     <li>
@@ -130,7 +132,8 @@ export default function Header() {
                         className='block p-1 test-white hover:bg-gray-200 dark:hover:bg-gray-800'
                         to={`/profile/settings`}
                       >
-                        Settings</Link>
+                        {t('settings')}
+                      </Link>
                     </li>
                     <hr></hr>
                     <li className='hover:bg-gray-200 dark:hover:bg-gray-800'>
@@ -141,7 +144,7 @@ export default function Header() {
                           closeDropdown();
                         }}
                       >
-                        Log out
+                        {t('logout')}
                       </button>
                     </li>
                   </ul>
@@ -161,8 +164,8 @@ export default function Header() {
           </>
         ) : (
           <div className='flex gap-2 items-center justify-end text-sm'>
-            <Link to={'/login'}>Login</Link>
-            <Link to={'/register'}>Register</Link>
+            <Link to={'/login'}>{t('login')} </Link>
+            <Link to={'/register'}>{t('register')} </Link>
             <LanguageSelector size='small' />
             <button onClick={toggleDarkMode} className="rounded">
               {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}

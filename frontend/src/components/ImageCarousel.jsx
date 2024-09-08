@@ -3,6 +3,8 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+// TODO: change look of arrows
+// TODO: add post removing
 const ImageCarousel = ({ images }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 

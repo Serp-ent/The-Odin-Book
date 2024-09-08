@@ -7,7 +7,7 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { t, ready } = useTranslation('auth');
+  const { t, ready } = useTranslation('header');
 
   const auth = useAuth();
   const navigate = useNavigate();

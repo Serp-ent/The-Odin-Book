@@ -1,10 +1,15 @@
 {
+  "profile": "Profil",
+  "findFriends": "Znajdz znajomych",
+  "following": "Obserwowani",
+  "settings": "Ustawienia",
+  "logout": "Wyloguj",
   "username": "Nazwa",
   "password": "Haslo",
-  "login": "Zaloguj sie",
+  "login": "Zaloguj",
   "noAccountQuestion": "Nie masz konta?",
   "alreadyRegisteredQuestion": "Masz juz konto?",
-  "register": "Zarejestruj sie",
+  "register": "Zarejestruj",
   "firstName": "Imie",
   "lastName": "Nazwisko",
   "email": "Adres email",
@@ -15,5 +20,9 @@
   "passwordRequired": "Haslo jest wymagane",
   "confirmPasswordRequired": "Potwierdenie Hasla jest wymagane",
   "passwordTooShort": "Haslo musi miec minium 6 znakow",
-  "passwordDoNotMatch": "Hasla musza byc takie same"
+  "passwordDoNotMatch": "Hasla musza byc takie same",
+  "bio": "Opis",
+  "saveChanges": "Zapisz zmiany",
+  "back": "wroc",
+  "follow": "Obserwuj"
 }
