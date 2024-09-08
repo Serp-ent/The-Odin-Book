@@ -14,7 +14,6 @@ datasource db {
 }
 
 // TODO: nested comments
-// TODO: handle multiple images for post ? using carousel
 // TODO: handle liking comments
 model User {
   id           Int       @id @default(autoincrement())

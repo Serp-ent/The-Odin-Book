@@ -1,11 +1,13 @@
 const prisma = require("../db/prismaClient");
 const jwt = require('jsonwebtoken');
 const upload = require('../config/multer-config');
+const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 
 const secretKey = process.env.JWT_SECRET_KEY;
 
+// TODO: handle empty body request
 const login = async (req, res) => {
   const { username, password } = req.body;
 
@@ -15,13 +17,12 @@ const login = async (req, res) => {
     return;
   }
 
-  const isMatch = user.password === password;
+  const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     res.status(401).json({ message: 'Invalid username or password' });
     return;
   }
 
-  // TODO: hash password
   const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '1d' });
   res.json({
     message: 'logged in',
@@ -45,16 +46,17 @@ const register = [
     const profilePic = req.file ? req.file.filename : null;
     console.log(profilePic);
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     try {
-      // Create a new user in the database
       const newUser = await prisma.user.create({
         data: {
           username,
           email,
-          password, // Ensure you hash the password before storing it in a production app
+          password: hashedPassword,
           firstName,
           lastName,
-          profilePic, // URL for profile picture
+          profilePic,
         },
       });
 

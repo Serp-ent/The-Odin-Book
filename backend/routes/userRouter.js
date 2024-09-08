@@ -4,11 +4,6 @@ const controller = require('../controllers/userController.js');
 const passport = require('../config/passport-config.js');
 const upload = require('../config/multer-config.js');
 
-// router.get('/', controller.getPosts);
-
-// TODO: add documentation for all conventions of namings in api
-
-// Define before to prevent pattern matching
 router.get('/followed',
   passport.authenticate('jwt', { session: false }),
   controller.getFollowedUsers);
@@ -30,7 +25,6 @@ router.get('/:id',
   passport.authenticate('jwt', { session: false }),
   controller.getUserWithId);
 
-// TODO: authenticate and authorize
 router.put('/:id',
   passport.authenticate('jwt', { session: false }),
   upload.single('profilePic'),

@@ -42,6 +42,7 @@ export default function Login() {
     return <div>Loading Translation...</div>
   }
 
+  // TODO: login password input form should be type password
   return (
     <main
       className='p-4 flex flex-col items-center container mx-auto sm:w-[500px] '
