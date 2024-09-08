@@ -11,5 +11,6 @@
   "newest": "najnowsze",
   "top": "Popularne",
   "oldest": "Najstarsze",
-  "commentNow": "Skomentuj..."
+  "commentNow": "Skomentuj...",
+  "noComments": "Brak komentarzy. Badz pierwszy!"
 }

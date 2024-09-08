@@ -8,8 +8,6 @@ const languages = [
 ];
 
 
-// TODO: should save currently preffered language to local storage
-// after refresh the page returns to default english language
 export default function LanguageSelector({ size = 'default' }) {
   const [selectedLanguage, setSelectedLanguage] = useState(localStorage.getItem('i18nextLng') || 'en');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

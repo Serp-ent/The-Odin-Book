@@ -8,6 +8,7 @@ import queryString from 'query-string'
 import UserHeader from "./userHeader";
 import { useAuth } from "../auth/authContext";
 import { useTranslation } from "react-i18next";
+import { FaHeart, FaRegCommentDots, FaRegHeart, FaRegTrashAlt, FaTrash } from "react-icons/fa";
 
 const fetchComments = async ({ postId, pageParam = 1, short = false, sort = 'newest' }) => {
   const queryParams = queryString.stringify({
@@ -50,43 +51,51 @@ const removeComment = async (commentId) => {
   return response.json();
 };
 
+const commentActionButtons = [
+  {
+    action: 'delete',
+    icon: <FaRegTrashAlt />,
+    label: 'Delete',
+    onClick: (commentId, deleteComment) => deleteComment(commentId),
+  },
+  {
+    action: 'reply',
+    icon: <FaRegCommentDots />,
+    label: 'Reply',
+    onClick: (commentId) => console.log("Replying to comment with id", commentId),
+  },
+  {
+    action: 'like',
+    icon: <FaRegHeart />,
+    label: 'Like',
+    onClick: (commentId) => console.log("Liking comment with id", commentId),
+  },
+];
+
 export default function CommentSection({ postId, isPostAuthor = false, short = false }) {
   const queryClient = useQueryClient();
   const [sortOption, setSortOption] = useState('newest');
   const auth = useAuth();
-
   const { t, ready } = useTranslation('post');
 
-
-  // TODO: liking comment should have heart
-  // TODO: add liking comments
   const fetchCommentsFn = useCallback(({ pageParam = 1 }) => {
     return fetchComments({ postId, pageParam, short, sort: sortOption });
   }, [postId, short, sortOption]);
 
-  const {
-    data,
-    error,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+  const { data, error, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['comments', postId, short, sortOption],
     queryFn: fetchCommentsFn,
     getNextPageParam: (lastPage) => {
       return lastPage.hasNextPage ? lastPage.nextPage : undefined;
     },
     onSuccess: (data) => {
-      // Optional: perform actions when the query is successful
       console.log('Fetch Comments Success:', data);
     }
   });
 
   const mutation = useMutation({
     mutationFn: createComment,
-    onSuccess: (newComment) => {
-      // Invalidate query to refetch comments with new comment
+    onSuccess: () => {
       queryClient.invalidateQueries(['comments', postId, short, sortOption]);
     }
   });
@@ -94,11 +103,9 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
   const deleteCommentMutation = useMutation({
     mutationFn: removeComment,
     onSuccess: () => {
-      // Invalidate queries to refetch comments after a successful deletion
       queryClient.invalidateQueries(['comments', postId, short, sortOption]);
     },
     onError: (error) => {
-      // Handle error if needed
       console.error('Error deleting comment:', error);
     },
   });
@@ -106,7 +113,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
   const handleSortChange = (event) => {
     const newSortOption = event.target.value;
     setSortOption(newSortOption);
-    queryClient.invalidateQueries(['comments', postId, short, newSortOption]); // Invalidate query with new sort option
+    queryClient.invalidateQueries(['comments', postId, short, newSortOption]);
   };
 
   if (isLoading || !ready) {
@@ -125,10 +132,10 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
     <div className="flex flex-col gap-2 bg-gray-200 text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark p-2 border rounded text-sm">
       <CommentInput onSubmit={(content) => mutation.mutate({ postId, content })} />
 
-      {
-        data?.pages?.length ? (
-          <div>
-            {data.pages.at(0).comments.length > 0 && (<div className="mb-1 text-xs flex justify-end items-center">
+      {data?.pages?.length ? (
+        <div>
+          {data.pages.at(0).comments.length > 0 && (
+            <div className="mb-1 text-xs flex justify-end items-center">
               <label htmlFor="sort" className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
                 {t('sortBy')}:
               </label>
@@ -142,63 +149,54 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                 <option value="oldest">{t('oldest')}</option>
                 <option value="top_likes">{t('top')}</option>
               </select>
-            </div>)
-            }
-            <ul className="flex flex-col gap-2">
-              {data.pages.flatMap(page => page.comments).map(comment => (
-                <li key={comment.id} className="border border-gray-300 dark:bg-gray-800 p-2 rounded">
-                  <div className="mb-2">
-                    <UserHeader
-                      user={comment.author}
-                      createdAt={comment.createdAt}
-                      size="small"
-                    />
-                  </div>
-                  <div>{comment.content}</div>
-                  <div className="flex justify-end text-xs gap-1">
-                    {(isPostAuthor || (auth.userId === comment.author.id)) && (
+            </div>
+          )}
+          <ul className="flex flex-col gap-2">
+            {data.pages.flatMap(page => page.comments).map(comment => (
+              <li key={comment.id} className="border border-gray-300 dark:bg-gray-800 p-2 rounded">
+                <div className="mb-2">
+                  <UserHeader
+                    user={comment.author}
+                    createdAt={comment.createdAt}
+                    size="small"
+                  />
+                </div>
+                <div>{comment.content}</div>
+                <div className="flex justify-end text-xs gap-1">
+                  {commentActionButtons.map(button => (
+                    isPostAuthor || (auth.userId === comment.author.id) || button.action !== 'delete' ? (
                       <button
-                        className="border border-gray-400 rounded px-2 py-1"
-                        onClick={() => deleteCommentMutation.mutate(comment.id)}
+                        key={button.action}
+                        onClick={() => button.onClick(comment.id, deleteCommentMutation.mutate)}
+                        className='border-gray-400 rounded px-2 py-1'
                       >
-                        {/* // TODO: add icons */}
-                        {t('delete')}
+                        <span className="text-[14px]">
+                          {button.icon}
+                        </span>
                       </button>
-                    )}
-                    <button
-                      className="border border-gray-400 rounded px-2 py-1"
-                      onClick={() => console.log("Replying to comment with id", comment.id)}
-                    >
-                      {t('reply')}
-                    </button>
-                    <button
-                      className="border border-gray-400 rounded px-2 py-1"
-                      onClick={() => console.log("Liking comment with id", comment.id)}
-                    >
-                      {t('like')}
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            {(!short && hasNextPage) && (
-              <div className="flex justify-center">
-                <button
-                  className="mt-2 bg-blue-500 text-white px-2 py-1 text-xs rounded"
-                  onClick={() => fetchNextPage()}
-                  disabled={isFetchingNextPage}
-                >
-                  {isFetchingNextPage ? 'Loading...' : 'Load More'}
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <p className="text-sm">
-            No Comments. Be first!
-          </p>
-        )
-      }
+                    ) : null
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+          {(!short && hasNextPage) && (
+            <div className="flex justify-center">
+              <button
+                className="mt-2 bg-blue-500 text-white px-2 py-1 text-xs rounded"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+              >
+                {isFetchingNextPage ? 'Loading...' : 'Load More'}
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="text-sm">
+          {t('noComments')}
+        </p>
+      )}
     </div>
   );
 }

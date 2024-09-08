@@ -32,8 +32,6 @@ export async function action({ request, params }) {
   return json(result, { status: 200 });
 }
 
-// TODO: add pipeline that automatically formats 
-// TODO: add tailwind primary color and tailwind config 
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
     headers: {
@@ -119,7 +117,6 @@ export default function Profile() {
 
       <div className="flex justify-center gap-5 text-sm">
         <div className="rounded border py-1 px-2">
-          {/* TODO: these should be buttons that list followed users and followers */}
           <h4>{t('followers')}</h4>
           <p className="text-center text-xl">{userProfile.followerCount}</p>
         </div>
