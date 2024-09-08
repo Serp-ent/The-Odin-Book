@@ -79,7 +79,7 @@ export default function Login() {
 
         <div className="flex justify-end">
           <button
-            className="border px-4 py-2 rounded"
+            className="border border-gray-600 px-4 py-2 rounded"
             type="submit"
           >{t('login')}</button>
         </div>
@@ -93,7 +93,7 @@ export default function Login() {
             to='/register'
             className="text-accent-light dark:text-accent-dark underline"
           >
-            {t('registerHere')}
+            {t('register')}
           </Link>
         </p>
       </div>

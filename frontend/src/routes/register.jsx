@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/authContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
+// TODO: add spinner for all components that require loading
 export default function Register() {
   const navigate = useNavigate();
+  const { t, ready } = useTranslation();
 
   const [formData, setFormData] = useState({
     username: '', email: '', password: '',
@@ -15,23 +18,24 @@ export default function Register() {
 
   const requiredFields = ['username', 'email', 'password', 'confirmPassword'];
 
+  // TODO: add error translations
   const validateField = (name, value) => {
     let error = '';
 
     switch (name) {
       case 'username':
-        if (!value) error = 'Username is required';
+        if (!value) error = t('usernameRequired');
         break;
       case 'email':
-        if (!value || !value.includes('@')) error = 'Invalid email address';
+        if (!value || !value.includes('@')) error = t('invalidEmail');
         break;
       case 'password':
-        if (!value) error = 'Password is required';
-        else if (value.length < 6) error = 'Password must be at least 6 characters';
+        if (!value) error = t('passwordRequired');
+        else if (value.length < 6) error = t('passwordTooShort');
         break;
       case 'confirmPassword':
-        if (!value) error = 'Please confirm your password';
-        else if (value !== formData.password) error = 'Passwords do not match';
+        if (!value) error = t('confirmPasswordRequired');
+        else if (value !== formData.password) error = t('passwordDoNotMatch');
         break;
       default:
         break;
@@ -130,13 +134,17 @@ export default function Register() {
   };
 
   const fields = [
-    { name: 'firstName', label: 'First Name', type: 'text' },
-    { name: 'lastName', label: 'Last Name', type: 'text' },
-    { name: 'username', label: 'Username', type: 'text' },
-    { name: 'email', label: 'Email', type: 'email' },
-    { name: 'password', label: 'Password', type: 'password' },
-    { name: 'confirmPassword', label: 'Confirm Password', type: 'password' },
+    { name: 'firstName', label: t('firstName'), type: 'text' },
+    { name: 'lastName', label: t('lastName'), type: 'text' },
+    { name: 'username', label: t('username'), type: 'text' },
+    { name: 'email', label: t('email'), type: 'email' },
+    { name: 'password', label: t("password"), type: 'password' },
+    { name: 'confirmPassword', label: t('confirmPassword'), type: 'password' },
   ];
+
+  if (!ready) {
+    return <div>Loading Translation....</div>
+  }
 
   return (
     <main className='p-4 flex flex-col items-center'>
@@ -164,7 +172,7 @@ export default function Register() {
         ))}
 
         <div className="flex flex-col">
-          <label>Profile Picture</label>
+          <label>{t('profilePic')}</label>
           <input
             className="text-xs border dark:bg-gray-800 p-1 rounded"
             name="profilePic"
@@ -176,11 +184,11 @@ export default function Register() {
 
         <div className="flex justify-end">
           <button
-            className={`border px-2 py-1 rounded text-sm ${Object.keys(errors).length > 0 ? 'bg-gray-500 text-gray-300 cursor-not-allowed' : 'bg-background-light dark:bg-background-dark cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-800'}`}
-            type="submit"
+            className={`border border-gray-600 px-2 py-1 rounded text-sm ${Object.keys(errors).length > 0 ? 'bg-gray-500 text-gray-300 cursor-not-allowed' : 'bg-background-light dark:bg-background-dark cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-800'}`}
             disabled={Object.keys(errors).length > 0}
+            type="submit"
           >
-            Register
+            {t('register')}
           </button>
         </div>
 
@@ -188,12 +196,12 @@ export default function Register() {
 
       <div className="flex justify-center mt-4 text-sm">
         <p>
-          Already have an account?{' '}
+          {t('alreadyRegisteredQuestion')}{' '}
           <Link
             to='/login'
             className="text-accent-light dark:text-accent-dark underline"
           >
-            Login here
+            {t('login')}
           </Link>.
         </p>
       </div>
