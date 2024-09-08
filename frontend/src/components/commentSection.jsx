@@ -128,7 +128,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
       {
         data?.pages?.length ? (
           <div>
-            <div className="mb-1 text-xs flex justify-end items-center">
+            {data.pages.at(0).comments.length > 0 && (<div className="mb-1 text-xs flex justify-end items-center">
               <label htmlFor="sort" className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
                 {t('sortBy')}:
               </label>
@@ -142,7 +142,8 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                 <option value="oldest">{t('oldest')}</option>
                 <option value="top_likes">{t('top')}</option>
               </select>
-            </div>
+            </div>)
+            }
             <ul className="flex flex-col gap-2">
               {data.pages.flatMap(page => page.comments).map(comment => (
                 <li key={comment.id} className="border border-gray-300 dark:bg-gray-800 p-2 rounded">
@@ -174,7 +175,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                       className="border border-gray-400 rounded px-2 py-1"
                       onClick={() => console.log("Liking comment with id", comment.id)}
                     >
-                    {t('like')}
+                      {t('like')}
                     </button>
                   </div>
                 </li>
