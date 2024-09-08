@@ -161,7 +161,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
                     size="small"
                   />
                 </div>
-                <div>{comment.content}</div>
+                <div className="px-3 lg:text-base">{comment.content}</div>
                 <div className="flex justify-end text-xs gap-1">
                   {commentActionButtons.map(button => (
                     isPostAuthor || (auth.userId === comment.author.id) || button.action !== 'delete' ? (

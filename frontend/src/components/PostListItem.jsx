@@ -29,7 +29,7 @@ export default function PostListItem({ post }) {
           {post.images.length > 0 && (
             <ImageCarousel images={post.images} />
           )}
-          <p className="text-sm">{post.content}</p>
+          <p className="text-sm px-3">{post.content}</p>
         </li>
       </Link>
 

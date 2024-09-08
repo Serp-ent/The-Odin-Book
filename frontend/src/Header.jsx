@@ -80,7 +80,7 @@ export default function Header() {
 
   return (
     <header className='p-2 bg-background-light lg:col-span-2 xl:col-span-3 text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark flex items-center justify-between'>
-      <div>
+      <div className='sm:px-3 md:px-4'>
         <Link className='flex justify-start items-center gap-1' to='/'>
           <img src={odinIcon} className='h-10' alt="The Odin Project" />
           <h1 className='font-bold hidden sm:block'>
