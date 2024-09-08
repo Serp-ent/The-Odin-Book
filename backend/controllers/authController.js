@@ -9,7 +9,6 @@ require('dotenv').config();
 
 const secretKey = process.env.JWT_SECRET_KEY;
 
-// TODO: handle empty request because components on front end are hidden but still are making requests
 const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {

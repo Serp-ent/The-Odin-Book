@@ -1,6 +1,5 @@
 const { internalServerError } = require("./errors");
 
-// TODO: handle user updating profile reuse validation array for registration to DRY
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
 

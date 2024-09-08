@@ -32,7 +32,6 @@ const upload = multer({
       return cb(null, true);
     } else {
       cb(new Error('Only images are allowed'));
-      // TODO: client should correctly handle error, it should be displayed
     }
   }
 });

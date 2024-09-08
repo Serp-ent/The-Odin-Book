@@ -58,10 +58,8 @@ const updateUserWithId = asyncHandler(async (req, res) => {
 })
 
 const getUserWithId = asyncHandler(async (req, res) => {
-  // TODO: handle non int id
   const id = parseInt(req.params.id);
 
-  // TODO: handle non-existent user
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
@@ -109,7 +107,6 @@ const getUserWithId = asyncHandler(async (req, res) => {
   });
 })
 
-// TODO: add error handling
 const getFollowedUsers = asyncHandler(async (req, res) => {
   try {
     const loggedInUserId = req.user.id;
@@ -153,8 +150,6 @@ const followUser = asyncHandler(async (req, res) => {
   const followerId = req.user.id; // ID of the user making the request
   const followedId = parseInt(req.params.id, 10);
   const wantsToFollow = req.body.follow; // Boolean indicating follow or unfollow
-
-  // TODO: handle following yourself
 
   try {
     // Check if the target user exists
@@ -227,7 +222,6 @@ const followUser = asyncHandler(async (req, res) => {
   }
 });
 
-// TODO: add pagination
 const getUsers = asyncHandler(async (req, res) => {
   try {
     const loggedInUserId = req.user.id;
@@ -291,7 +285,6 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
-// TODO: create services because there is a lot of business logic code duplication
 const getPostOfUser = asyncHandler(async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
