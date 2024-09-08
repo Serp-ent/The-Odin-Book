@@ -93,7 +93,7 @@ export default function Profile() {
   return (
     <main className="p-2 flex flex-col container text-text-primary-light dark:text-text-primary-dark  gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400">
       {isOwnProfile ? (
-        <div className="flex justify-between">
+        <div className="flex justify-between ">
           <UserHeader user={userProfile} />
           <div className="flex justify-end text-sm">
             <Link to={`/profile/edit`}>

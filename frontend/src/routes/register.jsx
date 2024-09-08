@@ -3,7 +3,6 @@ import { useAuth } from "../auth/authContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-// TODO: add spinner for all components that require loading
 export default function Register() {
   const navigate = useNavigate();
   const { t, ready } = useTranslation('header');
@@ -18,7 +17,6 @@ export default function Register() {
 
   const requiredFields = ['username', 'email', 'password', 'confirmPassword'];
 
-  // TODO: add error translations
   const validateField = (name, value) => {
     let error = '';
 

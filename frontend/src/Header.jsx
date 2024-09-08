@@ -24,7 +24,6 @@ const fetchUserInfo = async (userId) => {
 };
 
 // TODO: highlight current route in popup
-// TODO: on very narrow screens hide The Odin Book title
 export default function Header() {
   const auth = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -85,8 +84,8 @@ export default function Header() {
           className='flex justify-start items-center gap-1'
           href='/'>
           <img src={odinIcon}
-            className='w-1/6 h-auto' />
-          <h1 className='font-bold'>
+            className='h-10' />
+          <h1 className='font-bold hidden sm:block'>
             The Odin Book
           </h1>
         </Link>
