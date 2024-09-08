@@ -1,6 +1,7 @@
 const prisma = require("../db/prismaClient");
+const asyncHandler = require('express-async-handler');
 
-const updateUserWithId = async (req, res) => {
+const updateUserWithId = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params; // Assuming userId is passed as a URL parameter
     const {
@@ -54,10 +55,9 @@ const updateUserWithId = async (req, res) => {
     console.error('Error updating user:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}
+})
 
-// TODO: make 2 paths if user authenticated return if its followed
-const getUserWithId = async (req, res) => {
+const getUserWithId = asyncHandler(async (req, res) => {
   // TODO: handle non int id
   const id = parseInt(req.params.id);
 
@@ -107,10 +107,10 @@ const getUserWithId = async (req, res) => {
     followerCount,
     followedCount,
   });
-}
+})
 
 // TODO: add error handling
-const getFollowedUsers = async (req, res) => {
+const getFollowedUsers = asyncHandler(async (req, res) => {
   try {
     const loggedInUserId = req.user.id;
 
@@ -147,10 +147,9 @@ const getFollowedUsers = async (req, res) => {
     console.error('Error fetching followed users:', error);
     res.status(500).json({ error: 'An error occurred while fetching followed users' });
   }
-}
+})
 
-// TODO: handle errors
-const followUser = async (req, res) => {
+const followUser = asyncHandler(async (req, res) => {
   const followerId = req.user.id; // ID of the user making the request
   const followedId = parseInt(req.params.id, 10);
   const wantsToFollow = req.body.follow; // Boolean indicating follow or unfollow
@@ -226,10 +225,10 @@ const followUser = async (req, res) => {
     console.error('Error processing follow/unfollow request:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+});
 
 // TODO: add pagination
-const getUsers = async (req, res) => {
+const getUsers = asyncHandler(async (req, res) => {
   try {
     const loggedInUserId = req.user.id;
     const searchQuery = req.query.search || '';
@@ -290,10 +289,10 @@ const getUsers = async (req, res) => {
     console.error('Error fetching users:', error);
     res.status(500).json({ error: 'An error occurred while fetching users' });
   }
-}
+});
 
 // TODO: create services because there is a lot of business logic code duplication
-const getPostOfUser = async (req, res) => {
+const getPostOfUser = asyncHandler(async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
     const currentUserId = req.user.id; // Assuming you have the current user's ID from authentication middleware
@@ -382,7 +381,8 @@ const getPostOfUser = async (req, res) => {
     console.error('Error fetching user posts:', error);
     res.status(500).json({ error: 'Failed to fetch posts' });
   }
-};
+});
+
 module.exports = {
   getUserWithId,
   getFollowedUsers,

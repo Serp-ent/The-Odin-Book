@@ -1,6 +1,7 @@
 const prisma = require("../db/prismaClient");
+const asyncHandler = require('express-async-handler');
 
-const getFollowedPosts = async (req, res) => {
+const getFollowedPosts = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -127,11 +128,10 @@ const getFollowedPosts = async (req, res) => {
     console.error('Error fetching followed posts:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+});
 
-// TODO: add async handler
 // TODO: add tests
-const getPosts = async (req, res) => {
+const getPosts = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
@@ -223,11 +223,10 @@ const getPosts = async (req, res) => {
     console.error('Error fetching posts:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+});
 
-// TODO: add async handler
 // TODO: add information if user is followed
-const getPostWithId = async (req, res) => {
+const getPostWithId = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
   const currentUserId = parseInt(req.user.id); // Assuming you have the current user ID available in the request (e.g., through middleware)
 
@@ -319,10 +318,10 @@ const getPostWithId = async (req, res) => {
     console.error('Error fetching post:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}
+})
 
 
-const likePost = async (req, res) => {
+const likePost = asyncHandler(async (req, res) => {
   const postId = parseInt(req.params.id);
   const userId = req.user.id;
   const { like } = req.body;
@@ -446,10 +445,9 @@ const likePost = async (req, res) => {
       message: 'Internal server error',
     });
   }
-};
+});
 
-// TODO: allow unlimited images
-const createPost = async (req, res) => {
+const createPost = asyncHandler(async (req, res) => {
   const { content } = req.body;
   // Check if files are uploaded
   if (!req.files) {
@@ -486,9 +484,9 @@ const createPost = async (req, res) => {
     console.error('Error creating post:', error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+})
 
-const getComments = async (req, res) => {
+const getComments = asyncHandler(async (req, res) => {
   const postId = parseInt(req.params.id);
   const limit = parseInt(req.query.limit) || 10; // Default limit to 10
   const page = parseInt(req.query.page) || 1; // Default to page 1
@@ -571,11 +569,10 @@ const getComments = async (req, res) => {
     console.error('Error fetching comments:', error);
     res.status(500).json({ error: 'Failed to fetch comments' });
   }
-};
+});
 
 
-// TODO: error handling
-const createComment = async (req, res) => {
+const createComment = asyncHandler(async (req, res) => {
   const { content } = req.body;
   const postId = parseInt(req.params.id)
 
@@ -618,7 +615,7 @@ const createComment = async (req, res) => {
       isFollowed: (isFollowed != null)
     },
   });
-}
+})
 
 module.exports = {
   getPosts,

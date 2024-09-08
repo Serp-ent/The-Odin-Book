@@ -3,13 +3,14 @@ const jwt = require('jsonwebtoken');
 const upload = require('../config/multer-config');
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
+const asyncHandler = require('express-async-handler');
 
 require('dotenv').config();
 
 const secretKey = process.env.JWT_SECRET_KEY;
 
 // TODO: handle empty request because components on front end are hidden but still are making requests
-const login = async (req, res) => {
+const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     res.status(401).json({ message: 'Invalid username or password' });
@@ -33,7 +34,7 @@ const login = async (req, res) => {
     message: 'logged in',
     token,
   });
-}
+});
 
 const logout = (req, res, next) => {
   res.json({
@@ -85,7 +86,7 @@ const register = [
   validateRegister,
   handleValidationErrors,
 
-  async (req, res, next) => {
+  asyncHandler(async (req, res, next) => {
     const { username, email, password, firstName, lastName } = req.body;
     const profilePic = req.file ? req.file.filename : null;
 
@@ -110,7 +111,7 @@ const register = [
       console.error('Error registering user:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  }
+  }),
 ]
 
 module.exports = {

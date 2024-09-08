@@ -1,8 +1,8 @@
 const prisma = require('../db/prismaClient');
+const asyncHandler = require('express-async-handler');
 
-// TODO: handle errors
 // TODO: check authorization
-const deleteComment = async (req, res) => {
+const deleteComment = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
   // find post where this comment is
@@ -21,7 +21,7 @@ const deleteComment = async (req, res) => {
   await prisma.comment.delete({ where: { id: comment.id } });
 
   res.json({ message: "Comment was deleted", comment });
-}
+});
 
 module.exports = {
   deleteComment,
