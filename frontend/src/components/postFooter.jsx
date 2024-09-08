@@ -1,4 +1,5 @@
 import { useFetcher } from "react-router-dom";
+import { useSpring, animated } from '@react-spring/web';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import PropTypes from 'prop-types'
@@ -23,20 +24,26 @@ const likePost = async (postId, isLiked) => {
 };
 
 export default function PostFooter({ post }) {
-  // TODO: the heart should be red
-  // TDOO: add animation when post is hearted
   const queryClient = useQueryClient();
   const { t, ready } = useTranslation('post');
+
+  const [props, api] = useSpring(() => ({
+    transform: 'scale(1)',
+    config: { tension: 300, friction: 10 },
+  }));
+
 
   const { mutate: likePostMutation } = useMutation({
     mutationFn: () => likePost(post.id, post.isLiked),
     onMutate: () => {
-      // Optimistic update
       queryClient.setQueryData(['post', post.id], (oldData) => ({
         ...oldData,
         isLiked: !post.isLiked,
         likes: post.isLiked ? post.likes - 1 : post.likes + 1,
       }));
+
+      api.start({ transform: 'scale(1.2)' });
+      setTimeout(() => api.start({ transform: 'scale(1)' }), 150);
     },
     onError: (err, variables, context) => {
       console.error('Error liking the post', err);
@@ -66,7 +73,9 @@ export default function PostFooter({ post }) {
             className='text-xl'
             onClick={handleLikeClick}
           >
-            {post.isLiked ? <FaHeart /> : <FaRegHeart />}
+            <animated.div style={props}>
+              {post.isLiked ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+            </animated.div>
           </button>
         </div>
       </div>
