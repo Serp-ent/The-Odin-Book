@@ -5,6 +5,8 @@ import { useAuth } from '../auth/authContext';
 import FollowedUsers from '../routes/followedUsers';
 import FindFriends from '../routes/findFriends';
 
+// TODO: add removing posts function
+// TODO: add loading spinner for every component
 function Layout() {
   const auth = useAuth();
 

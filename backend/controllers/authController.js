@@ -12,7 +12,7 @@ const secretKey = process.env.JWT_SECRET_KEY;
 const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    res.status(401).json({ message: 'Invalid username or password' });
+    res.status(400).json({ message: 'Username and password are required' });
     return;
   }
 
@@ -44,11 +44,13 @@ const logout = (req, res, next) => {
 const validateRegister = [
   body('username')
     .notEmpty().withMessage('Username is required')
-    .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
+    .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long')
+    .isLength({ max: 32 }).withMessage('Username must be at most 32 characters long'),
 
   body('email')
     .isEmail().withMessage('Invalid email format')
-    .normalizeEmail(),
+    .normalizeEmail()
+    .isLength({ max: 255 }).withMessage('Email must be at most 255 characters long'),
 
   body('password')
     .notEmpty().withMessage('Password is required')
@@ -80,41 +82,66 @@ const handleValidationErrors = (req, res, next) => {
   next();
 }
 
-const register = [
+const registerUser = asyncHandler(async (req, res, next) => {
+  const { username, email, password, firstName, lastName } = req.body;
+  const profilePic = req.file ? req.file.filename : null;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        profilePic,
+      },
+    });
+
+    res.status(201).json({
+      message: 'User registered successfully',
+      user: newUser,
+    });
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
+
+const ensureEmailAndUserNameFree = asyncHandler(async (req, res, next) => {
+  const { username, email } = req.body;
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email },
+        { username },
+      ]
+    }
+  })
+
+  if (user) {
+    const usedCredential = user.username === username ? 'Username' : 'Email';
+    const msg = usedCredential + ' already in use';
+    res.status(409).json({
+      errors: [{ msg }]
+    });
+    return;
+  }
+
+  next();
+})
+
+const registerChain = [
   upload.single('profilePic'),
   validateRegister,
   handleValidationErrors,
-
-  asyncHandler(async (req, res, next) => {
-    const { username, email, password, firstName, lastName } = req.body;
-    const profilePic = req.file ? req.file.filename : null;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    try {
-      const newUser = await prisma.user.create({
-        data: {
-          username,
-          email,
-          password: hashedPassword,
-          firstName,
-          lastName,
-          profilePic,
-        },
-      });
-
-      res.status(201).json({
-        message: 'User registered successfully',
-        user: newUser,
-      });
-    } catch (error) {
-      console.error('Error registering user:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  }),
+  ensureEmailAndUserNameFree,
+  registerUser,
 ]
 
 module.exports = {
   login,
   logout,
-  register,
+  registerChain,
 }
