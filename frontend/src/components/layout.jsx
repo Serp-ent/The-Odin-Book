@@ -7,7 +7,7 @@ import FindFriends from '../routes/findFriends';
 
 function Layout() {
   return (
-    <div className={`h-screen grid grid-rows-[auto_1fr] lg:grid-cols-[1fr_auto] xl:grid-cols-[auto_1fr_auto]`} >
+    <div className={`h-screen grid grid-rows-[auto_1fr] lg:grid-cols-[2fr_1fr] xl:grid-cols-[1fr_3fr_1fr]`} >
       <Header />
       <div className='h-full hidden xl:block xl:col-start-1'>
         <FindFriends />
