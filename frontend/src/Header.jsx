@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import UserHeader from './components/userHeader';
 import LanguageSelector from './components/languageSelector';
 import { useTranslation } from 'react-i18next';
+import { CircleLoader, ClipLoader } from 'react-spinners';
 
 const fetchUserInfo = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
@@ -74,10 +75,6 @@ export default function Header() {
     }
   }, [isDarkMode]);
 
-  if (isLoading || !ready) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <header className='p-2 bg-background-light lg:col-span-2 xl:col-span-3 text-text-primary-light dark:text-text-primary-dark dark:bg-background-dark flex items-center justify-between'>
       <div className='sm:px-3 md:px-4'>
@@ -92,7 +89,9 @@ export default function Header() {
       <div className='flex gap-1 items-center' ref={dropdownRef}>
         {auth.isAuthenticated ? (
           <>
-            <UserHeader user={userInfo} size='small' />
+            {(isLoading) ? <ClipLoader />
+              : <UserHeader user={userInfo} size='small' />
+            }
             <div className='relative'>
               <button className='py-1 px-2' onClick={toggleDropdown}>
                 <FaBars size={"24px"} />
@@ -126,7 +125,10 @@ export default function Header() {
                   </ul>
 
                   <div className='flex justify-between items-center bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark'>
-                    <LanguageSelector />
+                    {(!ready) ?
+                      <ClipLoader size={20} />
+                      : <LanguageSelector />
+                    }
                     <div className='flex justify-end'>
                       <button onClick={toggleDarkMode} className="ml-4 p-2 rounded">
                         {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}

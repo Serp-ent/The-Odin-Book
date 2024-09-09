@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../auth/authContext";
 import { useTranslation } from "react-i18next";
+import { ClipLoader } from "react-spinners";
 
 export async function action({ request, params }) {
   const formData = await request.formData();
@@ -72,17 +73,11 @@ export default function Profile() {
     queryFn: () => fetchUserProfile(userId),
   });
 
-  // Fetch user posts
-  const { data: userPosts, isLoading: isPostsLoading, isError: isPostsError } = useQuery({
-    queryKey: ['userPosts', userId],
-    queryFn: () => fetchUserPosts(userId),
-  });
-
-  if (isProfileLoading || isPostsLoading || !ready) {
-    return <div>Loading...</div>;
+  if (isProfileLoading || !ready) {
+    return <div className="flex justify-center items-center h-full"><ClipLoader /></div>;
   }
 
-  if (isProfileError || isPostsError) {
+  if (isProfileError) {
     return <div>Error loading data</div>;
   }
 

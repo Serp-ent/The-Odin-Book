@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
+import { ClipLoader } from "react-spinners";
 
 export const fetchUsers = async (query) => {
   const endpoint = query
@@ -61,7 +62,7 @@ export default function FindFriends({ className }) {
   }, [inputRef, isLoading, isError]);
 
   if (isLoading || !ready) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-full"><ClipLoader /></div>
   }
 
   if (isError) {

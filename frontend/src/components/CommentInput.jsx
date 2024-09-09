@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useFetcher } from "react-router-dom";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { ClipLoader } from "react-spinners";
 
 export default function CommentInput({ onSubmit }) {
   const fetcher = useFetcher();
@@ -36,7 +37,12 @@ export default function CommentInput({ onSubmit }) {
   }
 
   if (!ready) {
-    return <div>Loading Translation...</div>
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <ClipLoader size={20}/>
+        <p>Loading Translation...</p>
+      </div>
+    )
   }
 
   return (

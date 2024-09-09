@@ -6,6 +6,7 @@ import { FaRegEye } from 'react-icons/fa';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/authContext';
 import { useTranslation } from 'react-i18next';
+import { ClipLoader } from 'react-spinners';
 
 // URL for the fallback avatar
 const fallbackAvatarUrl = 'https://www.gravatar.com/avatar/?d=mp';
@@ -73,7 +74,7 @@ export default function UserHeader({ user, createdAt, size = 'medium' }) {
   };
 
   if (!ready) {
-    return <div>Loading Translation...</div>
+    return <ClipLoader size={30} />
   }
   return (
     <div className="flex justify-between items-center">

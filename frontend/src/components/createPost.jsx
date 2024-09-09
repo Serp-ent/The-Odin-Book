@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 export default function CreatePost() {
   const queryClient = useQueryClient();
@@ -89,7 +90,12 @@ export default function CreatePost() {
   };
 
   if (!ready) {
-    return <div>Loading Translation...</div>
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <ClipLoader size={20} />
+        <p>Loading Translation...</p>
+      </div>
+    );
   }
 
   return (

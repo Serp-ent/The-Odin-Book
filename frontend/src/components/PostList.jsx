@@ -82,14 +82,19 @@ export default function PostList({ scrollContainerRef, initialType = "all", init
   }, [fetchNextPage, scrollContainerRef]);
 
   if (!ready) {
-    return <div>Loading Translation...</div>
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <ClipLoader />
+        <p>Loading Translation...</p>
+      </div>
+    );
   }
 
   const posts = data?.pages?.flatMap(page => page.posts) || [];
   return (
     <main className="flex flex-col gap-2">
       {isLoading && <div className="flex justify-center items-center">
-        <ClipLoader color="white" />
+        <ClipLoader />
       </div>}
       {!isLoading && !isError && (
         <ul>
@@ -100,7 +105,7 @@ export default function PostList({ scrollContainerRef, initialType = "all", init
       {isError && <div className="text-center text-red-500">{t('errorPostLoading')}</div>}
       {
         isFetchingNextPage && <div className="flex justify-center m-1">
-          <ClipLoader color="white" />
+          <ClipLoader />
         </div>
       }
       {!(hasNextPage) && <div className="text-text-primary-light dark:text-text-primary-dark text-center py-4">{t('noMorePostsAvailable')}</div>}

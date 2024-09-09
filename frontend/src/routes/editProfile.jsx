@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/authContext';
 import { useTranslation } from 'react-i18next';
+import { ClipLoader } from 'react-spinners';
 
 const fetchUserProfile = async (userId) => {
   const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
@@ -120,7 +121,12 @@ export default function EditProfile() {
   };
 
   if (!ready) {
-    return <div>Loading Translation...</div>
+    return (
+      <div className='flex justify-center items-center flex-col'>
+        <ClipLoader />
+        <p>Loading Translation...</p>
+      </div>
+    );
   }
 
   return (

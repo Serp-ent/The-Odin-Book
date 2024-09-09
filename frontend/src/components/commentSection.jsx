@@ -119,7 +119,7 @@ export default function CommentSection({ postId, isPostAuthor = false, short = f
   if (isLoading || !ready) {
     return (
       <div className="flex justify-center">
-        <ClipLoader color="white" />
+        <ClipLoader />
       </div>
     );
   }

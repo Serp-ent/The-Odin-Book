@@ -6,6 +6,7 @@ import PostFooter from "../components/postFooter";
 import CommentSection from "../components/commentSection";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ImageCarousel from "../components/ImageCarousel";
+import { ClipLoader } from "react-spinners";
 
 const fetchPost = async (postId) => {
   const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
@@ -65,7 +66,11 @@ export default function Post() {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  // TODO: better errors
+  // TODO: add light/dark theme for error page
+  if (isLoading) return (
+    <div className="flex justify-center items-center h-full"><ClipLoader /></div>
+  );
   if (error) return <div>Error loading post</div>;
 
   return (

@@ -25,7 +25,6 @@ const likePost = async (postId, isLiked) => {
 
 export default function PostFooter({ post }) {
   const queryClient = useQueryClient();
-  const { t, ready } = useTranslation('post');
 
   const [props, api] = useSpring(() => ({
     transform: 'scale(1)',
@@ -57,10 +56,6 @@ export default function PostFooter({ post }) {
   const handleLikeClick = () => {
     likePostMutation();
   };
-
-  if (!ready) {
-    return <div>Loading Translation...</div>
-  }
 
   return (
     <div className="flex justify-end gap-4 border rounded p-2 border-text-secondary-light bg:border-text-secondary-dark">

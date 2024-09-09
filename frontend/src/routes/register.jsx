@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../auth/authContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ClipLoader } from "react-spinners";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ export default function Register() {
   ];
 
   if (!ready) {
-    return <div>Loading Translation....</div>
+    return <div className="flex justify-center items-center h-full"><ClipLoader /></div>
   }
 
   return (

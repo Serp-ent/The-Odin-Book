@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/authContext";
 import { useTranslation } from "react-i18next";
+import { ClipLoader } from "react-spinners";
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -39,7 +40,11 @@ export default function Login() {
   }
 
   if (!ready) {
-    return <div>Loading Translation...</div>
+    return (
+      <div className="flex h-full justify-center items-center">
+        <ClipLoader />
+      </div>
+    );
   }
 
   return (
