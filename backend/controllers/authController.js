@@ -140,8 +140,21 @@ const registerChain = [
   registerUser,
 ]
 
+const ensureResourceAuthor = (getResourceAuthorId) => async (req, res, next) => {
+  try {
+    const authorId = await getResourceAuthorId(req);
+    if (req.user.id !== authorId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    next();
+  } catch (error) {
+    return res.status(500).json({ message: "Error checking resource author" });
+  }
+};
+
 module.exports = {
   login,
   logout,
   registerChain,
+  ensureResourceAuthor,
 }

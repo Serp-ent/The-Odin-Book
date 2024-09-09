@@ -189,8 +189,6 @@ describe('Posts Router', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .expect(200);
 
-      console.log(post);
-
     expect(response.body).toHaveProperty('id', post.id);
     expect(response.body).toHaveProperty('content', 'Test post content');
     expect(response.body).toHaveProperty('authorId', userId);
