@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router-dom";
 
-// TODO: there should be popup that says the post was created
 export default function CreatePost() {
   const queryClient = useQueryClient();
   const { t, ready } = useTranslation('post');

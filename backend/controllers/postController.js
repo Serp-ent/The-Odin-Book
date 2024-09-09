@@ -130,7 +130,6 @@ const getFollowedPosts = asyncHandler(async (req, res) => {
   }
 });
 
-// TODO: add tests
 const getPosts = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;

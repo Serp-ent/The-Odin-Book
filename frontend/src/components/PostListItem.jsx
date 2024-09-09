@@ -7,7 +7,6 @@ import { useAuth } from "../auth/authContext";
 import ImageCarousel from "./ImageCarousel";
 import { useTranslation } from "react-i18next";
 
-// TODO: add ability to remove posts
 export default function PostListItem({ post }) {
   const { t, ready } = useTranslation('post');
   const auth = useAuth();

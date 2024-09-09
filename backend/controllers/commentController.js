@@ -1,7 +1,6 @@
 const prisma = require('../db/prismaClient');
 const asyncHandler = require('express-async-handler');
 
-// TODO: check authorization
 const deleteComment = asyncHandler(async (req, res) => {
   const id = parseInt(req.params.id);
 
