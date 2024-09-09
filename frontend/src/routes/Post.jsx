@@ -67,7 +67,6 @@ export default function Post() {
   });
 
   // TODO: better errors
-  // TODO: add light/dark theme for error page
   if (isLoading) return (
     <div className="flex justify-center items-center h-full"><ClipLoader /></div>
   );

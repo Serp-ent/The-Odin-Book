@@ -141,7 +141,7 @@ export default function Register() {
     { name: 'confirmPassword', label: t('confirmPassword'), type: 'password' },
   ];
 
-  if (!ready) {
+  if (!ready || sd) {
     return <div className="flex justify-center items-center h-full"><ClipLoader /></div>
   }
 
