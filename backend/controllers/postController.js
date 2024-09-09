@@ -606,7 +606,7 @@ const createComment = asyncHandler(async (req, res) => {
 
   delete post.authorId;
 
-  res.json({
+  res.status(201).json({
     ...post,
     author: {
       ...post.author,
