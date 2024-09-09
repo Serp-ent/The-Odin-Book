@@ -24,8 +24,7 @@ export const fetchUsers = async (query) => {
   return response.json();
 };
 
-// FindFriends Component
-export default function FindFriends() {
+export default function FindFriends({ className }) {
   const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const { t, ready } = useTranslation('followed')
@@ -70,7 +69,7 @@ export default function FindFriends() {
   }
 
   return (
-    <div className="flex h-full flex-col container mx-auto px-4 lg:max-w-[768px] text-text-primary-light dark:text-text-primary-dark p-2 gap-2 grow">
+    <div className={`${className} flex h-full flex-col container mx-auto px-4 lg:max-w-[768px] text-text-primary-light dark:text-text-primary-dark p-2 gap-2 grow`}>
       <input
         className="border bg-gray-300 dark:bg-gray-800 p-1 rounded"
         name="firstName"

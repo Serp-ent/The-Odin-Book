@@ -21,7 +21,7 @@ export const fetchFollowedUsers = async () => {
   return response.json();
 };
 
-export default function FollowedUsers() {
+export default function FollowedUsers({ className }) {
   const { data: followedUsers = [], isLoading, isError, error } = useQuery({
     queryKey: ['followedUsers'],
     queryFn: fetchFollowedUsers,
@@ -46,7 +46,7 @@ export default function FollowedUsers() {
   }
 
   return (
-    <aside className='dark:bg-gray-800 mx-auto px-4 h-full bg-background-light text-text-primary-light dark:text-text-primary-dark shadow flex flex-col overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 container'>
+    <aside className={`${className} dark:bg-gray-800 mx-auto px-4 bg-background-light text-text-primary-light dark:text-text-primary-dark shadow flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-400 container`}>
       {followedUsers.length === 0 ? (
         <div className='flex justify-center flex-col items-center h-full gap-2'>
           <h2>{t('noUsersFollowed')}</h2>
