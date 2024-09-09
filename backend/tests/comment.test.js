@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const request = require('supertest');
 const prisma = require('../db/prismaClient');
 
-// TODO: handle non integer id
 describe('Comment Router', () => {
   let authToken;
   let userId;

@@ -2,6 +2,7 @@ const app = require('../app');
 const bcrypt = require('bcryptjs');
 const request = require('supertest');
 const prisma = require('../db/prismaClient');
+const jwt = require('jsonwebtoken');
 
 describe('Posts Router', () => {
   let authToken;
@@ -53,27 +54,61 @@ describe('Posts Router', () => {
     await prisma.user.deleteMany({});
   });
 
-  it('GET /api/posts - should get all posts', async () => {
-    // Create a post
-    const post = await prisma.post.create({
-      data: {
-        authorId: userId,
-        content: 'Test post content',
-      },
+  describe('GET /api/posts', () => {
+    it('should return 200 and posts when there are posts in the database', async () => {
+      // Create a post
+      await prisma.post.create({
+        data: {
+          authorId: userId,
+          content: 'Test post content',
+        },
+      });
+
+      const response = await request(app)
+        .get('/api/posts')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200);
+
+      expect(response.body.posts).toHaveLength(1);
+      expect(response.body.posts[0]).toHaveProperty('content', 'Test post content');
     });
-    postId = post.id;
 
-    const response = await request(app)
-      .get('/api/posts')
-      .set('Authorization', `Bearer ${authToken}`)
-      .expect(200);
+    it('should return 200 and empty array when there are no posts', async () => {
+      // Ensure the database is empty
+      await prisma.post.deleteMany({});
 
-    expect(response.body.posts).toHaveLength(1);
-    expect(response.body.posts[0]).toHaveProperty('content', 'Test post content');
+      const response = await request(app)
+        .get('/api/posts')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200);
 
-    // cleanup - remove that post
-    await prisma.post.delete({ where: { id: post.id } });
-  });
+      expect(response.body.posts).toHaveLength(0);
+    });
+
+    it('should return 401 for unauthorized access', async () => {
+      const response = await request(app)
+        .get('/api/posts')
+        .expect(401);
+    });
+
+    it('should return 401 for invalid token', async () => {
+      const invalidToken = 'invalidToken';
+      const response = await request(app)
+        .get('/api/posts')
+        .set('Authorization', `Bearer ${invalidToken}`)
+        .expect(401);
+    });
+
+    it('should return 401 for expired token', async () => {
+      // Create an expired token
+      const expiredToken = jwt.sign({ id: userId }, 'your_jwt_secret', { expiresIn: -60 });
+
+      const response = await request(app)
+        .get('/api/posts')
+        .set('Authorization', `Bearer ${expiredToken}`)
+        .expect(401);
+    });
+  })
 
   it('GET /api/posts/followed - should get followed users\' posts', async () => {
     // Follow another user

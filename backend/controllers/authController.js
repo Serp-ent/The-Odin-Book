@@ -140,7 +140,7 @@ const registerChain = [
   registerUser,
 ]
 
-const ensureResourceAuthor = (getResourceAuthorId) => async (req, res, next) => {
+const ensureResourceAuthor = (getResourceAuthorId) => asyncHandler(async (req, res, next) => {
   try {
     const authorId = await getResourceAuthorId(req);
     if (req.user.id !== authorId) {
@@ -150,7 +150,7 @@ const ensureResourceAuthor = (getResourceAuthorId) => async (req, res, next) => 
   } catch (error) {
     return res.status(500).json({ message: "Error checking resource author" });
   }
-};
+});
 
 module.exports = {
   login,
